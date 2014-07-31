@@ -118,6 +118,7 @@ public class Cocos2dxRenderer implements GLSurfaceView.Renderer {
 	private static native void nativeTouchesMove(final int[] pIDs, final float[] pXs, final float[] pYs);
 	private static native void nativeTouchesCancel(final int[] pIDs, final float[] pXs, final float[] pYs);
 	private static native boolean nativeKeyDown(final int pKeyCode);
+	private static native boolean nativeKeyUp(final int pKeyCode);//......................
 	private static native void nativeRender();
 	private static native void nativeInit(final int pWidth, final int pHeight);
 	private static native void nativeOnSurfaceChanged(final int pWidth, final int pHeight);
@@ -142,6 +143,10 @@ public class Cocos2dxRenderer implements GLSurfaceView.Renderer {
 
 	public void handleKeyDown(final int pKeyCode) {
 		Cocos2dxRenderer.nativeKeyDown(pKeyCode);
+	}
+	//............................................
+	public void handleKeyUp(final int pKeyCode) {  
+		Cocos2dxRenderer.nativeKeyUp(pKeyCode);
 	}
 
 	public void handleOnPause() {

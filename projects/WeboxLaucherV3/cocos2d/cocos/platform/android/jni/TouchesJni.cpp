@@ -98,8 +98,24 @@ extern "C" {
         }
         
         cocos2d::EventKeyboard::KeyCode cocos2dKey = g_keyCodeMap.at(keyCode);
-        cocos2d::EventKeyboard event(cocos2dKey, false);
+        cocos2d::EventKeyboard event(cocos2dKey, true);
         cocos2d::Director::getInstance()->getEventDispatcher()->dispatchEvent(&event);
         return JNI_TRUE;
         
-    }}
+    }
+
+   //................................................................
+    JNIEXPORT jboolean JNICALL Java_org_cocos2dx_lib_Cocos2dxRenderer_nativeKeyUp(JNIEnv * env, jobject thiz, jint keyCode) {
+        Director* pDirector = Director::getInstance();
+
+        auto iterKeyCode = g_keyCodeMap.find(keyCode);
+        if (iterKeyCode == g_keyCodeMap.end()) {
+            return JNI_FALSE;
+        }
+
+        cocos2d::EventKeyboard::KeyCode cocos2dKey = g_keyCodeMap.at(keyCode);
+        cocos2d::EventKeyboard event(cocos2dKey, false);
+        cocos2d::Director::getInstance()->getEventDispatcher()->dispatchEvent(&event);
+        return JNI_TRUE;
+    }
+}
