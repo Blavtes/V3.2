@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">WeBoxLauncher</string>
+
+    <string name="wifi_state_scannig">(正在扫描...)</string>
+    <string name="wifi_state_authenticating">(身份验证中...)</string>
+    <string name="wifi_state_obtaining_ipaddr">(正在获取 IP 地址...)</string>
+    <string name="wifi_state_suspended">(已暂停)</string>
+    <string name="wifi_state_disconnected">(已断开连接)</string>
+    <string name="wifi_state_connect_failed">(连接失败)</string>
+    <string name="wifi_state_blocked">(已阻止)</string>
+    <string name="wifi_state_verifying_poor_link">(暂时关闭状况不佳的连接)</string>
+    <string name="wifi_state_connected">(已连接)</string>
+    <string name="wifi_state_connecting">(正在连接...)</string>
+    <string name="wifi_state_disconnecting">(正在断开连接...)</string>
+    <string name="wifi_state_saved">(已保存)</string>
+    <string name="wifi_state_failed">(身份验证失败)</string>
+    <string name="wifi_state_outrange">(不再范围内)</string>
+    <string name="check_network_title">检测网络</string>
+    <string name="check_network_idle"></string>
+    <string name="check_network_scannig">正在扫描网络</string>
+    <string name="check_network_connecting">正在连接网络</string>
+    <string name="check_network_authenticating">正在身份验证</string>
+    <string name="check_network_obtaining_ipaddr">正在获取IP地址</string>
+    <string name="check_network_connected">网络连接成功</string>
+    <string name="check_network_suspended">网络连接已暂停</string>
+    <string name="check_network_disconnecting">正在断开网络连接</string>
+    <string name="check_network_disconnected">已断开网络连接</string>
+    <string name="check_network_failed">网络连接失败</string>
+    <string name="check_network_blocked">网络连接已停止</string>
+    <string name="check_network_verifying_poor_link">关闭状况不佳的连接</string>
+    <string name="check_network_captive_portal_check">检测网络状态</string>
+    <string name="check_network_not_available_network">无可用网络</string>
+
+    <string name="notify_info_tv_title_default">电视台</string>
+    <string name="notify_info_tv_description_default">600+&#160;频道</string>
+    <string name="notify_info_vod_title_default">影视</string>
+    <string name="notify_info_vod_description_default">6&#160;万部精彩影视</string>
+    <string name="notify_info_history_title_default">观看动态</string>
+    <string name="notify_info_history_description_default">收藏喜爱影片</string>
+    <string name="notify_info_album_title_default">相册</string>
+    <string name="notify_info_album_description_default">分享美好瞬间</string>
+</resources>

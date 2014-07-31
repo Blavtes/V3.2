@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ * Copyright (C) 2012 Togic Corporation. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+
+<resources>
+
+    <string-array name="wifi_status">
+        <item></item>
+        <item>@string/wifi_state_scannig</item>
+        <item>@string/wifi_state_connecting</item>
+        <item>@string/wifi_state_authenticating</item>
+        <item>@string/wifi_state_obtaining_ipaddr</item>
+        <item>@string/wifi_state_connected</item>
+        <item>@string/wifi_state_suspended</item>
+        <item>@string/wifi_state_disconnecting</item>
+        <item>@string/wifi_state_disconnected</item>
+        <item>@string/wifi_state_connect_failed</item>
+        <item>@string/wifi_state_blocked</item>
+        <item>@string/wifi_state_verifying_poor_link</item>
+    </string-array>
+    <string-array name="wifi_status_check">
+        <item>@string/check_network_idle</item>
+        <item>@string/check_network_scannig</item>
+        <item>@string/check_network_connecting</item>
+        <item>@string/check_network_authenticating</item>
+        <item>@string/check_network_obtaining_ipaddr</item>
+        <item>@string/check_network_connected</item>
+        <item>@string/check_network_suspended</item>
+        <item>@string/check_network_disconnecting</item>
+        <item>@string/check_network_disconnected</item>
+        <item>@string/check_network_failed</item>
+        <item>@string/check_network_blocked</item>
+        <item>@string/check_network_verifying_poor_link</item>
+        <item>@string/check_network_captive_portal_check</item>
+    </string-array>
+</resources>
