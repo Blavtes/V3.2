@@ -9,6 +9,8 @@
 #define LEFTNOTIFICATIONPANEL_H_
 
 #include "cocos2d.h"
+#include "ItemPanel.h"
+#include "FocusHelper.h"
 USING_NS_CC;
 
 class LeftNotificationPanel: public cocos2d::ui::Layout {
@@ -18,14 +20,20 @@ public:
 	static LeftNotificationPanel* create();
 	virtual bool init();
 
+	bool getLeftNotificationPanelStatus();
+    void onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event);
+    void onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event);
 	void show();
+	void addTestItems();
 
 private:
-	bool m_showFlag;
+	bool m_statusFlag;
 	ui::ImageView* m_imageLine;
 	ui::ImageView* m_titleImage;
 	ui::Text* m_titleText;
-	ui::ScrollView* m_itemPanel;
+	ItemPanel* m_itemPanel;
+	FocusHelper* m_focusHelper;
+	int m_notificationCount;
 };
 
 #endif /* LEFTNOTIFICATIONPANEL_H_ */

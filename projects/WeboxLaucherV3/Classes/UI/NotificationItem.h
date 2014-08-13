@@ -8,25 +8,22 @@
 #ifndef NOTIFICATIONITEM_H_
 #define NOTIFICATIONITEM_H_
 
-#include "cocos2d.h"
+#include "BaseItem.h"
 USING_NS_CC;
 
-class NotificationItem: public cocos2d::ui::Widget {
+class NotificationItem: public BaseItem {
 public:
 	NotificationItem();
 	virtual ~NotificationItem();
-	static NotificationItem* create();
+	CREATE_FUNC(NotificationItem);
 	virtual bool init();
 
-	Size getSize();
-	void setSize(Size itemSize);
-	void setNotificationImage(std::string notificationImageFilePath);
-	void setNotificationText(std::string notificationText);
+	void setBackgroundImage(std::string backgroundImageFilePath);
+	void setForegroundImage(std::string forgroundImageFilePath);
+    void setHintText(std::string hintText);
 
 protected:
-	ui::ImageView* m_notificationImage;
-	ui::Text* m_notificationText;
-	Size m_itemSize;
+
 };
 
 #endif /* NOTIFICATIONITEM_H_ */

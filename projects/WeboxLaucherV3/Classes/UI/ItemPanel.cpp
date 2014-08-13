@@ -8,14 +8,16 @@
 #include "ItemPanel.h"
 #include "AppItem.h"
 #include "MainItem.h"
-
-
 USING_NS_CC;
 
 ItemPanel::ItemPanel()
 {
 	m_curColumnWidth=0;
 	m_itemVector = new Vector<BaseItem*>();
+	m_itemPanelSize = ITEM_PANEL_SIZE;
+	m_topMargin = MARGIN_TOP;
+	m_leftMargin = MARGIN_LEFT;
+	m_middleMargin = MARGIN_MIDDLE;
 }
 
 ItemPanel::~ItemPanel()
@@ -41,76 +43,24 @@ bool ItemPanel::init()
 	{
 		return false;
 	}
-	Size visibleSize = CCDirector::getInstance()->getVisibleSize();
-	this->setSize(Size(visibleSize.width-20, ITEM_PANEL_SIZE_HEIGHT));
-	this->setInnerContainerSize(Size(visibleSize.width-20, ITEM_PANEL_SIZE_HEIGHT));
 	this->setEnabled(true);
-	this->setDirection(Direction::HORIZONTAL);
-//	this->setBackGroundColor(Color3B::BLUE);
-//	this->setBackGroundColorType(BackGroundColorType::SOLID);
-
-    auto item1= MainItem::create();
-    item1->setForegroundImage("top-forground-1.png");
-    item1->setBackgroundImage("top-background-1.png");
-    item1->setBottomBackgroundImage("bottom-bac-1.png");
-    item1->setHintText("Hello World!");
-    this->addItem(item1);
-
-
-    auto item2= MainItem::create();
-    item2->setForegroundImage("top-forground-2.png");
-    item2->setBackgroundImage("top-background-2.png");
-    item2->setBottomBackgroundImage("bottom-bac-2.png");
-    item2->setHintText("Hello World!");
-    this->addItem(item2);
-
-    auto item3= MainItem::create();
-    item3->setForegroundImage("top-forground-3.png");
-    item3->setBackgroundImage("top-background-3.png");
-    item3->setBottomBackgroundImage("bottom-bac-3.png");
-    item3->setHintText("Hello World!");
-    this->addItem(item3);
-
-   auto item4=AppItem::create();
-   item4->setBackgroundImage("app_bg_2.png");
-   item4->setForegroundImage("app_settingicon.png");
-   item4->setHintText("app 1");
-   this->addItem(item4);
-
-   auto item5=AppItem::create();
-   item5->setBackgroundImage("app_bg_1.png");
-   item5->setForegroundImage("app_fileicon.png");
-   item5->setHintText("app 2");
-   this->addItem(item5);
-
-   auto item6=AppItem::create();
-   item6->setBackgroundImage("app_bg_1.png");
-   item6->setForegroundImage("app_fileicon.png");
-   item6->setHintText("app 3");
-   this->addItem(item6);
-
-   auto item7=AppItem::create();
-   item7->setBackgroundImage("app_bg_1.png");
-   item7->setForegroundImage("app_fileicon.png");
-   item7->setHintText("app 4");
-   this->addItem(item7);
-
-   auto item8=AppItem::create();
-   item8->setBackgroundImage("app_bg_2.png");
-   item8->setForegroundImage("app_settingicon.png");
-   item8->setHintText("app 5");
-   this->addItem(item8);
-
-   auto item9=AppItem::create();
-   item9->setBackgroundImage("app_bg_2.png");
-   item9->setForegroundImage("app_settingicon.png");
-   item9->setHintText("app 6");
-   this->addItem(item9);
-
-    std::string plistFilePath= std::string("plist/mainData.plist");
-    this->addDefaultMainItemByPlistFile(plistFilePath);
-    this->addDefaultAppItem();
 	return true;
+}
+
+void ItemPanel::setItemPanelSize(Size itemPanelSize)
+{
+	//......
+	this->setSize(itemPanelSize);
+	this->setInnerContainerSize(itemPanelSize);
+	m_itemPanelSize = itemPanelSize;
+}
+
+void ItemPanel::setMarginValue(int topMargin, int leftMargin, int middleMargin)
+{
+	//
+	m_topMargin = topMargin;
+	m_leftMargin = leftMargin;
+	m_middleMargin = middleMargin;
 }
 
 
@@ -127,14 +77,14 @@ void ItemPanel::addItem(BaseItem* newItem)
 	if(itemCount == 0)
 	{                                                                                    //.......................add the first item
 		m_curColumnWidth=newItemSize.width;
-		newItemPos = Vec2(MARGIN_LEFT+newItemSize.width/2, ItemPanelSize.height - newItemSize.height/2 - MARGIN_TOP);
+		newItemPos = Vec2(m_leftMargin + newItemSize.width/2, m_itemPanelSize.height - newItemSize.height/2 - m_topMargin);
 	}
 	else
 	{
 		BaseItem* lastItem=m_itemVector->back();
 		Vec2  lastItemPos=lastItem->getPosition();
 		Size  lastItemSize=lastItem->getSize();
-		if( lastItemPos.y  - lastItemSize.height/2 - MARGIN_MIDDLE  > newItemSize.height)  //.................add item in old Column
+		if( lastItemPos.y  - lastItemSize.height/2 - m_middleMargin  > newItemSize.height)  //.................add item in old Column
 		{
 			if(newItemSize.width > m_curColumnWidth)            //...............the new item is wider than the former one
 			{
@@ -154,22 +104,22 @@ void ItemPanel::addItem(BaseItem* newItem)
 			{
 				newItemPos.x=lastItemPos.x;
 			}
-			newItemPos.y=lastItemPos.y- lastItemSize.height/2 - MARGIN_MIDDLE - newItemSize.height/2;
+			newItemPos.y=lastItemPos.y- lastItemSize.height/2 - m_middleMargin - newItemSize.height/2;
 		}
 		else                                      //..........................add item in new Column
 		{
-			newItemPos.x=lastItemPos.x+m_curColumnWidth/2+MARGIN_MIDDLE+newItemSize.width/2;
-			newItemPos.y= ItemPanelSize.height - newItemSize.height/2 - MARGIN_TOP;
+			newItemPos.x=lastItemPos.x + m_curColumnWidth/2 + m_middleMargin + newItemSize.width/2;
+			newItemPos.y= m_itemPanelSize.height - newItemSize.height/2 - m_topMargin;
 			m_curColumnWidth = newItemSize.width;
 		}
 	}
 	newItem->setPosition(newItemPos);
 
 	Size curInnerContainerSize =  this->getInnerContainerSize();//if necessary, change the Size of the container
-	if(newItemPos.x + newItemSize.width/2 + MARGIN_MIDDLE > curInnerContainerSize.width )
+	if(newItemPos.x + newItemSize.width/2 + m_middleMargin > curInnerContainerSize.width )
 	{
 		//....
-		Size newInnerContainerSize = Size(newItemPos.x + newItemSize.width/2 + MARGIN_MIDDLE,  curInnerContainerSize.height);
+		Size newInnerContainerSize = Size(newItemPos.x + newItemSize.width/2 + m_middleMargin,  curInnerContainerSize.height);
 		this->setInnerContainerSize(newInnerContainerSize);
 	}
 	this->getInnerContainer()->addChild(newItem);// add the item to the panel container
@@ -194,7 +144,7 @@ void ItemPanel::removeItemByObject(BaseItem* deletedItem)
 
 void ItemPanel::removeItemByIndex(int deletedItemIndex)
 {
-	if(deletedItemIndex < 0 || deletedItemIndex > m_itemVector->size())
+	if(deletedItemIndex < 0 || deletedItemIndex >= m_itemVector->size())
 	{
 		log("The deletedItemIndex is out of the vector boundary!");
 		return;
@@ -212,6 +162,7 @@ void ItemPanel::removeItemByIndex(int deletedItemIndex)
 		BaseItem* item=tempVector.at(i);
 		this->addItem(item);
 	}
+
 }
 
 void ItemPanel::updateAllItems()
@@ -237,30 +188,71 @@ void ItemPanel::addDefaultMainItemByPlistFile(std::string filePath)
     ValueMap map3 = map.at("item_album").asValueMap();
     ValueMap map4 = map.at("item_history").asValueMap();
 
+    auto mainItem1 = MainItem::create();
+    auto mainItemData1 = ItemData::create();
+    mainItemData1->setBackgroundImageFilePath(map1.at("backgroundUrl").asString());
+    mainItemData1->setForegroundImageFilePath("");
+    mainItemData1->setBottomBackGroundImageFilePath(map1.at("bottomPanelUrl").asString());
+    mainItemData1->setHintText(map1.at("hint").asString());
+    mainItem1->setItemData(mainItemData1);
+   this->addItem(mainItem1);
+
     auto mainItem2 = MainItem::create();
-    mainItem2->setForegroundImage(map2.at("topIconUrl").asString());
-    mainItem2->setBackgroundImage(map2.at("backgroundUrl").asString());
-    mainItem2->setBottomBackgroundImage(map2.at("bottomPanelUrl").asString());
-    mainItem2->setHintText(map2.at("hint").asString());
+    auto mainItemData2 = ItemData::create();
+    mainItemData2->setBackgroundImageFilePath(map2.at("backgroundUrl").asString());
+    mainItemData2->setForegroundImageFilePath(map2.at("topIconUrl").asString());
+    mainItemData2->setBottomBackGroundImageFilePath(map2.at("bottomPanelUrl").asString());
+    mainItemData2->setHintText(map2.at("hint").asString());
+    mainItem2->setItemData(mainItemData2);
    this->addItem(mainItem2);
 
+   auto mainItem3 = MainItem::create();
+   auto mainItemData3 = ItemData::create();
+   mainItemData3->setBackgroundImageFilePath(map3.at("backgroundUrl").asString());
+   mainItemData3->setForegroundImageFilePath(map3.at("topIconUrl").asString());
+   mainItemData3->setBottomBackGroundImageFilePath(map3.at("bottomPanelUrl").asString());
+   mainItemData3->setHintText(map3.at("hint").asString());
+   mainItem3->setItemData(mainItemData3);
+  this->addItem(mainItem3);
+
+  auto mainItem4 = MainItem::create();
+  auto mainItemData4 = ItemData::create();
+  mainItemData4->setBackgroundImageFilePath(map4.at("backgroundUrl").asString());
+  mainItemData4->setForegroundImageFilePath(map4.at("topIconUrl").asString());
+  mainItemData4->setBottomBackGroundImageFilePath(map4.at("bottomPanelUrl").asString());
+  mainItemData4->setHintText(map4.at("hint").asString());
+  mainItem4->setItemData(mainItemData4);
+ this->addItem(mainItem4);
 }
 
 void ItemPanel::addDefaultAppItem()
 {
     auto setAppItem = AppItem::create();
-    setAppItem->setForegroundImage(APPITEM_SET_FG_IMG);
-    setAppItem->setBackgroundImage(APPITEM_SET_BG_IMG);
-    setAppItem->setHintText(APP_SET_TITLE);
-    setAppItem->setItemName(APP_SET_NAME);
+    auto setAppItemData = ItemData::create();
+    setAppItemData->setBackgroundImageFilePath(APPITEM_SET_BG_IMG);
+    setAppItemData->setForegroundImageFilePath(APPITEM_SET_FG_IMG);
+    setAppItemData->setHintText(APP_SET_TITLE);
+    setAppItemData->setPackage(APP_SET_NAME);
+    setAppItem->setItemData(setAppItemData);
     this->addItem(setAppItem);
 
     auto fileAppItem = AppItem::create();
-    fileAppItem->setForegroundImage(APPITEM_FILE_FG_IMG);
-    fileAppItem->setBackgroundImage(APPITEM_FILE_BG_IMG);
-    fileAppItem->setHintText(APP_FILE_TITLE);
-    fileAppItem->setItemName(APP_FILE_NAME);
+    auto fileAppItemData = ItemData::create();
+    fileAppItemData->setBackgroundImageFilePath(APPITEM_FILE_BG_IMG);
+    fileAppItemData->setForegroundImageFilePath(APPITEM_FILE_FG_IMG);
+    fileAppItemData->setHintText(APP_FILE_TITLE);
+    fileAppItemData->setPackage(APP_FILE_NAME);
+    fileAppItem->setItemData(fileAppItemData);
     this->addItem(fileAppItem);
+
+    auto appStoreItem = AppItem::create();
+    auto appStoreItemData = ItemData::create();
+    appStoreItemData->setBackgroundImageFilePath(APPITEM_APPSTORE_BG_IMG);
+    appStoreItemData->setForegroundImageFilePath(APPITEM_APPSTORE_FG_IMG);
+    appStoreItemData->setHintText(APP_APPSTORE_TITLE);
+    appStoreItemData->setPackage(APP_APPSTORE_NAME);
+    appStoreItem->setItemData(appStoreItemData);
+    this->addItem(appStoreItem);
 
     return ;
 }

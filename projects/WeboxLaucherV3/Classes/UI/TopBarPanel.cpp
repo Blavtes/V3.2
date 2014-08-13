@@ -9,11 +9,13 @@
 #include "PrefixConst.h"
 
 TopBarPanel::TopBarPanel() {
-    m_timeText = NULL;
-    m_dateText = NULL;
-    m_weekdayText = NULL;
-    m_networkImageView = NULL;
-    m_cibnImageView = NULL;
+    m_timeText = nullptr;
+    m_dateText = nullptr;
+    m_weekdayText = nullptr;
+    m_networkImageView = nullptr;
+    m_cibnImageView = nullptr;
+    m_notificationHintImage = nullptr;
+    m_notificationCountImage = nullptr;
 
 }
 
@@ -45,11 +47,10 @@ bool TopBarPanel::init()
 //	this->setBackGroundColor(Color3B::RED);
 //	this->setBackGroundColorType(BackGroundColorType::SOLID);
 
-
 	m_timeText = ui::Text::create();
 	m_timeText->setPosition(Vec2(visibleSize.width-250, this->getSize().height/2));
 	m_timeText->setSize(Size(100, 50));
-//	m_timeText->enableShadow(ccp(0, -3), 255*0.3, 3,ccBLACK,true);
+	m_timeText->enableShadow(Color4B::BLACK,Size(0, -3),3);
 	m_timeText->setColor(Color3B(174, 174, 174));
 	m_timeText->setFontSize(40);
 	m_timeText->setTextHorizontalAlignment(TextHAlignment::CENTER);
@@ -59,6 +60,7 @@ bool TopBarPanel::init()
     m_dateText = ui::Text::create();
     m_dateText->setPosition(Vec2(m_timeText->getPosition().x+90, m_timeText->getPosition().y+10));
     m_dateText->setSize(Size(100, 50));
+    m_dateText->enableShadow(Color4B::BLACK,Size(0, -3),3);
     m_dateText->setColor(Color3B(174, 174, 174));
     m_dateText->setFontSize(15);
     m_dateText->setTextHorizontalAlignment( TextHAlignment::CENTER);
@@ -68,6 +70,7 @@ bool TopBarPanel::init()
     m_weekdayText = ui::Text::create();
     m_weekdayText->setPosition(Vec2(m_dateText->getPosition().x,m_dateText->getPosition().y-20));
     m_weekdayText->setSize(Size(100, 50));
+    m_weekdayText->enableShadow(Color4B::BLACK,Size(0, -3),3);
     m_weekdayText->setColor(Color3B(174, 174, 174));
     m_weekdayText->setFontSize(15);
     m_weekdayText->setTextHorizontalAlignment( TextHAlignment::CENTER);
@@ -91,6 +94,19 @@ bool TopBarPanel::init()
     m_cibnImageView->setPosition(Vec2(150,this->getSize().height/2-20));
     this->addChild(m_cibnImageView);
 
+    m_notificationHintImage = ui::ImageView::create();
+    m_notificationHintImage->loadTexture(NORTIFICATION_HINT_IMG);
+    m_notificationHintImage->setPosition(Vec2(visibleSize.width-340, this->getSize().height/2-6));
+    this->addChild(m_notificationHintImage);
+
+    m_notificationCountImage = ui::ImageView::create();
+    int notificationCount = 3;
+    char  notificationCountImageFilePath[100];
+    sprintf(notificationCountImageFilePath,NOTIFICATION_COUNT_IMG,notificationCount);
+    m_notificationCountImage->loadTexture(notificationCountImageFilePath);
+    m_notificationCountImage->setPosition(Vec2(m_notificationHintImage->getPosition().x - 25, m_notificationHintImage->getPosition().y - 8));
+    this->addChild(m_notificationCountImage);
+
     this->scheduleUpdate();
 	return true;
 }
@@ -101,17 +117,17 @@ void TopBarPanel::updateWifiState(ValueMap& wifiStateMap)
    int state=  wifiStateMap.at("state").asInt();
    int level =wifiStateMap.at("level").asInt();
    char  wifiImageFilePath[100];
-   sprintf(wifiImageFilePath,NetWork_image_Wifi,level);
+   sprintf(wifiImageFilePath,NETWORK_WIFI_IMG,level);
    switch(state)
    {
    case kNetwork_State_Disable:
-	   m_networkImageView->loadTexture(NetWork_image_disable);
+	   m_networkImageView->loadTexture(NETWORK_DISABLE_IMG);
     	break;
    case kNetwork_State_Ethernet:
-    	m_networkImageView->loadTexture(NetWork_image_net);
+    	m_networkImageView->loadTexture(NETWORK_NET_IMG);
     	break;
    case kNetwork_State_Wifi:
-    	m_networkImageView->loadTexture(wifiImageFilePath);
+    	m_networkImageView->loadTexture(NETWORK_WIFI_IMG);
     	break;
    default:
     	break;
@@ -134,7 +150,7 @@ void TopBarPanel::update(float dt)
    sprintf(dateString,"%d月%d日", month, day);
    m_dateText->setString(dateString);
 
-   char* weekdayString;
+   std::string weekdayString;
    switch(weekday)
    {
    case 0:

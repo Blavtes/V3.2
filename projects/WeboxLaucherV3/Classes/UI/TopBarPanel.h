@@ -9,9 +9,7 @@
 #define TOPBARPANEL_H_
 
 #include "cocos2d.h"
-#include "../extensions/cocos-ext.h"
 USING_NS_CC;
-USING_NS_CC_EXT;
 
 
 class TopBarPanel: public cocos2d::ui::Layout {
@@ -30,6 +28,9 @@ private:
     ui::Text* m_weekdayText;
     ui::ImageView* m_networkImageView;
     ui::ImageView* m_cibnImageView;
+
+    ui::ImageView* m_notificationHintImage;
+    ui::ImageView* m_notificationCountImage;
 };
 
 #endif /* TOPBARPANEL_H_ */

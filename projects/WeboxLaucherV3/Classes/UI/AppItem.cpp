@@ -1,7 +1,6 @@
 
 #include "AppItem.h"
 USING_NS_CC;
-USING_NS_CC_EXT;
 
 AppItem::AppItem() {
 	// ........
@@ -32,7 +31,6 @@ bool AppItem::init()
 	return true;
 }
 
-
 void AppItem::setForegroundImage(std::string foregroundImageFilePath)
 {
 	if(!foregroundImageFilePath.empty())
@@ -58,12 +56,17 @@ void AppItem::onEnterClicked(bool isLongPressed)
 void AppItem::longPressedCallback()
 {
 	log("Enter the AppItem long pressed function! ----------------xjx");
-	if( m_itemName.compare(APP_SET_NAME)  !=0 && m_itemName.compare(APP_FILE_NAME) !=0 )
+	std::string itemPackageName = "   ";
+	log("the item package Name is:%s----xjx",itemPackageName.c_str());
+	itemPackageName= m_itemData->getPackage();
+	log("the item package Name is:%s----xjx",itemPackageName.c_str());
+	if( itemPackageName.compare(APP_SET_NAME)  !=0 && itemPackageName.compare(APP_FILE_NAME) !=0 && itemPackageName.compare(APP_APPSTORE_NAME) !=0)
 	{
+		log("compared completed!---------------------------xjx");
 		if(!m_unInstallImage->isVisible())
 		{
 			m_unInstallImage->loadTexture(APP_DELETE_IMG);
-			m_unInstallImage->setPosition(Vec2(ITEM_SIZE_APP.width/2,ITEM_SIZE_APP.height/2));
+			m_unInstallImage->setPosition(Vec2(m_itemSize.width/2,m_itemSize.height/2));
 			m_unInstallImage->setVisible(true);
 			this->setIsUninstalledFlag(true);
 		}
@@ -76,7 +79,6 @@ void AppItem::longPressedCallback()
 
 void AppItem::onFocusChange(ui::Widget* widgetLoseFocus, ui::Widget* widgetGetFocus)
 {
-	log("the AppItem function onFocusChange() is called automatically!--------------------------xjx");
 	 if(widgetLoseFocus != NULL)
 	 {
 		AppItem* appItemLoseFocus = dynamic_cast<AppItem*>(widgetLoseFocus);

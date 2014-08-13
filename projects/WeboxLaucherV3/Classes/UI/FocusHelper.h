@@ -9,8 +9,10 @@
 #define FOCUSHELPER_H_
 
 #include "cocos2d.h"
+#include "../extensions/cocos-ext.h"
 #include "ItemPanel.h"
 USING_NS_CC;
+USING_NS_CC_EXT;
 
 class FocusHelper : public Ref {
 public:
@@ -18,8 +20,7 @@ public:
 	virtual ~FocusHelper();
 	static FocusHelper* create();
 	virtual bool init();
-
-	void bindItemPanel(ItemPanel* itemPanel);
+	void bindItemPanel(ItemPanel* itemPanel,std::string focusIndicatorImageFilePath = DEFAULT_FOCUS_INDICATOR_IMG);
 
 	void moveFocusIndicatorToRight();
 	void moveFocusIndicatorToLeft();

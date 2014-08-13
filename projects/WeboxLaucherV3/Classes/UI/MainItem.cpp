@@ -1,7 +1,6 @@
 
 #include "MainItem.h"
 USING_NS_CC;
-USING_NS_CC_EXT;
 
 MainItem::MainItem()
 {
@@ -31,6 +30,27 @@ bool MainItem::init()
 	return true;
 }
 
+void MainItem::setItemData(ItemData* itemData)
+{
+	CC_SAFE_RELEASE(m_itemData);
+	m_itemData = itemData;
+	CC_SAFE_RETAIN(m_itemData);
+	float delta = 1;
+	if(itemData->getWidth()>delta && itemData->getHeight()>delta)
+	{
+		if(abs(m_itemSize.width - itemData->getWidth())>delta ||abs(m_itemSize.height - itemData->getHeight())>delta )
+		{
+			this->setSize(Size(itemData->getWidth(),itemData->getHeight()));
+			this->setContentSize(m_itemSize);
+		}
+	}
+	//Update the Item View
+	this->setForegroundImage(itemData->getForegroundImageFilePath());
+	this->setBackgroundImage(itemData->getBackgroundImageFilePath());
+	this->setHintText(itemData->getHintText());
+	this->setBottomBackgroundImage(itemData->getBottomBackGroundImageFilePath());
+}
+
 void MainItem::setBottomBackgroundImage(std::string bottomBgImageFilePath)
 {
 	if(!bottomBgImageFilePath.empty())
@@ -48,7 +68,6 @@ void MainItem::onEnterClicked(bool isLongPressed)
 
 void MainItem::onFocusChange(ui::Widget* widgetLoseFocus, ui::Widget* widgetGetFocus)
 {
-	log("the MainItem function onFocusChanged() is called automatically!--------------------------xjx");
 	if(widgetLoseFocus != NULL)
 	{
 		MainItem* mainItemLoseFocus = dynamic_cast<MainItem*>(widgetLoseFocus);

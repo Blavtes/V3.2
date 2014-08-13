@@ -8,14 +8,10 @@
 #ifndef BASEITEM_H_
 #define BASEITEM_H_
 
-
-
-#include "../extensions/cocos-ext.h"
 #include "cocos2d.h"
 #include "PrefixConst.h"
-
+#include "Data/ItemData.h"
 USING_NS_CC;
-USING_NS_CC_EXT;
 
 class BaseItem: public cocos2d::ui::Widget {
 public:
@@ -26,21 +22,21 @@ public:
 
 	Size getSize();
 	void setSize(Size itemSize);
-	void setItemName(std::string itemName);
-	std::string getItemName();
+	virtual void setItemData(ItemData* itemData);
+	virtual ItemData* getItemData();
 
 	virtual void setForegroundImage(std::string forgroundImageFilePath);
 	virtual void setBackgroundImage(std::string backgroundImageFilePath);
 	virtual void setHintText(std::string hintText);
 
 	virtual void onEnterClicked(bool isLongPressed);
-
 protected:
 	ui::ImageView* m_backgroundImage; //top background image
 	ui::ImageView*  m_foregroundImage;//top foreground image
 	ui::Text* m_hintText; //bottom hint text
+
 	Size m_itemSize;//item size
-	std::string m_itemName; //identify the item
+	ItemData* m_itemData;
 };
 
 #endif /* BASEITEM_H_ */

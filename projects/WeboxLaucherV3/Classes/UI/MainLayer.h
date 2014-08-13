@@ -12,11 +12,8 @@
 #include "ItemPanel.h"
 #include "FocusHelper.h"
 #include "TopBarPanel.h"
-#include "BottomBarPanel.h"
 #include "LeftNotificationPanel.h"
-#include "../extensions/cocos-ext.h"
 USING_NS_CC;
-USING_NS_CC_EXT;
 
 class MainLayer: public cocos2d::Layer {
 public:
@@ -25,21 +22,18 @@ public:
 	CREATE_FUNC(MainLayer);
 	static Scene* createScene();
 	virtual bool init();
+
     void onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event);
     void onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event);
-
 	void CIBNAuthorization(ValueMap&  map);
-
-
+	void addTestItems();
 private:
+	ui::ImageView* m_backgroundImageView; //background
 	ItemPanel* m_itemPanel;
-	FocusHelper* m_focusHelper;
-	TopBarPanel* m_topBar;
-	BottomBarPanel* m_bottomBar;
-	ui::ImageView* m_backgroundImageView;
-	ui::Text* m_cibnText;
-
-	LeftNotificationPanel* m_notificationPanel;
+	FocusHelper* m_focusHelper; //middle
+	TopBarPanel* m_topBar;  //top
+	ui::Text* m_cibnText;  //bottom
+	LeftNotificationPanel* m_notificationPanel;//left according to the Key-Menu
 
 };
 
