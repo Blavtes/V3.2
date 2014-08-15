@@ -11,6 +11,7 @@
 #include "cocos2d.h"
 #include "PrefixConst.h"
 #include "Data/ItemData.h"
+#include "Utils/JniUtil.h"
 USING_NS_CC;
 
 class BaseItem: public cocos2d::ui::Widget {

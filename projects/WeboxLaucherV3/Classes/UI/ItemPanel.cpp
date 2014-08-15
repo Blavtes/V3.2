@@ -50,7 +50,8 @@ bool ItemPanel::init()
 void ItemPanel::setItemPanelSize(Size itemPanelSize)
 {
 	//......
-	this->setSize(itemPanelSize);
+	this->ignoreContentAdaptWithSize(false);
+	this->setContentSize(itemPanelSize);
 	this->setInnerContainerSize(itemPanelSize);
 	m_itemPanelSize = itemPanelSize;
 }

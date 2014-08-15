@@ -36,6 +36,7 @@ public class WLBackendService extends Service {
         @Override
         public void registerSystemCallback(ISystemCallback cbk) {
             mSystemMgr.registerSystemCallback(cbk);
+           
         }
 
         @Override

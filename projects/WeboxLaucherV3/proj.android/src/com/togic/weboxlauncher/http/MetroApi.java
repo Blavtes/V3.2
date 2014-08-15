@@ -36,8 +36,8 @@ public class MetroApi {
 
     private static final String TAG = "MetroApi";
 
-    public static final String DOMAIN = "http://qvod.togic.com/";
-//    public static final String DOMAIN = "http://192.168.6.136/";
+//    public static final String DOMAIN = "http://qvod.togic.com/";
+    public static final String DOMAIN = "http://192.168.6.125/";
     public static final String API = "metro";
 
     private final String mApi;

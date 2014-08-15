@@ -25,16 +25,10 @@ class ParseJson
 public:
     ParseJson();
     ~ParseJson();
-    /**
-     * create: jsonpath is path or json string.
-     *
-     */
 
-    static ParseJson* create(std::string jsonPath);
-    Vector<ItemData*> getItemDataVectot();
-    bool init(std::string jsonPath);
+    static bool getItemVectorFromJSON(std::string jsonString, Vector<ItemData*>& itemVector);
 private:
-    Vector<ItemData*> *m_itemDataVector;
+
 };
 
 #endif /* defined(__WeBoxLauncher__ParseJson__) */

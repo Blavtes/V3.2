@@ -49,18 +49,18 @@ bool BaseItem::init()
 
 void BaseItem::setItemData(ItemData* itemData)
 {
+	CC_SAFE_RETAIN(itemData);
 	CC_SAFE_RELEASE(m_itemData);
 	m_itemData = itemData;
-	CC_SAFE_RETAIN(m_itemData);
-	float delta = 1;
-	if(itemData->getWidth()>delta && itemData->getHeight()>delta)
-	{
-		if(abs(m_itemSize.width - itemData->getWidth())>delta ||abs(m_itemSize.height - itemData->getHeight())>delta )
-		{
-			this->setSize(Size(itemData->getWidth(),itemData->getHeight()));
-			this->setContentSize(m_itemSize);
-		}
-	}
+	float delta = 10;
+//	if(itemData->getWidth()>delta && itemData->getHeight()>delta)
+//	{
+//		if(abs(m_itemSize.width - itemData->getWidth())>delta ||abs(m_itemSize.height - itemData->getHeight())>delta )
+//		{
+//			this->setSize(Size(itemData->getWidth(),itemData->getHeight()));
+//			this->setContentSize(m_itemSize);
+//		}
+//	}
 	//Update the Item View
 	this->setForegroundImage(itemData->getForegroundImageFilePath());
 	this->setBackgroundImage(itemData->getBackgroundImageFilePath());

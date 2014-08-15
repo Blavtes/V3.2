@@ -13,9 +13,13 @@
 #include "FocusHelper.h"
 #include "TopBarPanel.h"
 #include "LeftNotificationPanel.h"
+#include "queue"
+#include "unistd.h"
+#include "ReceiveMessageProtocol.h"
 USING_NS_CC;
 
-class MainLayer: public cocos2d::Layer {
+class MainLayer: public cocos2d::Layer , public ReceiveMessageProtocol
+{
 public:
 	MainLayer();
 	virtual ~MainLayer();
@@ -27,6 +31,8 @@ public:
     void onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event);
 	void CIBNAuthorization(ValueMap&  map);
 	void addTestItems();
+
+	void receiveMessageData(std::string jsonString);
 private:
 	ui::ImageView* m_backgroundImageView; //background
 	ItemPanel* m_itemPanel;

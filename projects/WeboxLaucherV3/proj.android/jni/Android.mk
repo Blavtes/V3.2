@@ -23,7 +23,9 @@ LOCAL_SRC_FILES := hellocpp/main.cpp \
                   ../../Classes/UI/FocusHelper.cpp \
                   ../../Classes/UI/NotificationItem.cpp \
                    ../../Classes/Data/ItemData.cpp  \
-                   ../../Classes/Data/ParseJson.cpp
+                   ../../Classes/Data/ParseJson.cpp \
+                   ../../Classes/Utils/HandleMessageQueue.cpp \
+                   ../../Classes/Utils/JniUtil.cpp
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../Classes
 

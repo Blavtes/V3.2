@@ -19,6 +19,7 @@ package com.togic.weboxlauncher.app;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -32,6 +33,8 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
+
 import com.togic.weboxlauncher.util.LogUtil;
 
 /**
@@ -275,6 +278,13 @@ public class AppsManager {
                     getMainIntent(null), 0);
             for (int i = infos.size() - 1; i >= 0; i--) {
                 makeAndCacheAppInfo(context, pm, infos.get(i), cached);
+                final ComponentInfo cpnInfo = getValidComponent( infos.get(i));
+                if(cpnInfo == null)
+                	return;
+                
+                List<ResolveInfo> minfo = pm.queryIntentActivities(
+                        getMainIntent(cpnInfo.packageName), 0);
+                Log.v("@allapp ------------------", "name :" +cpnInfo.name + "  --pck name : " +  cpnInfo.packageName + "    --   size" + minfo.size());
             }
 
             mVersion++;

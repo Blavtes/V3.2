@@ -8,6 +8,7 @@
 #include "LeftNotificationPanel.h"
 #include "PrefixConst.h"
 #include "NotificationItem.h"
+#include "../Utils/HandleMessageQueue.h"
 
 LeftNotificationPanel::LeftNotificationPanel()
 {
@@ -44,6 +45,8 @@ bool LeftNotificationPanel::init()
 	{
 		return false;
 	}
+	this->setMessageTitle("LeftNotificationPanel");
+
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 //	this->setBackGroundColor(Color3B::RED);
 //	this->setBackGroundColorType(BackGroundColorType::SOLID);
@@ -80,7 +83,7 @@ bool LeftNotificationPanel::init()
 	m_itemPanel = ItemPanel::create();
 	m_itemPanel ->setItemPanelSize(Size(400,visibleSize.height-200));
 	m_itemPanel->setMarginValue(10,10,10);
-	m_itemPanel->setPosition(Vec2(20,m_imageLine->getPosition().y-m_itemPanel->getSize().height - 20));
+	m_itemPanel->setPosition(Vec2(20,m_imageLine->getPosition().y-m_itemPanel->getContentSize().height - 20));
 	this->addChild(m_itemPanel,1);
 
 	this->addTestItems();
@@ -89,6 +92,9 @@ bool LeftNotificationPanel::init()
 	m_focusHelper->bindItemPanel(m_itemPanel);
 	m_focusHelper->retain();
 
+
+	HandleMessageQueue* handleMessage = HandleMessageQueue::getInstace();
+	handleMessage->registerLayer(this);
 	return true;
 }
 
@@ -103,7 +109,7 @@ void LeftNotificationPanel::show()
 	}
 	else
 	{
-		MoveTo* move = MoveTo::create(0.3f,Vec2(-this->getSize().width,0));
+		MoveTo* move = MoveTo::create(0.3f,Vec2(-this->getContentSize().width,0));
 		this->runAction(move);
 		m_statusFlag = false;
 	}
@@ -161,3 +167,9 @@ bool LeftNotificationPanel::getLeftNotificationPanelStatus()
 	return m_statusFlag;
 }
 
+void LeftNotificationPanel::receiveMessageData(std::string jsonString)
+{
+	//
+	m_titleText->setString(jsonString);
+	log("LeftNotificationPanel,received data from thread is:%s-----------------------xjx",jsonString.c_str());
+}

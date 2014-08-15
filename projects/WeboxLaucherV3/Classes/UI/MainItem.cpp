@@ -64,6 +64,7 @@ void MainItem::setBottomBackgroundImage(std::string bottomBgImageFilePath)
 void MainItem::onEnterClicked(bool isLongPressed)
 {
 	log("Call The MainItem!------------------------xjx");
+	JniUtil::startActivityJNI(m_itemData->getAction().c_str(),NULL,NULL);
 }
 
 void MainItem::onFocusChange(ui::Widget* widgetLoseFocus, ui::Widget* widgetGetFocus)

@@ -22,6 +22,8 @@ public:
 	virtual bool init();
 	void bindItemPanel(ItemPanel* itemPanel,std::string focusIndicatorImageFilePath = DEFAULT_FOCUS_INDICATOR_IMG);
 
+	void refresh();
+
 	void moveFocusIndicatorToRight();
 	void moveFocusIndicatorToLeft();
 	void moveFocusIndicatorToDown();

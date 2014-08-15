@@ -18,6 +18,8 @@ package com.togic.weboxlauncher;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -30,7 +32,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -44,13 +51,14 @@ import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-
+import com.google.gson.Gson;
 import com.togic.launcher.model.nf.NFInfo;
 import com.togic.launcher.util.image.util.PackageUtils;
 import com.togic.weboxlauncher.app.AppInfo;
 import com.togic.weboxlauncher.app.AppWatcher;
 import com.togic.weboxlauncher.app.AppsManager;
 import com.togic.weboxlauncher.http.CibnApi;
+import com.togic.weboxlauncher.model.CombData;
 import com.togic.weboxlauncher.model.ItemData;
 import com.togic.weboxlauncher.model.Page;
 import com.togic.weboxlauncher.notification.NFInfoManager;
@@ -119,7 +127,7 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 			}
 		}
 	};
-
+	static String TAGM = "@xjx----";
 	private IMetroCallback.Stub mMetroCallback = new IMetroCallback.Stub() {
 		@Override
 		public void onRefreshPage(final Page page) {
@@ -128,9 +136,24 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 				public void run() {
 					final ItemData[] Infos = new ItemData[page.getItems()
 							.size()];
+					final Minfo[] minfos = new Minfo[page.getItems().size()];
 					page.getItems().toArray(Infos);
+					for (int i = 0; i < minfos.length; i++) {
+						Minfo minf = new Minfo((CombData) Infos[i]);
+						minfos[i] = minf;
+					}
 					Log.v(TAG, " ////// ishow " + Infos[0].isshow);
-					nativeImageDataUpdataNotification(Infos, page.background);
+					Log.v(TAGM, "-----IMetroCallback start !");
+					// @xjx
+					MJsonInfo mjInfo = new MJsonInfo(minfos);
+					Gson gson = new Gson();
+					String str = gson.toJson(mjInfo);
+					Log.v(TAGM, "\r\n");
+					Log.v(TAGM, "-----IMetroCallback str : " + str);
+					Log.v(TAGM, "\r\n");
+					nativeJsonString(str);
+					// nativeImageDataUpdataNotification(Infos,
+					// page.background);
 				}
 			});
 		}
@@ -146,7 +169,8 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 			runOnGLThread(new Runnable() {
 				@Override
 				public void run() {
-					nativeCibnCheckNotification(0,0);
+					// @xjx
+					// nativeCibnCheckNotification(0,0);
 				}
 			});
 		}
@@ -157,7 +181,8 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 			runOnGLThread(new Runnable() {
 				@Override
 				public void run() {
-				    nativeCibnCheckNotification(1,(result ? 1:-1));
+					// @xjx
+					// nativeCibnCheckNotification(1,(result ? 1:-1));
 				}
 			});
 		}
@@ -180,8 +205,8 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 		HashMap<String, String> m = new HashMap<String, String>();
 		m.put("__ct__", String.valueOf(value));
 		MobclickAgent.onEvent(context, id, m);
-	} 
-	
+	}
+
 	@Override
 	protected void onStop() {
 		super.onStop();
@@ -279,7 +304,7 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 	}
 
 	public Cocos2dxGLSurfaceView onCreateView() {
-		Cocos2dxGLSurfaceView glSurfaceView = new Cocos2dxGLSurfaceView(this);
+		Cocos2dxGLSurfaceView glSurfaceView = new MCocos2dxGLSurfaceView(this);
 		// WeBoxLauncher should create stencil buffer
 		glSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 8);
 
@@ -297,6 +322,7 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 		registerTickBroadcast();
 	}
 
+	
 	private void destroy() {
 		AppsManager.getInstance(this).onDestroy();
 		unbindService();
@@ -333,6 +359,54 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 		}
 	}
 
+	private static byte[] getIconDataWithPackage(String pack) {
+		Log.v("xxxxxxxxxx", "package --- >" + pack);
+		byte[] by = null;
+		int sIconHeight = 0, sIconWidth = 0;
+		try {
+			Drawable icon = sInstance.getPackageManager().getApplicationIcon(
+					pack);
+
+			if (sIconWidth < 1 || sIconHeight < 1) {
+				sIconWidth = sIconHeight = (int) sInstance.getResources()
+						.getDimension(R.dimen.IconSize);
+			}
+
+			final Bitmap thumb = Bitmap.createBitmap(sIconWidth, sIconHeight,
+					Bitmap.Config.ARGB_8888);
+			final Canvas canvas = new Canvas();
+			canvas.setBitmap(thumb);
+
+			Rect boundsOld = icon.getBounds();
+			icon.setBounds(0, 0, sIconWidth, sIconHeight);
+			icon.draw(canvas);
+			icon.setBounds(boundsOld);
+			by = getPixels(thumb);
+			Log.v("////////", "icon leng " + by.length);
+			// String string = new String(by);
+			return by;
+
+		} catch (NameNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Log.v("////////", "icon leng" + by.length);
+		return null;
+	}
+
+	public static byte[] getPixels(final Bitmap bitmap) {
+		if (bitmap != null) {
+			final byte[] pixels = new byte[bitmap.getWidth()
+					* bitmap.getHeight() * 4];
+			final ByteBuffer buf = ByteBuffer.wrap(pixels);
+			buf.order(ByteOrder.nativeOrder());
+			bitmap.copyPixelsToBuffer(buf);
+			return pixels;
+		}
+
+		return null;
+	}
+
 	@Override
 	public void onNetworkStateChanged(final int state, final int level) {
 		final NetworkState temp = mTempState;
@@ -347,7 +421,8 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 		runOnGLThread(new Runnable() {
 			@Override
 			public void run() {
-				nativeNotifyNetworkStateChanged(state, level);
+				// @xjx
+				// nativeNotifyNetworkStateChanged(state, level);
 			}
 		});
 
@@ -391,7 +466,8 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 			public void run() {
 				final NFInfo[] array = new NFInfo[infos.size()];
 				infos.toArray(array);
-				nativeSendNFInfo(code, array);
+				// @xjx
+				// nativeSendNFInfo(code, array);
 			}
 		});
 	}
@@ -401,7 +477,8 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 		runOnGLThread(new Runnable() {
 			@Override
 			public void run() {
-				nativeSendNotification(code, info);
+				// @xjx
+				// nativeSendNotification(code, info);
 			}
 		});
 	}
@@ -411,7 +488,8 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 		runOnGLThread(new Runnable() {
 			@Override
 			public void run() {
-				nativeSendAirPlayMusic(code, json);
+				// @xjx
+				// nativeSendAirPlayMusic(code, json);
 			}
 		});
 	}
@@ -430,7 +508,17 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 			public void run() {
 				final AppInfo[] appInfos = new AppInfo[apps.size()];
 				apps.toArray(appInfos);
-				nativeUpdateAllApps(version, appInfos);
+				BaseInfo[] infos = new BaseInfo[apps.size()];
+				for (int i = 0; i < apps.size(); i++) {
+					infos[i] = new BaseInfo(appInfos[i]);
+				}
+				MJsonInfo mif = new MJsonInfo(infos);
+				Gson gson = new Gson();
+				String str = gson.toJson(mif);
+				Log.v("\r\n@allapp --  json : ", str);
+				nativeJsonString(str);
+				// @xjx
+				// nativeUpdateAllApps(version, appInfos);
 			}
 		});
 	}
@@ -448,7 +536,8 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 				final AppInfo[] updatedApps = new AppInfo[updated.size()];
 				updated.toArray(updatedApps);
 
-				nativeUpdateApps(version, removedApps, updatedApps);
+				// @xjx
+				// nativeUpdateApps(version, removedApps, updatedApps);
 			}
 		});
 	}
@@ -520,9 +609,30 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 
 	}
 
-	private static String getJsonInfosFromLocal()
-	{
+	private static String getJsonInfosFromLocal() {
 		return MetroParser.getInfos(sInstance);
+	}
+	
+	private static void mStartActivity(String action, String pckname, String classname) {
+		Log.v("@allapp ---", "start activity " +  action);
+
+		Intent intent = new Intent();
+		
+		if(null != action)
+		{
+			intent.setAction(action);
+		}
+		if(null != pckname)
+		{
+			intent.setPackage(pckname);
+		}
+		if(null !=  classname)
+		{
+//			intent.setClassName(sInstance, classname);
+			intent.setClassName(pckname, classname);
+		}
+		sInstance.startActivity(intent);
+		return;
 	}
 
 	protected void registerCallback() {
@@ -553,9 +663,11 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 		public void onReceive(Context arg0, Intent arg1) {
 			LogUtil.v(TAG, "////////////// update sync time");
 			if (Intent.ACTION_TIME_TICK.equals(arg1.getAction())) {
-				nativeUpdateTime(0);
+				// @xjx
+				// nativeUpdateTime(0);
 			} else if (ACTION_REMOTE_LOWPOWER.equals(arg1.getAction())) {
-				nativeLowPower(0);
+				// @xjx
+				// nativeLowPower(0);
 			}
 		}
 	};
@@ -570,26 +682,85 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 		unregisterReceiver(mTickBroadcast);
 	}
 
-	private native static void nativeNotifyNetworkStateChanged(int state,
-			int level);
+	// private native static void nativeNotifyNetworkStateChanged(int state,
+	// int level);
+	//
+	// private native static void nativeSendNFInfo(int code, NFInfo[] array);
+	//
+	// private native static void nativeSendNotification(int code,
+	// Notification info);
+	//
+	// private native static void nativeSendAirPlayMusic(int code, String gson);
+	//
+	// private native static void nativeImageDataUpdataNotification(
+	// ItemData[] info, String background);
+	//
+	// private native static void nativeCibnCheckNotification(int code, int
+	// result);
+	//
+	// private native static void nativeUpdateAllApps(int version, AppInfo[]
+	// apps);
+	//
+	// private native static void nativeUpdateApps(int version, AppInfo[]
+	// removed,
+	// AppInfo[] updated);
+	//
+	// private native static void nativeUpdateTime(int time);
+	// private native static void nativeLowPower(int low);
 
-	private native static void nativeSendNFInfo(int code, NFInfo[] array);
+	private native static boolean nativeJsonString(String str);
 
-	private native static void nativeSendNotification(int code,
-			Notification info);
+	public class BaseInfo {
+		BaseInfo() {
+		}
 
-	private native static void nativeSendAirPlayMusic(int code, String gson);
+		BaseInfo(AppInfo aif) {
+			width = aif.iconWidth;
+			height = aif.iconHeight;
+			actionName = aif.getClassName();
+			packageName = aif.getPackageName();
+			label = aif.label;
+			className = aif.getClassName();
+		}
 
-	private native static void nativeImageDataUpdataNotification(
-			ItemData[] info, String background);
+		public int width;
+		public int height;
+		public String actionName;
+		public String packageName;
+		public String label;
+		 public String className;
+	}
 
-	private native static void nativeCibnCheckNotification(int code, int result);
+	public class Minfo extends BaseInfo {
+		Minfo() {
+		}
 
-	private native static void nativeUpdateAllApps(int version, AppInfo[] apps);
+		Minfo(CombData id) {
+			 width = id.width;
+			 height= id.height;
+			 actionName= id.action;
+			 packageName= id.packageName;
+			 label = id.title;
+			 className= id.className;
+			 isShow= id.isshow;
+			 visible= id.visible;
+			backgroundImageFilePath = id.background;
+			foregroundImageFilePath = id.icon;
+			bottomBackGroundImageFilePath = id.bottomBg;
+		}
+		 public int isShow;
+		 public int visible;
+		public String backgroundImageFilePath;
+		public String foregroundImageFilePath;
+		public String bottomBackGroundImageFilePath;
+	}
 
-	private native static void nativeUpdateApps(int version, AppInfo[] removed,
-			AppInfo[] updated);
+	public class MJsonInfo {
+		MJsonInfo(BaseInfo[] infos) {
+			items = infos;
+		}
 
-	private native static void nativeUpdateTime(int time);
-	private native static void nativeLowPower(int low);
+		public BaseInfo[] items;
+	}
+
 }
