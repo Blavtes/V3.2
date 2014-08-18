@@ -320,6 +320,22 @@ void FocusHelper::showFocusIndicator()
 		m_focusIndicator->setPosition(pos);
 		m_focusIndicator->setVisible(true);
 	}
+
+	//........................................................Weather to Move the Panel  and Resize the Panel Container
+	log("weather to move the panel and resize the panel container!!----------------@xjx");
+	BaseItem* lastItem = m_itemView->getAllItems().back();
+	Vec2 lastItemPos = lastItem->getPosition();
+	Size lastItemSize = lastItem->getSize();
+	if(lastItemPos.x + lastItemSize.width/2 - m_contentOffsetX < m_itemView->getContentSize().width -100 )
+	{
+		int offsetX = m_itemView->getContentSize().width - (lastItemPos.x  + lastItemSize.width/2 - m_contentOffsetX) - 30;
+		m_contentOffsetX -= offsetX;
+		m_itemView->autoScrollPanel(offsetX,ScrollDirection::Scroll_to_Right);
+
+		Size curInnerContainerSize =  m_itemView->getInnerContainerSize();
+		Size newInnerContainerSize = Size(lastItemPos.x +lastItemSize.width/2 + 40,  curInnerContainerSize.height);
+		m_itemView->setInnerContainerSize(newInnerContainerSize);
+	}
 }
 
 void FocusHelper::clearFocusIndicator()
@@ -339,21 +355,6 @@ void FocusHelper::onEnterClicked(bool isLongPressed)
 	m_focusIndicator->setVisible(false);
 	m_itemView->onEnterClicked(m_selectedItemIndex,isLongPressed);
 	this->showFocusIndicator();
-	//........................................................Weather to Move the Panel  and Resize the Panel Container
-	BaseItem* lastItem = m_itemView->getAllItems().back();
-	Vec2 lastItemPos = lastItem->getPosition();
-	Size lastItemSize = lastItem->getSize();
-	if(lastItemPos.x + lastItemSize.width/2 - m_contentOffsetX < m_itemView->getContentSize().width -100 )
-	{
-		int offsetX = m_itemView->getContentSize().width - (lastItemPos.x  + lastItemSize.width/2 - m_contentOffsetX) - 30;
-		m_contentOffsetX -= offsetX;
-		m_itemView->autoScrollPanel(offsetX,ScrollDirection::Scroll_to_Right);
-
-		Size curInnerContainerSize =  m_itemView->getInnerContainerSize();
-		Size newInnerContainerSize = Size(lastItemPos.x +lastItemSize.width/2 + 40,  curInnerContainerSize.height);
-		m_itemView->setInnerContainerSize(newInnerContainerSize);
-	}
-
 }
 
 void FocusHelper::onFocusChanged(ui::Widget* loseFocusWidget, ui::Widget* getFocusWidget)

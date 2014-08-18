@@ -56,18 +56,18 @@ ParseJson::~ParseJson()
 	      {
 	      	const rapidjson::Value& jsonItem = items[i];
 	      	ItemData* itemData = ItemData::create(jsonItem);
-	          if(items[i].IsArray())
-	          {
-	          	log("@xjx--------the number of items[%d] %d",i,items[i].Size());
-	          }
-	          else
-	          {
-	          	for(auto iter = items[i].MemberonBegin(); iter !=items[i].MemberonEnd(); iter++)
-	          	 {
-	          	          log("@xjx-----member name:%s",iter->name.GetString());
-//	           	          log("@xjx-----member value:%s",iter->value.GetString());
-	          	 }
-	          }
+//	          if(items[i].IsArray())
+//	          {
+//	          	log("@xjx--------the number of items[%d] %d",i,items[i].Size());
+//	          }
+//	          else
+//	          {
+//	          	for(auto iter = items[i].MemberonBegin(); iter !=items[i].MemberonEnd(); iter++)
+//	          	 {
+//	          	          log("@xjx-----member name:%s",iter->name.GetString());
+////	           	          log("@xjx-----member value:%s",iter->value.GetString());
+//	          	 }
+//	          }
 	          itemVector.pushBack(itemData);
 	      }
 	  }

@@ -467,7 +467,6 @@ void ItemPanel::onEnterClicked(int clickedItemIndex, bool isLongPressed) //äº‹ä»
 	if(clickedAppItem != NULL  && clickedAppItem->getIsUninstalledFlag())
 	{
 		JniUtil::uninstallSilentJni(clickedItem->getItemData()->getPackage().c_str());
-//		this->removeItemByIndex(clickedItemIndex-1);
 	}
 	else
 	{

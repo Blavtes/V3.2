@@ -61,16 +61,9 @@ bool MainLayer::init()
 //    m_itemPanel->addDefaultAppItem();
     //this->addTestItems();
 
-//    m_itemPanel->addDefaultMainItemByPlistFile("plist/mainData.plist");
-//    m_itemPanel->addDefaultAppItem();
-    //this->addTestItems();
-
-	log("axxxx------------Default AppItem add Compelete! begin to add TopBarPanel!");
     m_focusHelper = FocusHelper::create();
-//    m_focusHelper->bindItemPanel(m_itemPanel);  //delay bind
+    m_focusHelper->bindItemPanel(m_itemPanel);  //delay bind
     m_focusHelper->retain();
-
-
 
     m_topBar = TopBarPanel::create();
 	m_topBar->setPosition(Vec2(10,visibleSize.height-120));
@@ -101,7 +94,6 @@ bool MainLayer::init()
 	handleMessage->registerLayer(this,"MainApp");
 	handleMessage->registerLayer(this,"UserApp");
 
-//	this->scheduleOnce(schedule_selector(MainLayer::insertItem),3);
 	return true;
 }
 
@@ -206,34 +198,42 @@ void MainLayer::addTestItems()
 
 void MainLayer::receiveMessageData(std::string messageTitle,std::string jsonString)
 {
-	//
-	log("MainLayer:prepared to process message!--------------------@xjx");
-	log("MainLayer:json is:%s-----------------------@xjx",jsonString.c_str());
 	m_focusHelper->clearFocusIndicator();
 
 	Vector<ItemData*> itemVector;
-	if(!ParseJson::getItemVectorFromJSON(jsonString, itemVector))
+	if(messageTitle == "MainApp" || messageTitle == "UserApp" || messageTitle == "NotificationApp")
 	{
-		log("MainLayer:parse json Failed~~~~~~~~~~~~~~~~~~~~~~~~~~@xjx");
-		return;
+		//
+		if(!ParseJson::getItemVectorFromJSON(jsonString, itemVector))
+		{
+			log("MainLayer:parse json Failed~~~~~~~~~~~~~~~~~~~~~~~~~~@xjx");
+			return;
+		}
+
+		if(messageTitle.compare("MainApp") == 0)
+		{
+			log("Update MainApp--------------------------------------------------@xjx");
+			m_itemPanel->updateMainApps(itemVector);
+		}
+		else if(messageTitle.compare("UserApp") == 0)
+		{
+			log("Update UserApp--------------------------------------------------@xjx");
+			m_itemPanel->updateUserApps(itemVector);
+		}
+		else if(messageTitle.compare("NotificationApp") == 0)
+		{
+			//......
+		}
 	}
-	if(messageTitle.compare("MainApp") == 0)
-	{
-		log("Update MainApp--------------------------------------------------@xjx");
-		m_itemPanel->updateMainApps(itemVector);
-	}
-	else if(messageTitle.compare("UserApp") == 0)
-	{
-		log("Update UserApp--------------------------------------------------@xjx");
-		m_itemPanel->updateUserApps(itemVector);
-	}
-//	m_itemPanel->updateAllItems(itemVector);
-	if(m_focusHelper ->getSelectedItemIndex() == 0)
+
+	if(m_focusHelper ->getSelectedItemIndex() == 0  && m_itemPanel->getAllItems().size() > 0)
 	{
 		m_focusHelper->initFocusIndicator();
-
 	}
-	m_focusHelper->showFocusIndicator();
+	if(m_focusHelper ->getSelectedItemIndex() > 0)
+	{
+		m_focusHelper->showFocusIndicator();
+	}
 
 }
 
