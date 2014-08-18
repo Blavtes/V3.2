@@ -11,7 +11,6 @@
 using namespace std;
 
  queue< map<string,string> >  HandleMessageQueue::m_messageQueue;
-
 map<string , ReceiveMessageProtocol* > HandleMessageQueue::m_layerMap;
  mutex messageMutex;
  HandleMessageQueue* HandleMessageQueue::intentHandleMessageQueue = NULL;

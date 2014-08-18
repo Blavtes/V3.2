@@ -14,7 +14,6 @@ class  ReceiveMessageProtocol
 {
 public:
     virtual ~ReceiveMessageProtocol() {}
-
     virtual void receiveMessageData(std::string messageTitle,std::string jsonString)=0;
 protected:
 

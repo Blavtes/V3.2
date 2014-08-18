@@ -93,25 +93,12 @@ bool MainLayer::init()
 
 	handleMessage->registerLayer(this,"MainApp");
 	handleMessage->registerLayer(this,"UserApp");
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 	return true;
 }
-
-
-void MainLayer::insertItem(float dt)
-{
-	//
-    auto item4=AppItem::create();
-    auto itemData4 = ItemData::create();
-    itemData4->setBackgroundImageFilePath(APPITEM_SET_BG_IMG);
-    itemData4->setForegroundImageFilePath(APPITEM_SET_FG_IMG);
-    itemData4->setHintText("app 1");
-    itemData4->setPackage("");
-    item4->setItemData(itemData4);
-    m_itemPanel->insertItemByIndex(item4,3);
-
-}
-
 
 void MainLayer::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 {
@@ -202,6 +189,7 @@ void MainLayer::receiveMessageData(std::string messageTitle,std::string jsonStri
 
 	Vector<ItemData*> itemVector;
 	if(messageTitle == "MainApp" || messageTitle == "UserApp" || messageTitle == "NotificationApp")
+<<<<<<< Updated upstream
 	{
 		//
 		if(!ParseJson::getItemVectorFromJSON(jsonString, itemVector))
@@ -234,12 +222,42 @@ void MainLayer::receiveMessageData(std::string messageTitle,std::string jsonStri
 	{
 		m_focusHelper->showFocusIndicator();
 	}
+=======
+	{
+		//
+		if(!ParseJson::getItemVectorFromJSON(jsonString, itemVector))
+		{
+			log("MainLayer:parse json Failed~~~~~~~~~~~~~~~~~~~~~~~~~~@xjx");
+			return;
+		}
+
+		if(messageTitle.compare("MainApp") == 0)
+		{
+			log("Update MainApp--------------------------------------------------@xjx");
+			m_itemPanel->updateMainApps(itemVector);
+		}
+		else if(messageTitle.compare("UserApp") == 0)
+		{
+			log("Update UserApp--------------------------------------------------@xjx");
+			m_itemPanel->updateUserApps(itemVector);
+		}
+		else if(messageTitle.compare("NotificationApp") == 0)
+		{
+			//......
+		}
+	}
+
+	if(m_focusHelper ->getSelectedItemIndex() == 0)
+	{
+		m_focusHelper->initFocusIndicator();
+	}
+	if(m_focusHelper->getSelectedItemIndex() > 0)
+	{
+		m_focusHelper->showFocusIndicator();
+	}
+>>>>>>> Stashed changes
 
 }
-
-
-
-
 
 
 

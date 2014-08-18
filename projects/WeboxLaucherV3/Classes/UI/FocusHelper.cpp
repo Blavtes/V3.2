@@ -367,7 +367,6 @@ void FocusHelper::onFocusChanged(ui::Widget* loseFocusWidget, ui::Widget* getFoc
     {
     	getFocusWidget->onFocusChanged(loseFocusWidget,getFocusWidget);
     }
-    	//dispatch FocusChange Event
 }
 
 

@@ -31,7 +31,6 @@ public:
     void onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event);
 	void CIBNAuthorization(ValueMap&  map);
 	void addTestItems();
-	void insertItem(float dt);
 
 	void receiveMessageData(std::string messageTitle, std::string jsonString);
 private:
@@ -41,7 +40,6 @@ private:
 	TopBarPanel* m_topBar;  //top
 	ui::Text* m_cibnText;  //bottom
 	LeftNotificationPanel* m_notificationPanel;//left according to the Key-Menu
-
 };
 
 #endif /* MAINLAYER_H_ */
