@@ -416,15 +416,6 @@ void FocusHelper::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
 	 }
 }
 
-void FocusHelper::refresh()
-{
-	//
-	if(nullptr == m_itemView)
-	{
-		return;
-	}
-	m_allItemsVector = m_itemView->getAllItems();
-}
 
 
 
