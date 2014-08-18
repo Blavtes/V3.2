@@ -28,7 +28,7 @@ public:
 	void show();
 	void addTestItems();
 
-	void receiveMessageData(std::string jsonString);
+	void receiveMessageData(std::string messageTitle, std::string jsonString);
 private:
 	bool m_statusFlag;
 	ui::ImageView* m_imageLine;

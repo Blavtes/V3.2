@@ -31,8 +31,9 @@ public:
     void onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event);
 	void CIBNAuthorization(ValueMap&  map);
 	void addTestItems();
+	void insertItem(float dt);
 
-	void receiveMessageData(std::string jsonString);
+	void receiveMessageData(std::string messageTitle, std::string jsonString);
 private:
 	ui::ImageView* m_backgroundImageView; //background
 	ItemPanel* m_itemPanel;

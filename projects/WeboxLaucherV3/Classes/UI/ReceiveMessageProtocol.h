@@ -14,11 +14,9 @@ class  ReceiveMessageProtocol
 {
 public:
     virtual ~ReceiveMessageProtocol() {}
-    virtual void receiveMessageData(std::string jsonString)=0;
-    virtual void setMessageTitle(std::string messageTitle){ m_messageTitle = messageTitle;}
-    virtual std::string getMessageTitle() { return m_messageTitle;}
+
+    virtual void receiveMessageData(std::string messageTitle,std::string jsonString)=0;
 protected:
-    std::string m_messageTitle;
 
 };
 

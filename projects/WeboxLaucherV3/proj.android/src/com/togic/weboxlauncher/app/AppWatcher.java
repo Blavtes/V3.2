@@ -30,5 +30,7 @@ public interface AppWatcher {
     public void onUpdateApps(int version, String id,
             ArrayList<AppInfo> removed, ArrayList<AppInfo> updated);
 
+    public void onUpdateAppsFromLocal( ArrayList<AppInfo> updated);
+
     public void onDetached();
 }

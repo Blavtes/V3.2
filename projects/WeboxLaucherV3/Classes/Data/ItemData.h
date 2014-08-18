@@ -29,6 +29,8 @@ public:
     CC_SYNTHESIZE(string,m_action,Action);
     CC_SYNTHESIZE(string,m_class,Class);
     CC_SYNTHESIZE(string,m_package,Package);
+
+    CC_SYNTHESIZE(string,m_categoryTag,CategoryTag);
     CC_SYNTHESIZE(bool,m_Clipping,Clipping);
     CC_SYNTHESIZE(bool,m_isShow,IsShow);
     CC_SYNTHESIZE(int,m_id,ID);
@@ -36,6 +38,8 @@ public:
     CC_SYNTHESIZE(int,m_gravity,Gravity);
     CC_SYNTHESIZE(int,m_width,Width);
     CC_SYNTHESIZE(int,m_height,Height);
+
+    CC_SYNTHESIZE(int,m_proFlag,ProFlag);
 
     void setParmas(vector<Map<string, Ref*>> parmas);
     vector<Map<string, Ref*>>* getParmas();

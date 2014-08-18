@@ -45,7 +45,7 @@ bool LeftNotificationPanel::init()
 	{
 		return false;
 	}
-	this->setMessageTitle("LeftNotificationPanel");
+
 
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 //	this->setBackGroundColor(Color3B::RED);
@@ -94,7 +94,8 @@ bool LeftNotificationPanel::init()
 
 
 	HandleMessageQueue* handleMessage = HandleMessageQueue::getInstace();
-	handleMessage->registerLayer(this);
+
+	handleMessage->registerLayer(this,"NotificationApp");
 	return true;
 }
 
@@ -167,7 +168,8 @@ bool LeftNotificationPanel::getLeftNotificationPanelStatus()
 	return m_statusFlag;
 }
 
-void LeftNotificationPanel::receiveMessageData(std::string jsonString)
+
+void LeftNotificationPanel::receiveMessageData(std::string messageTitle, std::string jsonString)
 {
 	//
 	m_titleText->setString(jsonString);

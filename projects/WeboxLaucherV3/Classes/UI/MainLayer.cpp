@@ -45,11 +45,9 @@ bool MainLayer::init()
 	if(!Layer::init()){
 		return false;
 	}
-	this->setMessageTitle("MainLayer");
+
 	Size visibleSize=Director::getInstance()->getVisibleSize();
-	log("The visible size is width:%f, height:%f.---------xjx", visibleSize.width, visibleSize.height);
     m_backgroundImageView =ui:: ImageView::create(MAIN_LAYER_BACKGROUND_IMG);
-//    m_backgroundImageView->loadTexture(MAIN_LAYER_BACKGROUND_IMG);
     m_backgroundImageView->setPosition(Vec2(visibleSize.width/2,visibleSize.height/2));
     this->addChild(m_backgroundImageView,0);
 	log("axxxx------------background Image add complete! begin to create ItemPanel!");
@@ -57,6 +55,11 @@ bool MainLayer::init()
 	m_itemPanel->setItemPanelSize(ITEM_PANEL_SIZE);
 	m_itemPanel->setPosition(Vec2::ZERO);
     this->addChild(m_itemPanel,1);
+
+
+//    m_itemPanel->addDefaultMainItemByPlistFile("plist/mainData.plist");
+//    m_itemPanel->addDefaultAppItem();
+    //this->addTestItems();
 
 //    m_itemPanel->addDefaultMainItemByPlistFile("plist/mainData.plist");
 //    m_itemPanel->addDefaultAppItem();
@@ -94,12 +97,28 @@ bool MainLayer::init()
 	CCDirector::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener,this);
 
 	HandleMessageQueue* handleMessage = HandleMessageQueue::getInstace();
-	handleMessage->registerLayer(this);
-	handleMessage->pushMessage("LeftNotification","New Message!");
-	log("axxxx------------mainlayer  end");
+
+	handleMessage->registerLayer(this,"MainApp");
+	handleMessage->registerLayer(this,"UserApp");
+
+//	this->scheduleOnce(schedule_selector(MainLayer::insertItem),3);
 	return true;
 }
 
+
+void MainLayer::insertItem(float dt)
+{
+	//
+    auto item4=AppItem::create();
+    auto itemData4 = ItemData::create();
+    itemData4->setBackgroundImageFilePath(APPITEM_SET_BG_IMG);
+    itemData4->setForegroundImageFilePath(APPITEM_SET_FG_IMG);
+    itemData4->setHintText("app 1");
+    itemData4->setPackage("");
+    item4->setItemData(itemData4);
+    m_itemPanel->insertItemByIndex(item4,3);
+
+}
 
 
 void MainLayer::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
@@ -183,100 +202,44 @@ void MainLayer::addTestItems()
     itemData5->setPackage("");
     item5->setItemData(itemData5);
     m_itemPanel->addItem(item5);
-
-//    auto item6=AppItem::create();
-//    auto itemData6 = ItemData::create();
-//    itemData6->setBackgroundImageFilePath(APPITEM_FILE_BG_IMG);
-//    itemData6->setForegroundImageFilePath(APPITEM_SET_FG_IMG);
-//    itemData6->setHintText("app 3");
-//    itemData6->setPackage("");
-//    item6->setItemData(itemData6);
-//    m_itemPanel->addItem(item6);
-//
-//    auto item7=AppItem::create();
-//    auto itemData7 = ItemData::create();
-//    itemData7->setBackgroundImageFilePath(APPITEM_FILE_BG_IMG);
-//    itemData7->setForegroundImageFilePath(APPITEM_FILE_FG_IMG);
-//    itemData7->setHintText("app 4");
-//    itemData7->setPackage("");
-//    item7->setItemData(itemData7);
-//    m_itemPanel->addItem(item7);
-//
-//    auto item8=AppItem::create();
-//    auto itemData8 = ItemData::create();
-//    itemData8->setBackgroundImageFilePath(APPITEM_FILE_BG_IMG);
-//    itemData8->setForegroundImageFilePath(APPITEM_FILE_FG_IMG);
-//    itemData8->setHintText("app 5");
-//    itemData8->setPackage("");
-//    item8->setItemData(itemData8);
-//    m_itemPanel->addItem(item8);
-
-//    auto parseJsonUtil = ParseJson::create("json/webox_launcher_metro.json");
-////    parseJsonUtil->writeItemDataToJsonFile("profile.json");
-//    Vector<ItemData*> itemVector = parseJsonUtil->getItemDataVectot();
-////    auto item = MainItem::create();
-////    auto itemData = itemVector.at(0);
-////    log("the background image file path:%s----------------xjx", itemData->getBackgroundImageFilePath().c_str());
-////    log("the fore ground image file path:%s-------------xjx", itemData->getForegroundImageFilePath().c_str());
-////    log("the hint text is %s-----xjx",itemData->getHintText().c_str());
-////    log("the bottom background image file path:%s-------xjx",itemData->getBottomBackGroundImageFilePath().c_str());
-////    item->setItemData(itemData);
-////    m_itemPanel->addItem(item);
-//    for(auto itemData : itemVector)
-//    {
-//    	auto item = MainItem::create();
-//    	item->setItemData(itemData);
-//    	m_itemPanel->addItem(item);
-//    	log("MainLayer---------------The Action is:%s",itemData->getAction().c_str());
-//    }
-
-
 }
 
-void MainLayer::receiveMessageData(std::string jsonString)
+void MainLayer::receiveMessageData(std::string messageTitle,std::string jsonString)
 {
 	//
-	log("MainLayer:received data from thread is:%s-----------------------@xjx",jsonString.c_str());
+	log("MainLayer:prepared to process message!--------------------@xjx");
+	log("MainLayer:json is:%s-----------------------@xjx",jsonString.c_str());
+	m_focusHelper->clearFocusIndicator();
+
 	Vector<ItemData*> itemVector;
 	if(!ParseJson::getItemVectorFromJSON(jsonString, itemVector))
 	{
 		log("MainLayer:parse json Failed~~~~~~~~~~~~~~~~~~~~~~~~~~@xjx");
 		return;
 	}
-	log("the items contained in the vector is: %zd!----------@xjx",itemVector.size());
-    for(auto itemData : itemVector)
-    {
-    	if(!itemData->getBackgroundImageFilePath().empty())
-    	{
-			auto item = MainItem::create();
-			item->setItemData(itemData);
-			m_itemPanel->addItem(item);
-    	}
-    	else
-    	{
-    		//.......
-    		auto item = AppItem::create();
-    		item->setItemData(itemData);
-    		item->setBackgroundImage(APPITEM_FILE_BG_IMG);
-    		if(!itemData->getPackage().empty())
-    		{
-    			log("The foreground image data package is:%s-----------------@xjx",itemData->getPackage().c_str());
-    			void* data  = JniUtil::getIconDataWithPackage(itemData->getPackage().c_str());
-    			 item->setForegroundSpriteByData((void*)data,itemData->getWidth(),itemData->getHeight());
-    		}
-    		m_itemPanel->addItem(item);
-//    		this->addTestItems();
-    	}
+	if(messageTitle.compare("MainApp") == 0)
+	{
+		log("Update MainApp--------------------------------------------------@xjx");
+		m_itemPanel->updateMainApps(itemVector);
+	}
+	else if(messageTitle.compare("UserApp") == 0)
+	{
+		log("Update UserApp--------------------------------------------------@xjx");
+		m_itemPanel->updateUserApps(itemVector);
+	}
+//	m_itemPanel->updateAllItems(itemVector);
+	if(m_focusHelper ->getSelectedItemIndex() == 0)
+	{
+		m_focusHelper->initFocusIndicator();
 
-    	if(m_itemPanel->getChildrenCount() == 1)
-    	{
-    		m_focusHelper->bindItemPanel(m_itemPanel);
-    	}
-    }
-    m_focusHelper->refresh();
-
+	}
+	m_focusHelper->showFocusIndicator();
 
 }
+
+
+
+
 
 
 

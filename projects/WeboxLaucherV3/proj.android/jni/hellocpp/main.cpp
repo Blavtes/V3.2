@@ -63,13 +63,12 @@ jboolean Java_com_togic_weboxlauncher_MCocos2dxGLSurfaceView_nativeKeyEvent(JNIE
 	return JNI_TRUE;
 }
 jboolean Java_com_togic_weboxlauncher_WeBoxLauncher_nativeJsonString(
-		JNIEnv * env, jobject thiz, jstring str) {
-	log("@allapp xxxxxxxxxxxxxxxxxxxxxxxxxjx msgCall");
+
+		JNIEnv * env, jobject thiz, jstring str, jstring dest) {
 	const char *content = env->GetStringUTFChars(str,NULL);
-//	       char ss[100];
-//	       static int i =0;
-//	       sprintf(ss,"test msg %d",i++);
-	       HandleMessageQueue::getInstace()->pushMessage("MainLayer", content);
+	const char *destItem = env->GetStringUTFChars(dest,NULL);
+	log("@msg ==================== jni  %s  : %s=======@xjx",destItem, content);
+	HandleMessageQueue::getInstace()->pushMessage(destItem,content);
 	return JNI_TRUE;
 }
 

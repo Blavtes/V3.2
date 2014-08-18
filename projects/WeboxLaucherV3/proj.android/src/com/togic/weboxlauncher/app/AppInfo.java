@@ -50,6 +50,7 @@ public class AppInfo {
     public byte[] icon = null;
     public int iconWidth = -1;
     public int iconHeight = -1;
+    public int proFlag = 1;
     public ComponentName cpnName = null;
 
     public String getClassName() {

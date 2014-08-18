@@ -11,13 +11,14 @@
 using namespace std;
 
  queue< map<string,string> >  HandleMessageQueue::m_messageQueue;
- vector<ReceiveMessageProtocol*> HandleMessageQueue:: m_layerVector;
+
+map<string , ReceiveMessageProtocol* > HandleMessageQueue::m_layerMap;
  mutex messageMutex;
  HandleMessageQueue* HandleMessageQueue::intentHandleMessageQueue = NULL;
  bool HandleMessageQueue::isBackground = false;
 HandleMessageQueue::HandleMessageQueue()
 {
-//	init();
+
 }
 
 HandleMessageQueue::~HandleMessageQueue()
@@ -53,7 +54,9 @@ bool HandleMessageQueue::init()
 	return true;
 }
 
-void HandleMessageQueue::registerLayer(ReceiveMessageProtocol* layer)
+
+void HandleMessageQueue::registerLayer(ReceiveMessageProtocol* layer, string messageType)
+
 {
 	//......
 	if(layer == nullptr)
@@ -61,40 +64,42 @@ void HandleMessageQueue::registerLayer(ReceiveMessageProtocol* layer)
 		log("The registered layer is null!");
 		return;
 	}
-	m_layerVector.push_back(layer);
+
+	m_layerMap.insert(pair<string,ReceiveMessageProtocol*>(messageType,layer));
+
 }
 
 
 void HandleMessageQueue::handleMessage(float dt)
 {
-	//
-	int messageCount = m_messageQueue.size();
-	while(!m_messageQueue.empty() && messageCount > 0)
-	{
-		bool flag = true;
-		map<string, string> message = m_messageQueue.front();
-		string messageTitle = (*message.begin()).first;
-		string messageContent = (*message.begin()).second;
-		log("The message will be processed by Layer:%s-----------------xjx", messageTitle.c_str());
-		ReceiveMessageProtocol* testLayer =(ReceiveMessageProtocol*) m_layerVector.front();
-		for(auto layer : m_layerVector)
-		{
-			if( layer != nullptr && messageTitle.compare(layer->getMessageTitle()) == 0 )
-			{
-				//
-				ReceiveMessageProtocol* hello =( ReceiveMessageProtocol*)layer;
-				hello->receiveMessageData(messageContent );
-				m_messageQueue.pop();
-				flag = false;
-			}
-		}
-		if(flag)
-		{
-			m_messageQueue.pop();
-			m_messageQueue.push(message);
-		}
-		messageCount -= 1;
-	}
+
+//	int messageCount = m_messageQueue.size();
+//	while(!m_messageQueue.empty() && messageCount > 0)
+//	{
+//		bool flag = true;
+//		map<string, string> message = m_messageQueue.front();
+//		string messageTitle = (*message.begin()).first;
+//		string messageContent = (*message.begin()).second;
+//		log("The message will be processed by Layer:%s-----------------xjx", messageTitle.c_str());
+////		ReceiveMessageProtocol* testLayer =(ReceiveMessageProtocol*) m_layerVector.front();
+//		for(auto member : m_layerMap)
+//		{
+//			if( layer != nullptr && messageTitle.compare(member.first) == 0 )
+//			{
+//				//
+//				ReceiveMessageProtocol* hello =( ReceiveMessageProtocol*)layer;
+//				hello->receiveMessageData(messageTitle,messageContent );
+//				m_messageQueue.pop();
+//				flag = false;
+//			}
+//		}
+//		if(flag)
+//		{
+//			m_messageQueue.pop();
+//			m_messageQueue.push(message);
+//		}
+//		messageCount -= 1;
+//	}
 }
 
 void HandleMessageQueue::pushMessage(string messageTitle, string messageContent)
@@ -109,8 +114,7 @@ void HandleMessageQueue::pushMessage(string messageTitle, string messageContent)
 
 void HandleMessageQueue::startThread(void* arg)
 {
-	//......
-//	HandleMessageQueue* handleMessageQueue =(HandleMessageQueue*)arg;
+
 	while(true)
 	{
 			sleep(1);
@@ -121,21 +125,24 @@ void HandleMessageQueue::startThread(void* arg)
 			int messageCount = m_messageQueue.size();
 			while(!m_messageQueue.empty() && messageCount > 0)
 			{
-//					sleep(5);
+
 					messageMutex.lock();
 					bool flag = true;
 					map<string, string> message = m_messageQueue.front();
 					string messageTitle = (*message.begin()).first;
 					string messageContent = (*message.begin()).second;
-					log("The message is %s,  will be processed by Layer:%s-----------------xjx", messageContent.c_str(), messageTitle.c_str());
-					for(auto layer : m_layerVector)
+
+					log("@xjx ==================== start thread - %d-  %s ", messageCount ,messageTitle.c_str());
+
+					for(auto layer : m_layerMap)
 					{
-							if(messageTitle.compare(layer->getMessageTitle()) == 0 )
+							if(messageTitle.compare(layer.first) == 0 )
 							{
 								//
-								Director::getInstance()->getScheduler()->performFunctionInCocosThread( [arg,layer,messageContent]
+								Director::getInstance()->getScheduler()->performFunctionInCocosThread( [arg,layer,messageTitle,messageContent]
 								{
-										layer->receiveMessageData(messageContent );
+										(layer.second)->receiveMessageData(messageTitle,messageContent );
+
 								 } );
 								m_messageQueue.pop();
 								flag = false;
@@ -152,18 +159,6 @@ void HandleMessageQueue::startThread(void* arg)
 	}
 }
 
-void HandleMessageQueue::startThread2(void* arg)
-{
-	//
-	static int i = 0;
-	while(true)
-	{
-		//
-		HandleMessageQueue::pushMessage("MainLayer","new message");
-		log("-------------------%d-----------------xjx",i++);
-		sleep(3);
-	}
-}
 
  void HandleMessageQueue::setIsBackground(bool isback)
  {

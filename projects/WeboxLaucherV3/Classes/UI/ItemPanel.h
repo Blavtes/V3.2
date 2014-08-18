@@ -11,6 +11,7 @@
 #include  "PrefixConst.h"
 #include "cocos2d.h"
 #include "BaseItem.h"
+#include "Data/ItemData.h"
 USING_NS_CC;
 
 class ItemPanel: public cocos2d::ui::ScrollView {
@@ -25,7 +26,11 @@ public:
 	void addItem(BaseItem* newItem);
 	void removeItemByObject(BaseItem* deletedItem);
 	void removeItemByIndex(int deletedItemIndex);
-	void updateAllItems();
+	void insertItemByIndex(BaseItem* newItem, int index);
+	void updateAllItems(Vector<ItemData*> itemVector);
+	void updateMainApps(Vector<ItemData*> itemVector);
+	void updateUserApps(Vector<ItemData*> itemVector);
+	int findItemIndexByItemData(ItemData* item);
 	Vector<BaseItem*>  getAllItems();
 
 	void addDefaultMainItemByPlistFile(std::string filePath);
@@ -34,7 +39,6 @@ public:
 	void autoScrollPanel(int offsetX, ScrollDirection direction);
 	void onEnterClicked(int clickedItemIndex, bool isLongPressed);
 
-
 private:
 	Vector<BaseItem*> * m_itemVector;
 	int m_curColumnWidth;
@@ -42,6 +46,8 @@ private:
 	int m_topMargin;
 	int m_leftMargin;
 	int m_middleMargin;
+
+	int m_mainItemCount;
 };
 
 #endif /* ITEMPANEL_H_ */

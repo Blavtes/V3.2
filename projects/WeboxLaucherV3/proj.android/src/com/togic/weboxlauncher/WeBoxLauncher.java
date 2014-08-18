@@ -26,6 +26,7 @@ import java.util.HashMap;
 import org.cocos2dx.lib.Cocos2dxActivity;
 import org.cocos2dx.lib.Cocos2dxGLSurfaceView;
 
+import android.R.integer;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -149,9 +150,10 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 					Gson gson = new Gson();
 					String str = gson.toJson(mjInfo);
 					Log.v(TAGM, "\r\n");
-					Log.v(TAGM, "-----IMetroCallback str : " + str);
+
+					Log.v(TAGM, "-----@allappIMetroCallback receive Main APP str : " + str + "  version " +   page.version);
 					Log.v(TAGM, "\r\n");
-					nativeJsonString(str);
+					nativeJsonString(str,"MainApp");
 					// nativeImageDataUpdataNotification(Infos,
 					// page.background);
 				}
@@ -367,6 +369,11 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 			Drawable icon = sInstance.getPackageManager().getApplicationIcon(
 					pack);
 
+			if (icon==null)
+			{
+				return null;
+			}
+
 			if (sIconWidth < 1 || sIconHeight < 1) {
 				sIconWidth = sIconHeight = (int) sInstance.getResources()
 						.getDimension(R.dimen.IconSize);
@@ -506,19 +513,20 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 		runOnGLThread(new Runnable() {
 			@Override
 			public void run() {
-				final AppInfo[] appInfos = new AppInfo[apps.size()];
-				apps.toArray(appInfos);
-				BaseInfo[] infos = new BaseInfo[apps.size()];
-				for (int i = 0; i < apps.size(); i++) {
-					infos[i] = new BaseInfo(appInfos[i]);
-				}
-				MJsonInfo mif = new MJsonInfo(infos);
-				Gson gson = new Gson();
-				String str = gson.toJson(mif);
-				Log.v("\r\n@allapp --  json : ", str);
-				nativeJsonString(str);
+
+//				final AppInfo[] appInfos = new AppInfo[apps.size()];
+//				apps.toArray(appInfos);
+//				BaseInfo[] infos = new BaseInfo[apps.size()];
+//				for (int i = 0; i < apps.size(); i++) {
+//					infos[i] = new BaseInfo(appInfos[i]);
+//				}
+//				MJsonInfo mif = new MJsonInfo(infos);
+//				Gson gson = new Gson();
+//				String str = gson.toJson(mif);
+//				Log.v("\r\n@allapp --  json : ", str);
+//				nativeJsonString(str,"UserApp");
 				// @xjx
-				// nativeUpdateAllApps(version, appInfos);
+				 //nativeUpdateAllApps(version, appInfos);
 			}
 		});
 	}
@@ -612,28 +620,6 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 	private static String getJsonInfosFromLocal() {
 		return MetroParser.getInfos(sInstance);
 	}
-	
-	private static void mStartActivity(String action, String pckname, String classname) {
-		Log.v("@allapp ---", "start activity " +  action);
-
-		Intent intent = new Intent();
-		
-		if(null != action)
-		{
-			intent.setAction(action);
-		}
-		if(null != pckname)
-		{
-			intent.setPackage(pckname);
-		}
-		if(null !=  classname)
-		{
-//			intent.setClassName(sInstance, classname);
-			intent.setClassName(pckname, classname);
-		}
-		sInstance.startActivity(intent);
-		return;
-	}
 
 	protected void registerCallback() {
 		if (mService == null) {
@@ -708,7 +694,30 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 	// private native static void nativeUpdateTime(int time);
 	// private native static void nativeLowPower(int low);
 
-	private native static boolean nativeJsonString(String str);
+	private native static boolean nativeJsonString(String str, String dest);
+
+	//------------=================================================================start the App Activity by info
+	private static void mStartActivity(String action, String pckname, String classname) {
+		Log.v("@allapp ---", "start activity " +  action);
+
+		Intent intent = new Intent();
+		
+		if(null != action)
+		{
+			intent.setAction(action);
+		}
+		if(null != pckname)
+		{
+			intent.setPackage(pckname);
+		}
+		if(null !=  classname)
+		{
+//			intent.setClassName(sInstance, classname);
+			intent.setClassName(pckname, classname);
+		}
+		sInstance.startActivity(intent);
+		return;
+	}
 
 	public class BaseInfo {
 		BaseInfo() {
@@ -721,8 +730,11 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 			packageName = aif.getPackageName();
 			label = aif.label;
 			className = aif.getClassName();
+
+			proflag = aif.proFlag;
 		}
 
+		public int proflag;
 		public int width;
 		public int height;
 		public String actionName;
@@ -747,12 +759,18 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 			backgroundImageFilePath = id.background;
 			foregroundImageFilePath = id.icon;
 			bottomBackGroundImageFilePath = id.bottomBg;
+
+			_id=id.id;
+			category_tag = id.category_tag;
 		}
 		 public int isShow;
 		 public int visible;
 		public String backgroundImageFilePath;
 		public String foregroundImageFilePath;
 		public String bottomBackGroundImageFilePath;
+
+		public int _id;
+		public String category_tag;
 	}
 
 	public class MJsonInfo {
@@ -761,6 +779,25 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 		}
 
 		public BaseInfo[] items;
+	}
+
+	@Override
+	//-++++++++++++++================================================send message to update User Apps
+	public void onUpdateAppsFromLocal(ArrayList<AppInfo> updated) {
+		// TODO Auto-generated method stub
+		final AppInfo[] updatedApps = new AppInfo[updated.size()];
+		updated.toArray(updatedApps);
+		
+		BaseInfo[] infos = new BaseInfo[updated.size()];
+		
+		for (int i = 0; i < updated.size(); i++) {
+			infos[i] = new BaseInfo(updatedApps[i]);
+		}
+		MJsonInfo mif = new MJsonInfo(infos);
+		Gson gson = new Gson();
+		String str = gson.toJson(mif);
+		Log.v("\r\n@allapp -----@xjx----------------------receive user APP  json : \n", str);
+		nativeJsonString(str,"UserApp");
 	}
 
 }

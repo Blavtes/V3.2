@@ -39,6 +39,7 @@ public class CombData extends ItemData {
     public String icon;
     public String title;
     public int isshow;
+    public String category_tag;
     // public String label;
     // public String hint;
 
@@ -56,6 +57,7 @@ public class CombData extends ItemData {
         icon = in.readString();
         title = in.readString();
         isshow = in.readInt();
+        category_tag = in.readString();
         // label = in.readString();
         // hint = in.readString();
     }
@@ -72,6 +74,7 @@ public class CombData extends ItemData {
         dest.writeString(icon);
         dest.writeString(title);
         dest.writeInt(isshow);
+        dest.writeString(category_tag);
         // dest.writeString(label);
         // dest.writeString(hint);
     }
@@ -84,7 +87,7 @@ public class CombData extends ItemData {
                     && CommonUtil.isEqualsString(bottomBg, c.bottomBg)
                     && CommonUtil.isEqualsString(icon, c.icon)
                     && CommonUtil.isEqualsString(title, c.title)
-                    && isshow == c.isshow;
+                    && isshow == c.isshow && CommonUtil.isEqualsString(category_tag, c.category_tag);
             // && CommonUtil.isEqualsString(label, c.label)
             // && CommonUtil.isEqualsString(hint, c.hint);
         }
@@ -96,7 +99,7 @@ public class CombData extends ItemData {
         return "id=" + id + "  w=" + width + "  h=" + height + "  action="
                 + action + "\npkg/cls=" + packageName + "/" + className
                 + "  gravity=" + gravity + "  clip=" + clip + "\nbg="
-                + background + "  bottomBg=" + bottomBg + "  icon=" + icon + "  title=" + title + " isshow=" + isshow;
+                + background + "  bottomBg=" + bottomBg + "  icon=" + icon + "  title=" + title + " isshow=" + isshow + "category="+ category_tag;
     }
 
     public int describeContents() {

@@ -39,6 +39,7 @@ public abstract class ItemData extends Data {
     public String title;
     public int isshow;
     public int    visible;
+    public String category_tag;
 
     public LinkListener mLinkListener;
 
@@ -51,6 +52,7 @@ public abstract class ItemData extends Data {
         title = null;
         isshow = 0;
         visible = 0;
+        category_tag = null;
     }
 
     protected ItemData(Parcel in) {
@@ -62,6 +64,7 @@ public abstract class ItemData extends Data {
         title = in.readString();
         visible = in.readInt();
         isshow = in.readInt();
+        category_tag = in.readString();
     }
 
     public void writeToParcel(Parcel dest, int flags) {
@@ -73,6 +76,7 @@ public abstract class ItemData extends Data {
         dest.writeString(title);
         dest.writeInt(visible);
         dest.writeInt(isshow);
+        dest.writeString(category_tag);
     }
 
     @Override
@@ -83,7 +87,7 @@ public abstract class ItemData extends Data {
                     && CommonUtil.isEqualsString(packageName, i.packageName)
                     && CommonUtil.isEqualsString(className, i.className)
                     && CommonUtil.isEqualsString(title, i.title)
-                    && isshow == i.isshow;
+                    && isshow == i.isshow && CommonUtil.isEqualsString(category_tag, i.category_tag);
         }
         return false;
     }

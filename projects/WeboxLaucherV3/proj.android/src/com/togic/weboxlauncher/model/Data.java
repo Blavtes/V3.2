@@ -59,6 +59,7 @@ public abstract class Data implements Parcelable, Serializable, RemoteType {
     static final String ATTR_BOTTOMBG = "bottom_bg";
     static final String ATTR_ICON = "icon";
     static final String ATTR_ISSHOW = "isshow";
+    static final String ATTR_CATEGORY_TAG = "category_tag";
 
     static final int INVALID_DATA = -1;
 

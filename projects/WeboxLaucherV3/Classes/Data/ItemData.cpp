@@ -24,6 +24,7 @@ ItemData::ItemData()
 , m_id(-1)
 , m_height(0)
 , m_width(0)
+,m_categoryTag("")
 {
     m_parmas = new vector<Map<string, Ref*>>();
 }
@@ -92,6 +93,18 @@ ItemData* ItemData::create(const rapidjson::Value& jsonItem)
 			if(jsonItem.HasMember("className"))
 			{
 				itemData->setClass(jsonItem["className"].GetString());
+			}
+			if(jsonItem.HasMember("category_tag"))
+			{
+				itemData->setCategoryTag(jsonItem["category_tag"].GetString());
+			}
+			if(jsonItem.HasMember("_id"))
+			{
+				itemData->setID(jsonItem["_id"].GetInt());
+			}
+			if(jsonItem.HasMember("proflag"))
+			{
+				itemData->setProFlag(jsonItem["proflag"].GetInt());
 			}
 		}
 		itemData->autorelease();

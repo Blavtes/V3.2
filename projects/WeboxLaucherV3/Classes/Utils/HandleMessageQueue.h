@@ -19,18 +19,19 @@ public:
 	static HandleMessageQueue* getInstace();
 	virtual bool init();
 
-	static void registerLayer(ReceiveMessageProtocol* layer);
-	static void pushMessage(string messageTitle,string messageContent);
+
+	static void registerLayer(ReceiveMessageProtocol* layer,string messageType);
+	static void pushMessage(string messageType,string messageContent);
 	void handleMessage(float dt);
 
 	 static void startThread(void* arg);
-	 static void startThread2(void* arg);
 	 static void setIsBackground(bool);
 protected:
 	 static bool isBackground;
 	 static HandleMessageQueue* intentHandleMessageQueue;
 	static queue< map<string,string> >  m_messageQueue;
-	static vector< ReceiveMessageProtocol*>  m_layerVector;
+
+	static map<string , ReceiveMessageProtocol* >  m_layerMap;
 };
 
 #endif /* HANDLEMESSAGEQUEUE_H_ */

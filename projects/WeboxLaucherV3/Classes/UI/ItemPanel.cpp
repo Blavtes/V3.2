@@ -8,6 +8,7 @@
 #include "ItemPanel.h"
 #include "AppItem.h"
 #include "MainItem.h"
+#include "NotificationItem.h"
 USING_NS_CC;
 
 ItemPanel::ItemPanel()
@@ -18,6 +19,7 @@ ItemPanel::ItemPanel()
 	m_topMargin = MARGIN_TOP;
 	m_leftMargin = MARGIN_LEFT;
 	m_middleMargin = MARGIN_MIDDLE;
+	m_mainItemCount = 0;
 }
 
 ItemPanel::~ItemPanel()
@@ -166,9 +168,196 @@ void ItemPanel::removeItemByIndex(int deletedItemIndex)
 
 }
 
-void ItemPanel::updateAllItems()
+void ItemPanel::insertItemByIndex(BaseItem* newItem, int insertIndex)
+{
+	//....
+	if(insertIndex < 0)
+	{
+		log("Failed to insert the Item, the index is inValid!");
+		return;
+	}
+	else if(insertIndex >= m_itemVector->size())
+	{
+		this->addItem(newItem);
+	}
+	else
+	{
+		Vector<BaseItem*>  tempVector = *m_itemVector;
+		int index = insertIndex;
+		while(index < m_itemVector->size())   //------deleted the Item Before the inserted index
+		{
+			BaseItem* item=m_itemVector->at(index);
+			this->getInnerContainer()->removeChild(item,true);
+			m_itemVector->erase(index);
+		}
+
+		this->addItem(newItem); //add the new Item
+
+		for(int i= insertIndex; i< tempVector.size(); i++)  //----add the deleted index
+		{
+			BaseItem* item=tempVector.at(i);
+			this->addItem(item);
+		}
+	}
+}
+
+int ItemPanel::findItemIndexByItemData(ItemData* itemData)
+{
+	//
+	int destIndex = 0;
+	for(int i = 0; i < m_itemVector->size(); i++)
+	{
+		BaseItem* baseItem = m_itemVector->at(i);
+		if(baseItem->getItemData()->getPackage().compare(itemData->getPackage()) == 0)
+		{
+			return i;
+		}
+	}
+	return -1;
+}
+
+void ItemPanel::updateAllItems(Vector<ItemData*> itemVector)
 {
 	//.......
+//	log("update items%zd:===========================@xjx", itemVector.size());
+//		for(int i = 0 ; i < itemVector.size(); i++ )
+//		{
+//			//
+//			bool flag = true;
+//			ItemData* itemData = itemVector.at(i);
+//			for(auto existItem : *m_itemVector)
+//			{
+//				if(itemData->getID() == existItem->getItemData()->getID() && false)
+//				{
+//					log("update items===========================@xjx");
+//					existItem->setItemData(itemData);
+//					flag = false;
+//				 }
+//			}
+//			if(flag)
+//			{
+//				if(itemData->getCategoryTag().compare("MainItem") == 0 || itemData->getHeight() > 200 )
+//				{
+//					log("add main items:%d===========================@xjx",i);
+//					auto item = MainItem::create();
+//					item->setItemData(itemData);
+//					this->insertItemByIndex(item,i);
+//				}
+//				else if(itemData->getCategoryTag().compare("UserItem") == 0 || itemData->getHeight() > 50)
+//				{
+//					//.......
+//					if(itemData->getProFlag() == -1)
+//					{
+//						//
+////						this->removeItemByIndex(clickedItemIndex-1);
+//					}
+//					else if(itemData->getProFlag() == 1)
+//					{
+//						log("add app items:%d===========================@xjx",i);
+//						auto item = AppItem::create();
+//						item->setItemData(itemData);
+//						item->setBackgroundImage(APPITEM_FILE_BG_IMG);
+//						if(!itemData->getPackage().empty())
+//						{
+//							log("The foreground image data package is:%s-----------------@xjx",itemData->getPackage().c_str());
+//							void* data  = JniUtil::getIconDataWithPackage(itemData->getPackage().c_str());
+//							item->setForegroundSpriteByData((void*)data,itemData->getWidth(),itemData->getHeight());
+//						}
+//						this->addItem(item);
+//					}
+//				}
+//				else
+//				{
+//					auto item = NotificationItem::create();
+//					//..........
+//					this->addItem(item);
+//				}
+//			 }
+//		}
+}
+
+void ItemPanel::updateMainApps(Vector<ItemData*> itemVector)
+{
+	//
+	if(m_mainItemCount == 0)
+	{
+		for(int i = 0 ; i < itemVector.size(); i++ )
+		{
+			log("add main items:%d===========================@xjx",i);
+			ItemData* itemData = itemVector.at(i);
+			auto item = MainItem::create();
+			item->setItemData(itemData);
+			this->insertItemByIndex(item,i);
+			m_mainItemCount ++;
+		}
+	}
+	else
+	{
+		for(int i = 0 ; i < itemVector.size(); i++ )
+		{
+			log("update main items:%d===========================@xjx",i);
+			ItemData* itemData = itemVector.at(i);
+			if(itemData->getID() == m_itemVector->at(i)->getItemData()->getID() && i <= m_mainItemCount )
+			{
+				m_itemVector->at(i)->setItemData(itemData);
+			}
+			else if( i <= m_mainItemCount)
+			{
+				//
+				this->removeItemByIndex(i);
+				auto item = MainItem::create();
+				item->setItemData(itemData);
+				this->insertItemByIndex(item,i);
+			}
+			else if( i > m_mainItemCount)
+			{
+				auto item = MainItem::create();
+				item->setItemData(itemData);
+				this->insertItemByIndex(item,i);
+				m_mainItemCount ++;
+			}
+		}
+	}
+	if(itemVector.size() < m_mainItemCount)
+	{
+		for(int i = itemVector.size(); i< m_mainItemCount; i++)
+		{
+			this->removeItemByIndex(i);
+		}
+	}
+}
+void ItemPanel::updateUserApps(Vector<ItemData*> itemVector)
+{
+	//
+	for(int i=0; i<itemVector.size();i++)
+	{
+		ItemData* itemData = itemVector.at(i);
+		if(itemData->getProFlag() == -1)
+		{
+			log("delete app items:%d===========================@xjx",i);
+			int index = this->findItemIndexByItemData(itemData);
+			if(index == -1)
+			{
+				//
+				return;
+			}
+			this->removeItemByIndex(index);
+		}
+		else if(itemData->getProFlag() == 1)
+		{
+			log("add app items:%d===========================@xjx",i);
+			auto item = AppItem::create();
+			item->setItemData(itemData);
+			item->setBackgroundImage(APPITEM_FILE_BG_IMG);
+			if(!itemData->getPackage().empty())
+			{
+				log("The foreground image data package is:%s-----------------@xjx",itemData->getPackage().c_str());
+				void* data  = JniUtil::getIconDataWithPackage(itemData->getPackage().c_str());
+				item->setForegroundSpriteByData((void*)data,itemData->getWidth(),itemData->getHeight());
+			}
+			this->addItem(item);
+		}
+	}
 }
 
 Vector<BaseItem*>  ItemPanel::getAllItems()
@@ -277,7 +466,8 @@ void ItemPanel::onEnterClicked(int clickedItemIndex, bool isLongPressed) //äº‹ä»
 	AppItem* clickedAppItem = dynamic_cast<AppItem*>(clickedItem);
 	if(clickedAppItem != NULL  && clickedAppItem->getIsUninstalledFlag())
 	{
-		this->removeItemByIndex(clickedItemIndex-1);
+		JniUtil::uninstallSilentJni(clickedItem->getItemData()->getPackage().c_str());
+//		this->removeItemByIndex(clickedItemIndex-1);
 	}
 	else
 	{

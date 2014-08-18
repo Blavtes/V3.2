@@ -60,6 +60,7 @@ public class CombDataParser extends AbstractJsonParser<CombData> {
                 Data.ATTR_BOTTOMBG));
         data.icon = CommonUtil.fullUrl(Data.getString(obj, Data.ATTR_ICON));
         data.isshow = Data.getInt(obj, Data.ATTR_ISSHOW);
+        data.category_tag = Data.getString(obj, Data.ATTR_CATEGORY_TAG);
         Log.v("laucnher sdf ", "data  " + data.isshow);
         return data;
     }

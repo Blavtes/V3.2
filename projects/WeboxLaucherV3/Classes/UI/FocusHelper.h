@@ -21,6 +21,7 @@ public:
 	static FocusHelper* create();
 	virtual bool init();
 	void bindItemPanel(ItemPanel* itemPanel,std::string focusIndicatorImageFilePath = DEFAULT_FOCUS_INDICATOR_IMG);
+	void initFocusIndicator(std::string focusIndicatorImageFilePath = DEFAULT_FOCUS_INDICATOR_IMG);
 
 	void refresh();
 
@@ -35,10 +36,10 @@ public:
     void onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event);
     void onEnterClicked(bool isLongPressed);
     void onFocusChanged(ui::Widget* loseFocusWidget, ui::Widget* getFocusWidget);
+    int getSelectedItemIndex();
 
 protected:
 	ItemPanel* m_itemView;
-	Vector<BaseItem*> m_allItemsVector;
 	Scale9Sprite* m_focusIndicator; //-----the follow 4 var used for focusIndicator
 	int m_selectedItemIndex;
 	int m_focusPaddingX;

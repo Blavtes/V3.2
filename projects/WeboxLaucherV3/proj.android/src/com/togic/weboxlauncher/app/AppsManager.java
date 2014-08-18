@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+
+import android.R.integer;
+import android.R.string;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -188,7 +191,9 @@ public class AppsManager {
                 final ArrayList<AppInfo> temp = new ArrayList<AppInfo>(16);
                 getAppsByFilter(mAppFilters.get(id), new ArrayList<AppInfo>(
                         mCachedAppInfos.values()), temp);
-                watcher.onUpdateAllApps(mVersion, id, temp);
+                //@xjx
+                //watcher.onUpdateAllApps(mVersion, id, temp);
+                watcher.onUpdateAppsFromLocal(temp);
             }
         } else {
             if (id == null || watcher == null) {
@@ -324,7 +329,7 @@ public class AppsManager {
 
         if (apps.size() > 0) {
             mVersion++;
-            notifyUpdateApps(apps, apps);
+            notifyUpdateApps(1,apps, apps);
         }
     }
 
@@ -349,6 +354,7 @@ public class AppsManager {
             }
             for (String pkg : pkgs) {
                 if (pkg.equals(app.cpnName.getPackageName())) {
+                	app.proFlag =-1;
                     r.add(app);
                     break;
                 }
@@ -364,19 +370,21 @@ public class AppsManager {
         final ArrayList<AppInfo> u = new ArrayList<AppInfo>(pkgs.length);
         List<ResolveInfo> infos;
         ComponentInfo cpnInfo;
-        for (String pkg : pkgs) {
+        for (AppInfo aif : r) {
+        	String pkg = aif.cpnName.getPackageName();
             infos = pm.queryIntentActivities(getMainIntent(pkg), 0);
             for (ResolveInfo info : infos) {
                 cpnInfo = getValidComponent(info);
                 if (pkg.equals(cpnInfo.packageName)) {
                     LogUtil.i(TAG, "package : " + pkg + " still existing !");
+                    aif.proFlag = 0;
                     u.add(makeAndCacheAppInfo(context, pm, info, cached));
                 }
             }
         }
 
         mVersion++;
-        notifyUpdateApps(r, u);
+        notifyUpdateApps(-1,r, u);
     }
 
     private void notifyUpdateAllApps(ArrayList<AppInfo> allApps) {
@@ -394,12 +402,14 @@ public class AppsManager {
             temp = new ArrayList<AppInfo>(16);
             getAppsByFilter(filters.get(id), allApps, temp);
             for (AppWatcher w : ws) {
-                w.onUpdateAllApps(mVersion, id, temp);
+            	//@xjx
+                //w.onUpdateAllApps(mVersion, id, temp);
+            	w.onUpdateAppsFromLocal(temp);
             }
         }
     }
 
-    private void notifyUpdateApps(ArrayList<AppInfo> removed,
+    private void notifyUpdateApps(int flag, ArrayList<AppInfo> removed,
             ArrayList<AppInfo> updated) {
         final HashMap<String, Filter<AppInfo>> filters = mAppFilters;
         final HashMap<String, ArrayList<AppWatcher>> watchers = mAppWatchers;
@@ -421,6 +431,13 @@ public class AppsManager {
             if (!removeTemp.isEmpty() || !updateTemp.isEmpty()) {
                 for (AppWatcher w : ws) {
                     w.onUpdateApps(mVersion, id, removeTemp, updateTemp);
+                    if(1 == flag)
+                    {
+                    	w.onUpdateAppsFromLocal(updateTemp);
+                    }
+                    else {
+						w.onUpdateAppsFromLocal(removeTemp);
+					}
                 }
             }
         }
