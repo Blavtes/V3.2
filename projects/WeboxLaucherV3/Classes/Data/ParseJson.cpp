@@ -62,19 +62,12 @@ ParseJson::~ParseJson()
 //	          }
 //	          else
 //	          {
-<<<<<<< Updated upstream
-//	          	for(auto iter = items[i].MemberonBegin(); iter !=items[i].MemberonEnd(); iter++)
-//	          	 {
-//	          	          log("@xjx-----member name:%s",iter->name.GetString());
-////	           	          log("@xjx-----member value:%s",iter->value.GetString());
-//	          	 }
-=======
+
 //	        	  for(auto iter = items[i].MemberonBegin(); iter !=items[i].MemberonEnd(); iter++)
 //	        	  {
 //	        		  log("@xjx-----member name:%s",iter->name.GetString());
 //	        		  //log("@xjx-----member value:%s",iter->value.GetString());
 //	        	  }
->>>>>>> Stashed changes
 //	          }
 	          itemVector.pushBack(itemData);
 	      }

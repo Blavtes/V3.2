@@ -93,10 +93,7 @@ bool MainLayer::init()
 
 	handleMessage->registerLayer(this,"MainApp");
 	handleMessage->registerLayer(this,"UserApp");
-<<<<<<< Updated upstream
 
-=======
->>>>>>> Stashed changes
 	return true;
 }
 
@@ -189,40 +186,7 @@ void MainLayer::receiveMessageData(std::string messageTitle,std::string jsonStri
 
 	Vector<ItemData*> itemVector;
 	if(messageTitle == "MainApp" || messageTitle == "UserApp" || messageTitle == "NotificationApp")
-<<<<<<< Updated upstream
-	{
-		//
-		if(!ParseJson::getItemVectorFromJSON(jsonString, itemVector))
-		{
-			log("MainLayer:parse json Failed~~~~~~~~~~~~~~~~~~~~~~~~~~@xjx");
-			return;
-		}
 
-		if(messageTitle.compare("MainApp") == 0)
-		{
-			log("Update MainApp--------------------------------------------------@xjx");
-			m_itemPanel->updateMainApps(itemVector);
-		}
-		else if(messageTitle.compare("UserApp") == 0)
-		{
-			log("Update UserApp--------------------------------------------------@xjx");
-			m_itemPanel->updateUserApps(itemVector);
-		}
-		else if(messageTitle.compare("NotificationApp") == 0)
-		{
-			//......
-		}
-	}
-
-	if(m_focusHelper ->getSelectedItemIndex() == 0  && m_itemPanel->getAllItems().size() > 0)
-	{
-		m_focusHelper->initFocusIndicator();
-	}
-	if(m_focusHelper ->getSelectedItemIndex() > 0)
-	{
-		m_focusHelper->showFocusIndicator();
-	}
-=======
 	{
 		//
 		if(!ParseJson::getItemVectorFromJSON(jsonString, itemVector))
@@ -255,7 +219,6 @@ void MainLayer::receiveMessageData(std::string messageTitle,std::string jsonStri
 	{
 		m_focusHelper->showFocusIndicator();
 	}
->>>>>>> Stashed changes
 
 }
 
