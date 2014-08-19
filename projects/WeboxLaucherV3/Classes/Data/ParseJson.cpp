@@ -20,6 +20,8 @@
 #include <vector>
 #include "tinyxml2/tinyxml2.h"
 
+typedef map<std::string,Value>::value_type valType;
+
 USING_NS_CC;
 using namespace std;
 
@@ -75,4 +77,42 @@ ParseJson::~ParseJson()
 	 return true;
 }
 
-
+ValueMap ParseJson::getIntFromJSON(std::string jsonString)
+ {
+	     ValueMap dataMap;
+	     int flag = 0xffffffff;
+	     std::string jsonContent =jsonString;
+		 rapidjson::Document doc;
+		 doc.Parse<0>(jsonContent.c_str());
+		 if (doc.HasParseError())
+		 {
+			 log("getParseError %s \n",doc.GetParseError());
+			 dataMap.insert(valType("arg0",Value(flag)));
+			 return  dataMap;
+		 }
+		 const rapidjson::Value& datas = doc["items"];
+		 if(datas.IsArray())
+		 {
+		      for (unsigned int i = 0;  i < datas.Size(); i++)
+		      {
+		    	  Value dataV;
+		    	 const rapidjson::Value & tempData = datas[i];
+		    	 if(tempData.IsInt())
+		    	 {
+		    		 dataV = datas[i].GetInt();
+		    	 }
+		    	 else if(tempData.IsString())
+		    	 {
+		    		 dataV = datas[i].GetString();
+		    	 }
+		    	 else if(tempData.IsBool())
+		    	 {
+		    		 dataV = datas[i].GetBool();
+		    	 }
+		    	char keyV[100];
+		    	sprintf(keyV,"arg%d",i);
+		    	dataMap.insert(valType(keyV,dataV));
+		      }
+		 }
+		return dataMap;
+ }

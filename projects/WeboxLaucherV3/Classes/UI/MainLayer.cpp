@@ -12,6 +12,10 @@
 #include "Data/ParseJson.h"
 #include "../Utils/HandleMessageQueue.h"
 #include "../Utils/JniUtil.h"
+#include "ToastTextView.h"
+
+#include "json/rapidjson.h"
+#include "json/document.h"
 
 
 
@@ -21,7 +25,6 @@ MainLayer::MainLayer()
 	m_focusHelper = nullptr;
 	m_backgroundImageView = nullptr;
 	m_topBar = nullptr;
-	m_cibnText = nullptr;
 	m_notificationPanel = nullptr;
 }
 
@@ -56,10 +59,8 @@ bool MainLayer::init()
 	m_itemPanel->setPosition(Vec2::ZERO);
     this->addChild(m_itemPanel,1);
 
-
 //    m_itemPanel->addDefaultMainItemByPlistFile("plist/mainData.plist");
 //    m_itemPanel->addDefaultAppItem();
-    //this->addTestItems();
 
     m_focusHelper = FocusHelper::create();
     m_focusHelper->bindItemPanel(m_itemPanel);  //delay bind
@@ -69,20 +70,10 @@ bool MainLayer::init()
 	m_topBar->setPosition(Vec2(10,visibleSize.height-120));
     this->addChild(m_topBar,1);
 
-
-    m_cibnText = ui::Text::create();
-    m_cibnText->setPosition(Vec2(visibleSize.width/2,50));
-    m_cibnText->setString("cibn 验证");
-    m_cibnText->setVisible(true);
-    m_cibnText->setFontSize(28);
-    this->addChild(m_cibnText,1);
-	log("axxxx------------TopBarPanel added complete! begin to add LeftNotificationPanel!");
-
     m_notificationPanel = LeftNotificationPanel::create();
     Size notificationPanelSize = m_notificationPanel->getContentSize();
     m_notificationPanel->setPosition(Vec2(-notificationPanelSize.width,0));
     this->addChild(m_notificationPanel,20);
-	log("axxxx------------LeftNotificationPanel add Complete!");
 
 	auto listener = EventListenerKeyboard::create();
 	listener->onKeyPressed = CC_CALLBACK_2(MainLayer::onKeyPressed,this);
@@ -90,10 +81,12 @@ bool MainLayer::init()
 	CCDirector::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener,this);
 
 	HandleMessageQueue* handleMessage = HandleMessageQueue::getInstace();
-
 	handleMessage->registerLayer(this,"MainApp");
 	handleMessage->registerLayer(this,"UserApp");
+	handleMessage->registerLayer(this,"cibn");
+	handleMessage->registerLayer(this,"networkState");
 
+	this->scheduleUpdate();
 	return true;
 }
 
@@ -117,6 +110,12 @@ void MainLayer::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
 	{
 		m_focusHelper->onKeyReleased(keyCode,event);
 	}
+
+	if(m_notificationPanel != nullptr  && m_notificationPanel->getLeftNotificationPanelStatus())
+	{
+		m_notificationPanel->onKeyReleased(keyCode,event);
+	}
+
 	if(keyCode == EventKeyboard::KeyCode::KEY_MENU )
 	{
 		log("MainLayer----the key Menu is clicked!---------------------------xjx");
@@ -132,30 +131,36 @@ void MainLayer::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
 	}
 }
 
-void MainLayer::CIBNAuthorization(ValueMap& map)
+void MainLayer::update(float dt)
 {
-    int code =map.at(CIBN_CODE_KEY).asInt();
-    int result = map.at(CIBN_RESULT_KEY).asInt();
-    m_cibnText->setVisible(true);
-    if(code == 0)
-    {
-    	 m_cibnText->setString(CIBN_AUTH_BEGIN_TXT);
-    }
-    else
-    {
-    	if(result == 1)
-    	{
-    		m_cibnText->setString(CIBN_AUTH_END_SUCC_TXT);
-    		FadeTo *fade = FadeTo::create(3.0f,235);
-    		m_cibnText->runAction(fade);
-    	}
-    	else
-    	{
-    		m_cibnText->setString(CIBN_AUTH_END_FAILE_TXT);
-    		FadeTo *fade = FadeTo::create(3.0f,235);
-    		m_cibnText->runAction(fade);
-    	}
-    }
+	//
+	m_topBar->updateTimeState();
+	int messageCount = m_notificationPanel->getNotificationCount();
+	m_topBar->updateNotificationMessageCountState(messageCount);
+}
+
+void MainLayer::updateCIBNAuthorization(std::string jsonString)
+{
+	Size visibleSize=Director::getInstance()->getVisibleSize();
+	ValueMap resultData = ParseJson::getIntFromJSON(jsonString);
+	int code = resultData["arg0"].asInt();
+	int result = resultData["arg1"].asInt();
+	if(code == 0xffffffff)
+	{
+		return;
+	}
+	else if(code == 0)
+	{
+		ToastTextView::getInstance(this)->showMsg(CIBN_AUTH_BEGIN_TXT,3,this,Vec2(visibleSize.width/2,50));
+	}
+	else if(result == 1)
+	{
+		ToastTextView::getInstance(this)->showMsg(CIBN_AUTH_END_SUCC_TXT,3,this,Vec2(visibleSize.width/2,50));
+	}
+	else
+	{
+		ToastTextView::getInstance(this)->showMsg(CIBN_AUTH_END_FAILE_TXT,3,this,Vec2(visibleSize.width/2,50));
+	}
 
 }
 
@@ -186,7 +191,6 @@ void MainLayer::receiveMessageData(std::string messageTitle,std::string jsonStri
 
 	Vector<ItemData*> itemVector;
 	if(messageTitle == "MainApp" || messageTitle == "UserApp" || messageTitle == "NotificationApp")
-
 	{
 		//
 		if(!ParseJson::getItemVectorFromJSON(jsonString, itemVector))
@@ -210,8 +214,21 @@ void MainLayer::receiveMessageData(std::string messageTitle,std::string jsonStri
 			//......
 		}
 	}
+	else
+	{
+		if(messageTitle == "cibn")
+		{
+			log("Update Cibn--------------------------------------------------@xjx");
+			this->updateCIBNAuthorization(jsonString);
+		}
+		else if(messageTitle == "networkState")
+		{
+			log("Update networkState--------------------------------------------------@xjx");
+			m_topBar->updateWifiState(jsonString);
+		}
+	}
 
-	if(m_focusHelper ->getSelectedItemIndex() == 0)
+	if(m_focusHelper ->getSelectedItemIndex() == 0 && m_itemPanel->getAllItems().size() > 0)
 	{
 		m_focusHelper->initFocusIndicator();
 	}

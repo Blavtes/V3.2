@@ -62,8 +62,8 @@ jboolean Java_com_togic_weboxlauncher_MCocos2dxGLSurfaceView_nativeKeyEvent(JNIE
 	cocos2d::Director::getInstance()->getEventDispatcher()->dispatchEvent(&event);
 	return JNI_TRUE;
 }
-jboolean Java_com_togic_weboxlauncher_WeBoxLauncher_nativeJsonString(
 
+jboolean Java_com_togic_weboxlauncher_WeBoxLauncher_nativeJsonString(
 		JNIEnv * env, jobject thiz, jstring str, jstring dest) {
 	const char *content = env->GetStringUTFChars(str,NULL);
 	const char *destItem = env->GetStringUTFChars(dest,NULL);

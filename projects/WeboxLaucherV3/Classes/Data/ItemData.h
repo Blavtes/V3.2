@@ -40,6 +40,7 @@ public:
     CC_SYNTHESIZE(int,m_height,Height);
 
     CC_SYNTHESIZE(int,m_proFlag,ProFlag);
+    CC_SYNTHESIZE(int,m_code,Code);
 
     void setParmas(vector<Map<string, Ref*>> parmas);
     vector<Map<string, Ref*>>* getParmas();

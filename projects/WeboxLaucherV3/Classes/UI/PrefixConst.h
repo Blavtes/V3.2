@@ -48,6 +48,69 @@
 #define NETWORK_NET_IMG                         "image/wifi/network_eth.png"
 #define NETWORK_WIFI_IMG                        "image/wifi/network_wifi_%d.png"
 
+//-------------------------------------------------------------define for cibn----------------------------------------------
+#define CIBN_AUTH_BEGIN_TXT                       "正在向CIBN互联网电视认证..."
+#define CIBN_AUTH_END_SUCC_TXT                    "认证成功"
+#define CIBN_AUTH_END_FAILE_TXT                   "认证失败"
+#define CIBN_AUTH_END_FAILE_NO_VODIE_TXT          "认证失败,无法观看影视内容"
+
+//-------------------------------------------------------------define for Left Notification----------------------------------------------
+#define CODE_TV_INFO                              0
+#define CODE_VOD_INFO                             1
+#define CODE_HISTORY_INFO                         2
+#define CODE_ALBUM_INFO                           3
+#define CODE_SYSTEM_UPGRADE                       10
+#define CODE_CHASE_DRAMA                          11
+#define CODE_MOUNT_UNMOUNT                        12
+#define CODE_AIRPLAY_INFO                         13
+#define CODE_AIRPLAY_STATUS                       14
+#define CODE_LIVE_TV                              20
+#define CODE_LIVE_VIDEO                           21
+#define CODE_LIVE_ALBUM                           22
+#define CODE_LIVE_FAVOR                           23
+
+#define EVENT_LIVE_TV                             Name_item_tv
+#define EVENT_LIVE_VIDEO                          Name_item_video
+#define EVENT_LIVE_ALBUM                          Name_item_album
+#define EVENT_LIVE_FAVOR                          Name_item_history
+#define Name_item_tv                              "item_tv_name"
+#define Name_item_video                           "item_video_name"
+#define Name_item_album                           "item_album_name"
+#define Name_item_history                         "item_history_name"
+
+#define EVENT_TV_INFO                             "event_tv_info"
+#define EVENT_VOD_INFO                            "event_video_info"
+#define EVENT_HISTORY_INFO                        "event_history_info"
+#define EVENT_ALBUM_INFO                          "event_album_info"
+#define EVENT_SYSTEM_UPGRADE                      "event_system_upgrade"
+#define EVENT_CHASE_DRAMA                         "event_chase_drama"
+#define EVENT_MOUNT_UNMOUNT                       "event_mount_unmount"
+#define EVENT_UPDATE_IMAGE_NOTIFY                 "event_update_image"
+#define EVENT_UPDATE_BACKGROUND_NOTIFY            "event_update_background"
+#define EVENT_UPDATE_RELOAD                       "event_update_reload_app"
+#define EVENT_UPDATE_ALLAPPS                      "event_update_all_apps"
+#define EVENT_UPDATE_APPS                         "event_update_apps"
+#define EVENT_NETWORK_STATE                       "event_network_state_changed"
+#define EVENT_DATE_TIME                           "event_date_time_changed"
+#define EVENT_Time_Refresh                        "event_time_refresh"
+
+#define BANNER_Background_Image                    "image/notification/BG_up.png"
+#define Left_Notificaiton_Background_Image         "image/notification/BG_left.png"
+#define Left_UpdateIcon_Image                      "image/notification/ic_update.png"
+#define Left_USBIcon_Image                         "image/notification/ic_usb.png"
+#define Left_LikeIcon_Image                        "image/notification/ic_like.png"
+#define Left_NewNofi_image                         "image/notification/notification_normal.png"
+#define Left_Line_image                            "image/notification/notification_line.png"
+#define MarkNotification_Icon_Image                "image/notification/newnotification.png"
+#define MarkNotification_Mark_image                "image/notification/noti_mark_%d.png"
+
+#define Left_Item_power_Title                      "遥控器电力不足!"
+#define Left_Item_USB_Insert_Title                 "U 盘已插入"
+#define Left_Item_USB_Pullout_Title                "U 盘已拔出"
+#define Left_Item_Update_Title                     "系统有更新"
+#define Left_Item_Like_Title                       "剧集有更新"
+#define Left_Item_Like_Bann_Title                  "喜欢的剧集有更新"
+
 #define LONGPRESS_DEFALUTCOUNT 10
 #define MAX_HEIGHT    1000
 
@@ -67,40 +130,13 @@ typedef enum{
 
 #include                                       "jni/Java_org_cocos2dx_lib_Cocos2dxHelper.h"
 
-
-
-
-
-
-
-
 #define CIBN_NOTI_NAME                            "cibn_notify_name"
 #define CIBN_CODE_KEY                             "cibn_code"
-#define CIBN_RESULT_KEY                           "cibn_result"
-#define CIBN_AUTH_BEGIN_TXT                       "正在向CIBN互联网电视认证..."
-#define CIBN_AUTH_END_SUCC_TXT                    "认证成功"
-#define CIBN_AUTH_END_FAILE_TXT                   "认证失败"
-#define CIBN_AUTH_END_FAILE_NO_VODIE_TXT          "认证失败,无法观看影视内容"
-#define CIBN_RESULT_NOTI                          "cibn_result_hint_video"
 
+#define CIBN_RESULT_NOTI                          "cibn_result_hint_video"
+#define CIBN_RESULT_KEY                           "cibn_result"
 #define CIBN_RESUT_NOCLCK_NOTI                    "cibn_result_noclick_noti"
 
-#define BANNER_Background_Image                    "image/notification/BG_up.png"
-
-#define Left_USBIcon_Image                         "image/notification/ic_usb.png"
-#define Left_LikeIcon_Image                        "image/notification/ic_like"
-#define Left_NewNofi_image                         "image/notification/notification_normal"
-
-
 #define MarkNotification_Mark_image                "image/notification/noti_mark_%d.png"
-
-
-
-#define Left_Item_power_Title                      "遥控器电力不足!"
-#define Left_Item_USB_Insert_Title                 "U 盘已插入"
-#define Left_Item_USB_Pullout_Title                "U 盘已拔出"
-#define Left_Item_Update_Title                     "系统有更新"
-#define Left_Item_Like_Title                       "剧集有更新"
-#define Left_Item_Like_Bann_Title                  "喜欢的剧集有更新"
 
 #endif

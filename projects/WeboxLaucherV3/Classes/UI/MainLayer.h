@@ -29,16 +29,15 @@ public:
 
     void onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event);
     void onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event);
-	void CIBNAuthorization(ValueMap&  map);
+	void updateCIBNAuthorization(std::string jsonString);
 	void addTestItems();
-
 	void receiveMessageData(std::string messageTitle, std::string jsonString);
+	void update(float dt);
 private:
 	ui::ImageView* m_backgroundImageView; //background
 	ItemPanel* m_itemPanel;
 	FocusHelper* m_focusHelper; //middle
 	TopBarPanel* m_topBar;  //top
-	ui::Text* m_cibnText;  //bottom
 	LeftNotificationPanel* m_notificationPanel;//left according to the Key-Menu
 };
 

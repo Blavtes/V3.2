@@ -9,26 +9,28 @@
 #define TOPBARPANEL_H_
 
 #include "cocos2d.h"
+#include "ReceiveMessageProtocol.h"
 USING_NS_CC;
 
 
-class TopBarPanel: public cocos2d::ui::Layout {
+class TopBarPanel: public cocos2d::ui::Layout
+{
 public:
 	TopBarPanel();
 	virtual ~TopBarPanel();
 	static TopBarPanel* create();
 	virtual bool init();
 
-	void updateWifiState(ValueMap& wifiStateMap);
+	void updateWifiState(std::string jsonString);
+	void updateNotificationMessageCountState(int messageCount);
+	void updateTimeState();
 	void update(float dt);
-
 private:
     ui::Text* m_timeText;
     ui::Text* m_dateText;
     ui::Text* m_weekdayText;
     ui::ImageView* m_networkImageView;
     ui::ImageView* m_cibnImageView;
-
     ui::ImageView* m_notificationHintImage;
     ui::ImageView* m_notificationCountImage;
 };

@@ -7,6 +7,8 @@
 
 #include "TopBarPanel.h"
 #include "PrefixConst.h"
+#include "ToastTextView.h"
+#include "Data/ParseJson.h"
 
 TopBarPanel::TopBarPanel() {
     m_timeText = nullptr;
@@ -48,7 +50,7 @@ bool TopBarPanel::init()
 //	this->setBackGroundColorType(BackGroundColorType::SOLID);
 
 	m_timeText = ui::Text::create();
-	m_timeText->setPosition(Vec2(visibleSize.width-250, this->getSize().height/2));
+	m_timeText->setPosition(Vec2(visibleSize.width-250, this->getContentSize().height/2));
 	m_timeText->setSize(Size(100, 50));
 	m_timeText->enableShadow(Color4B::BLACK,Size(0, -3),3);
 	m_timeText->setColor(Color3B(174, 174, 174));
@@ -78,33 +80,31 @@ bool TopBarPanel::init()
     this->addChild(m_weekdayText);
 
    m_networkImageView = ui::ImageView::create();
-   m_networkImageView->loadTexture("image/wifi/network_eth.png");
-    m_networkImageView->setPosition(Vec2(m_dateText->getPosition().x + 64,this->getSize().height/2));
+   m_networkImageView->loadTexture(NETWORK_DISABLE_IMG);
+    m_networkImageView->setPosition(Vec2(m_dateText->getPosition().x + 64,this->getContentSize().height/2));
     m_networkImageView->setContentSize(Size(36, 31));
     this->addChild(m_networkImageView);
 
     ui::ImageView* imageLine =  ui::ImageView::create();
     imageLine->loadTexture("image/wifi/wife_line.png");
-    imageLine->setPosition(Vec2(m_dateText->getPosition().x + 38,this->getSize().height/2));
+    imageLine->setPosition(Vec2(m_dateText->getPosition().x + 38,this->getContentSize().height/2));
     this->addChild(imageLine);
     imageLine->setScaleY(0.94f);
 
     m_cibnImageView = ui::ImageView::create();
     m_cibnImageView->loadTexture("image/other/ic_mainmenu_CIBN.png");
-    m_cibnImageView->setPosition(Vec2(150,this->getSize().height/2-20));
+    m_cibnImageView->setPosition(Vec2(150,this->getContentSize().height/2-20));
     this->addChild(m_cibnImageView);
 
     m_notificationHintImage = ui::ImageView::create();
     m_notificationHintImage->loadTexture(NORTIFICATION_HINT_IMG);
-    m_notificationHintImage->setPosition(Vec2(visibleSize.width-340, this->getSize().height/2-6));
+    m_notificationHintImage->setPosition(Vec2(visibleSize.width-320, this->getContentSize().height/2-6));
+    m_notificationHintImage->setVisible(false);
     this->addChild(m_notificationHintImage);
 
     m_notificationCountImage = ui::ImageView::create();
-    int notificationCount = 3;
-    char  notificationCountImageFilePath[100];
-    sprintf(notificationCountImageFilePath,NOTIFICATION_COUNT_IMG,notificationCount);
-    m_notificationCountImage->loadTexture(notificationCountImageFilePath);
     m_notificationCountImage->setPosition(Vec2(m_notificationHintImage->getPosition().x - 25, m_notificationHintImage->getPosition().y - 8));
+    m_notificationCountImage->setVisible(false);
     this->addChild(m_notificationCountImage);
 
     this->scheduleUpdate();
@@ -112,10 +112,16 @@ bool TopBarPanel::init()
 }
 
 
-void TopBarPanel::updateWifiState(ValueMap& wifiStateMap)
+void TopBarPanel::updateWifiState(std::string jsonString)
 {
-   int state=  wifiStateMap.at("state").asInt();
-   int level =wifiStateMap.at("level").asInt();
+	ValueMap wifiStateMap = ParseJson::getIntFromJSON(jsonString);
+   int state=  wifiStateMap.at("arg0").asInt();
+   if(state == 0xffffffff)
+   {
+	   return;
+   }
+   int level =wifiStateMap.at("arg1").asInt();
+   log("The network state is--- %d, level is-- %d,-------------------@xjx+++networkState",state,level);
    char  wifiImageFilePath[100];
    sprintf(wifiImageFilePath,NETWORK_WIFI_IMG,level);
    switch(state)
@@ -136,6 +142,11 @@ void TopBarPanel::updateWifiState(ValueMap& wifiStateMap)
 
 void TopBarPanel::update(float dt)
 {
+//		this->updateTimeState();
+}
+void TopBarPanel::updateTimeState()
+{
+	//
     time_t now;
     time(&now);
     struct tm *ptm = localtime(&now);
@@ -190,3 +201,23 @@ void TopBarPanel::update(float dt)
    }
    m_timeText ->setString(timeString);
 }
+
+void TopBarPanel::updateNotificationMessageCountState(int messageCount)
+{
+	//
+	if(messageCount > 0 && messageCount < 4)
+	{
+	    char  notificationCountImageFilePath[100];
+	    sprintf(notificationCountImageFilePath,NOTIFICATION_COUNT_IMG,messageCount);
+	    m_notificationCountImage->loadTexture(notificationCountImageFilePath);
+	    m_notificationCountImage->setVisible(true);
+
+	    m_notificationHintImage->setVisible(true);
+	}
+	else
+	{
+	    m_notificationCountImage->setVisible(false);
+	    m_notificationHintImage->setVisible(false);
+	}
+}
+

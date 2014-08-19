@@ -22,6 +22,7 @@ ItemData::ItemData()
 , m_Clipping(false)
 , m_isShow(true)
 ,m_proFlag(0)
+,m_code(-1)
 , m_id(-1)
 , m_height(0)
 , m_width(0)
@@ -129,5 +130,6 @@ vector<Map<string, Ref*>>* ItemData::getParmas()
 {
     return m_parmas;
 }
+
 
 

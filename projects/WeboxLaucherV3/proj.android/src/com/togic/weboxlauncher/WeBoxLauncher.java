@@ -26,6 +26,7 @@ import java.util.HashMap;
 import org.cocos2dx.lib.Cocos2dxActivity;
 import org.cocos2dx.lib.Cocos2dxGLSurfaceView;
 
+import android.R.bool;
 import android.R.integer;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -149,10 +150,7 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 					MJsonInfo mjInfo = new MJsonInfo(minfos);
 					Gson gson = new Gson();
 					String str = gson.toJson(mjInfo);
-					Log.v(TAGM, "\r\n");
-
-					Log.v(TAGM, "-----@allappIMetroCallback receive Main APP str : " + str + "  version " +   page.version);
-					Log.v(TAGM, "\r\n");
+					Log.v(TAGM, "-----@allappIMetroCallback receive Main APP str : " + str + "  version " +   page.version + "\r\n");
 					nativeJsonString(str,"MainApp");
 					// nativeImageDataUpdataNotification(Infos,
 					// page.background);
@@ -173,6 +171,12 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 				public void run() {
 					// @xjx
 					// nativeCibnCheckNotification(0,0);
+					int[] resultCode = {0,0};
+					MJsonInfo mif = new MJsonInfo(resultCode);
+					Gson gson = new Gson();
+					String str = gson.toJson(mif);
+					Log.v("\r\n@cibn -----@xjx++++++++++++++++receive cibn  json : ", str);
+					nativeJsonString(str,"cibn" );
 				}
 			});
 		}
@@ -185,6 +189,12 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 				public void run() {
 					// @xjx
 					// nativeCibnCheckNotification(1,(result ? 1:-1));
+					int[] resultCode = {1,result ? 1:-1};
+					MJsonInfo mif = new MJsonInfo(resultCode);
+					Gson gson = new Gson();
+					String str = gson.toJson(mif);
+					Log.v("\r\n@cibn -----@xjx++++++++++++++++receive cibn  json : ", str);
+					nativeJsonString(str,"cibn" );
 				}
 			});
 		}
@@ -430,6 +440,12 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 			public void run() {
 				// @xjx
 				// nativeNotifyNetworkStateChanged(state, level);
+				int[] resultCode = {state,level};
+				MJsonInfo mif = new MJsonInfo(resultCode);
+				Gson gson = new Gson();
+				String str = gson.toJson(mif);
+				Log.v("\r\n@networkState -----@xjx++++++++++++++++receive networkState  json : ", str);
+				nativeJsonString(str,"networkState" );
 			}
 		});
 
@@ -473,22 +489,37 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 			public void run() {
 				final NFInfo[] array = new NFInfo[infos.size()];
 				infos.toArray(array);
+				MJsonInfo mif = new MJsonInfo(array);
+				Gson gson = new Gson();
+				String str = gson.toJson(mif);
+				Log.v("\r\n@mainAppHintText -----@xjx++++++++++++++++receive mainAppHintText  json : ", str);
 				// @xjx
 				// nativeSendNFInfo(code, array);
 			}
 		});
 	}
-
+	
+	//------------==================================================================================Send Notification Info
 	@Override
 	public void onReceiveNotification(final int code, final Notification info) {
 		runOnGLThread(new Runnable() {
 			@Override
 			public void run() {
+				boolean state = info.state;
+				String message = info.message;
+				Object[] notificationMessage = {code,state,message};
+				MJsonInfo mif = new MJsonInfo(notificationMessage);
+				Gson gson = new Gson();
+				String str = gson.toJson(mif);
+				Log.v("\r\n@NotificationApp -----@xjx++++++++++++++++receive NotificationApp  json : ", str);
+				nativeJsonString(str,"NotificationApp" );
 				// @xjx
 				// nativeSendNotification(code, info);
+				
 			}
 		});
 	}
+	
 
 	@Override
 	public void onReceiveJsonString(final int code, final String json) {
@@ -497,6 +528,7 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 			public void run() {
 				// @xjx
 				// nativeSendAirPlayMusic(code, json);
+				
 			}
 		});
 	}
@@ -513,18 +545,6 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 		runOnGLThread(new Runnable() {
 			@Override
 			public void run() {
-
-//				final AppInfo[] appInfos = new AppInfo[apps.size()];
-//				apps.toArray(appInfos);
-//				BaseInfo[] infos = new BaseInfo[apps.size()];
-//				for (int i = 0; i < apps.size(); i++) {
-//					infos[i] = new BaseInfo(appInfos[i]);
-//				}
-//				MJsonInfo mif = new MJsonInfo(infos);
-//				Gson gson = new Gson();
-//				String str = gson.toJson(mif);
-//				Log.v("\r\n@allapp --  json : ", str);
-//				nativeJsonString(str,"UserApp");
 				// @xjx
 				 //nativeUpdateAllApps(version, appInfos);
 			}
@@ -696,7 +716,7 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 
 	private native static boolean nativeJsonString(String str, String dest);
 
-	//------------=================================================================start the App Activity by info
+	//------------==================================================================================start the App Activity by info
 	private static void mStartActivity(String action, String pckname, String classname) {
 		Log.v("@allapp ---", "start activity " +  action);
 
@@ -774,11 +794,11 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 	}
 
 	public class MJsonInfo {
-		MJsonInfo(BaseInfo[] infos) {
+		MJsonInfo(Object  infos) {
 			items = infos;
 		}
 
-		public BaseInfo[] items;
+		public Object items;
 	}
 
 	@Override

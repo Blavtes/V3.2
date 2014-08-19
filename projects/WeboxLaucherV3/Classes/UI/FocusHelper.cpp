@@ -310,6 +310,12 @@ void FocusHelper::showFocusIndicator()
 		{
 			m_selectedItemIndex = m_itemView->getAllItems().size();
 		}
+		if(m_selectedItemIndex ==0)
+		{
+			//-------------------------------------------------------------Deleted all Items
+			m_focusIndicator->setVisible(false);
+			return;
+		}
 		BaseItem* slectedItem	=  m_itemView->getAllItems().at(m_selectedItemIndex-1);
 		slectedItem->setFocused(true);
 		this->onFocusChanged(nullptr,slectedItem);

@@ -464,9 +464,14 @@ void ItemPanel::onEnterClicked(int clickedItemIndex, bool isLongPressed) //äº‹ä»
 {
 	BaseItem* clickedItem = m_itemVector->at(clickedItemIndex-1);
 	AppItem* clickedAppItem = dynamic_cast<AppItem*>(clickedItem);
+	NotificationItem*  clickedNotificationItem =  dynamic_cast<NotificationItem*>(clickedItem);
 	if(clickedAppItem != NULL  && clickedAppItem->getIsUninstalledFlag())
 	{
 		JniUtil::uninstallSilentJni(clickedItem->getItemData()->getPackage().c_str());
+	}
+	else if(clickedNotificationItem != NULL)
+	{
+		this->removeItemByObject(clickedNotificationItem);
 	}
 	else
 	{

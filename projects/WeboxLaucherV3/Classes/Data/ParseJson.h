@@ -27,6 +27,7 @@ public:
     ~ParseJson();
 
     static bool getItemVectorFromJSON(std::string jsonString, Vector<ItemData*>& itemVector);
+    static ValueMap getIntFromJSON(std::string jsonString);
 private:
 
 };

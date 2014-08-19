@@ -26,9 +26,9 @@ public:
     void onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event);
     void onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event);
 	void show();
-	void addTestItems();
-
+	void updateLeftNotification(int code, std::string message, bool state);
 	void receiveMessageData(std::string messageTitle, std::string jsonString);
+	int getNotificationCount();
 private:
 	bool m_statusFlag;
 	ui::ImageView* m_imageLine;
@@ -36,7 +36,6 @@ private:
 	ui::Text* m_titleText;
 	ItemPanel* m_itemPanel;
 	FocusHelper* m_focusHelper;
-	int m_notificationCount;
 };
 
 #endif /* LEFTNOTIFICATIONPANEL_H_ */

@@ -9,6 +9,7 @@
 #include "PrefixConst.h"
 #include "NotificationItem.h"
 #include "../Utils/HandleMessageQueue.h"
+#include "Data/ParseJson.h"
 
 LeftNotificationPanel::LeftNotificationPanel()
 {
@@ -19,7 +20,6 @@ LeftNotificationPanel::LeftNotificationPanel()
 	m_titleText = nullptr;
 	m_itemPanel = nullptr;
 	m_focusHelper = nullptr;
-	m_notificationCount = 0;
 }
 
 LeftNotificationPanel::~LeftNotificationPanel() {
@@ -45,8 +45,6 @@ bool LeftNotificationPanel::init()
 	{
 		return false;
 	}
-
-
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 //	this->setBackGroundColor(Color3B::RED);
 //	this->setBackGroundColorType(BackGroundColorType::SOLID);
@@ -64,8 +62,6 @@ bool LeftNotificationPanel::init()
 	this->addChild(m_titleImage);
 
 	m_titleText = ui::Text::create();
-//	char leftNotificationTitle[20];
-//	sprintf(leftNotificationTitle,LEFT_NEWNOTIFICATION_TITLE,m_notificationCount);
 	m_titleText->setString(LEFT_NEWNOTIFICATION_TITLE);
 	Size titleTextSize = m_titleText->getContentSize();
 	m_titleText->setPosition(Vec2(140, m_titleImage->getPosition().y));
@@ -86,15 +82,11 @@ bool LeftNotificationPanel::init()
 	m_itemPanel->setPosition(Vec2(20,m_imageLine->getPosition().y-m_itemPanel->getContentSize().height - 20));
 	this->addChild(m_itemPanel,1);
 
-	this->addTestItems();
-
 	m_focusHelper = FocusHelper::create();
 	m_focusHelper->bindItemPanel(m_itemPanel);
 	m_focusHelper->retain();
 
-
 	HandleMessageQueue* handleMessage = HandleMessageQueue::getInstace();
-
 	handleMessage->registerLayer(this,"NotificationApp");
 	return true;
 }
@@ -117,33 +109,6 @@ void LeftNotificationPanel::show()
 
 }
 
-void LeftNotificationPanel::addTestItems()
-{
-	//
-	NotificationItem* notificationItem1 = NotificationItem::create();
-	ItemData* notificationItemData1 = ItemData::create();
-	notificationItemData1 ->setBackgroundImageFilePath("image/notification/BG_up.png");
-	notificationItemData1->setForegroundImageFilePath("image/notification/ic_update.png");
-	notificationItemData1->setHintText("系统有更新");
-	notificationItem1->setItemData(notificationItemData1);
-	m_itemPanel->addItem(notificationItem1);
-
-	NotificationItem* notificationItem2 = NotificationItem::create();
-	ItemData* notificationItemData2 = ItemData::create();
-	notificationItemData2 ->setBackgroundImageFilePath("image/notification/BG_up.png");
-	notificationItemData2->setForegroundImageFilePath("image/notification/ic_like.png");
-	notificationItemData2->setHintText("剧集有更新");
-	notificationItem2->setItemData(notificationItemData2);
-	m_itemPanel->addItem(notificationItem2);
-
-	NotificationItem* notificationItem3 = NotificationItem::create();
-	ItemData* notificationItemData3 = ItemData::create();
-	notificationItemData3 ->setBackgroundImageFilePath("image/notification/BG_up.png");
-	notificationItemData3->setForegroundImageFilePath("image/notification/ic_usb.png");
-	notificationItemData3->setHintText("U盘已插入");
-	notificationItem3->setItemData(notificationItemData3);
-	m_itemPanel->addItem(notificationItem3);
-}
 
 void LeftNotificationPanel::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 {
@@ -171,7 +136,69 @@ bool LeftNotificationPanel::getLeftNotificationPanelStatus()
 
 void LeftNotificationPanel::receiveMessageData(std::string messageTitle, std::string jsonString)
 {
-	//
-	m_titleText->setString(jsonString);
-	log("LeftNotificationPanel,received data from thread is:%s-----------------------xjx",jsonString.c_str());
+	ValueMap resultData = ParseJson::getIntFromJSON(jsonString);
+	int code = resultData["arg0"].asInt();
+	bool state = resultData["arg1"].asBool();
+	std::string message = resultData["arg2"].asString();
+	log("The received message is code : %d, message : %s=================@NotificationApp",code,message.c_str());
+	if(code == 0xffffffff)
+	{
+		return;
+	}
+	this->updateLeftNotification(code,message,state);
+}
+
+void LeftNotificationPanel::updateLeftNotification(int code, std::string message, bool state)
+{
+	for(int i=0;i<m_itemPanel->getAllItems().size();i++)
+	{
+		BaseItem* tempItem = m_itemPanel->getAllItems().at(i);
+		if(tempItem->getItemData()->getCode() == code)
+		{
+			return;
+		}
+	}
+
+	m_focusHelper->clearFocusIndicator();
+	ItemData* notificationItemData = ItemData::create();
+	notificationItemData ->setBackgroundImageFilePath(BANNER_Background_Image);
+	if(code == CODE_SYSTEM_UPGRADE)
+	{
+		notificationItemData->setCode(code);
+		notificationItemData->setForegroundImageFilePath(Left_UpdateIcon_Image);
+		notificationItemData->setHintText(Left_Item_Update_Title);
+	}
+	else if(code == CODE_CHASE_DRAMA)
+	{
+		notificationItemData->setCode(code);
+		notificationItemData->setForegroundImageFilePath(Left_LikeIcon_Image);
+		notificationItemData->setHintText(Left_Item_Like_Title);
+	}
+	else if(code == CODE_MOUNT_UNMOUNT)
+	{
+		notificationItemData->setCode(code);
+		notificationItemData->setForegroundImageFilePath(Left_USBIcon_Image);
+		notificationItemData->setHintText(Left_Item_USB_Insert_Title);
+	}
+	else
+	{
+		//
+	}
+	NotificationItem* notificationItem = NotificationItem::create();
+	notificationItem->setItemData(notificationItemData);
+	m_itemPanel->addItem(notificationItem);
+
+	if(m_focusHelper ->getSelectedItemIndex() == 0 && m_itemPanel->getAllItems().size() > 0)
+	{
+		m_focusHelper->initFocusIndicator();
+	}
+	if(m_focusHelper->getSelectedItemIndex() > 0)
+	{
+		m_focusHelper->showFocusIndicator();
+	}
+}
+
+int LeftNotificationPanel::getNotificationCount()
+{
+	return m_itemPanel->getAllItems().size();
 }
