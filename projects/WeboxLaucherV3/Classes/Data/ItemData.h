@@ -29,6 +29,8 @@ public:
     CC_SYNTHESIZE(string,m_action,Action);
     CC_SYNTHESIZE(string,m_class,Class);
     CC_SYNTHESIZE(string,m_package,Package);
+    CC_SYNTHESIZE(string,m_description,Description);
+    CC_SYNTHESIZE(string,m_title,Title);
 
     CC_SYNTHESIZE(string,m_categoryTag,CategoryTag);
     CC_SYNTHESIZE(bool,m_Clipping,Clipping);

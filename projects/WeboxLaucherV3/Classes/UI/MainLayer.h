@@ -15,10 +15,9 @@
 #include "LeftNotificationPanel.h"
 #include "queue"
 #include "unistd.h"
-#include "ReceiveMessageProtocol.h"
 USING_NS_CC;
 
-class MainLayer: public cocos2d::Layer , public ReceiveMessageProtocol
+class MainLayer: public cocos2d::Layer
 {
 public:
 	MainLayer();
@@ -31,7 +30,6 @@ public:
     void onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event);
 	void updateCIBNAuthorization(std::string jsonString);
 	void addTestItems();
-	void receiveMessageData(std::string messageTitle, std::string jsonString);
 	void update(float dt);
 private:
 	ui::ImageView* m_backgroundImageView; //background

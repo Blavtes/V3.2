@@ -11,10 +11,9 @@
 #include "cocos2d.h"
 #include "ItemPanel.h"
 #include "FocusHelper.h"
-#include "ReceiveMessageProtocol.h"
 USING_NS_CC;
 
-class LeftNotificationPanel: public cocos2d::ui::Layout , public ReceiveMessageProtocol
+class LeftNotificationPanel: public cocos2d::ui::Layout
 {
 public:
 	LeftNotificationPanel();
@@ -26,8 +25,7 @@ public:
     void onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event);
     void onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event);
 	void show();
-	void updateLeftNotification(int code, std::string message, bool state);
-	void receiveMessageData(std::string messageTitle, std::string jsonString);
+	void updateLeftNotification( std::string jsonString);
 	int getNotificationCount();
 private:
 	bool m_statusFlag;

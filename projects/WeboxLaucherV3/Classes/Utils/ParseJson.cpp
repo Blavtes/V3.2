@@ -77,7 +77,7 @@ ParseJson::~ParseJson()
 	 return true;
 }
 
-ValueMap ParseJson::getIntFromJSON(std::string jsonString)
+ValueMap ParseJson::getInfoDataFromJSON(std::string jsonString)
  {
 	     ValueMap dataMap;
 	     int flag = 0xffffffff;

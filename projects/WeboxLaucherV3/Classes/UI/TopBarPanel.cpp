@@ -8,7 +8,8 @@
 #include "TopBarPanel.h"
 #include "PrefixConst.h"
 #include "ToastTextView.h"
-#include "Data/ParseJson.h"
+#include "Utils/ParseJson.h"
+#include "Utils/HandleMessageQueue.h"
 
 TopBarPanel::TopBarPanel() {
     m_timeText = nullptr;
@@ -107,14 +108,16 @@ bool TopBarPanel::init()
     m_notificationCountImage->setVisible(false);
     this->addChild(m_notificationCountImage);
 
-    this->scheduleUpdate();
+	HandleMessageQueue* handleMessage = HandleMessageQueue::getInstace();
+	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(TopBarPanel::updateWifiState,this),"NetworkState");
+
 	return true;
 }
 
 
 void TopBarPanel::updateWifiState(std::string jsonString)
 {
-	ValueMap wifiStateMap = ParseJson::getIntFromJSON(jsonString);
+	ValueMap wifiStateMap = ParseJson::getInfoDataFromJSON(jsonString);
    int state=  wifiStateMap.at("arg0").asInt();
    if(state == 0xffffffff)
    {
@@ -140,10 +143,6 @@ void TopBarPanel::updateWifiState(std::string jsonString)
     }
 }
 
-void TopBarPanel::update(float dt)
-{
-//		this->updateTimeState();
-}
 void TopBarPanel::updateTimeState()
 {
 	//

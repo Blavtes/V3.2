@@ -326,9 +326,23 @@ void FocusHelper::showFocusIndicator()
 		m_focusIndicator->setPosition(pos);
 		m_focusIndicator->setVisible(true);
 	}
+	this->updateItemView();
+}
 
-	//........................................................Weather to Move the Panel  and Resize the Panel Container
-	log("weather to move the panel and resize the panel container!!----------------@xjx");
+void FocusHelper::clearFocusIndicator()
+{
+	if(m_selectedItemIndex > 0)
+	{
+		m_focusIndicator->setVisible(false);
+		BaseItem* slectedItem	=  m_itemView->getAllItems().at(m_selectedItemIndex-1);
+		slectedItem->setFocused(false);
+		this->onFocusChanged(slectedItem,NULL);
+	}
+}
+
+void FocusHelper::updateItemView()
+{
+	//	........................................................Weather to Move the Panel  and Resize the Panel Container After Item Deleted
 	BaseItem* lastItem = m_itemView->getAllItems().back();
 	Vec2 lastItemPos = lastItem->getPosition();
 	Size lastItemSize = lastItem->getSize();
@@ -343,18 +357,6 @@ void FocusHelper::showFocusIndicator()
 		m_itemView->setInnerContainerSize(newInnerContainerSize);
 	}
 }
-
-void FocusHelper::clearFocusIndicator()
-{
-	if(m_selectedItemIndex > 0)
-	{
-		m_focusIndicator->setVisible(false);
-		BaseItem* slectedItem	=  m_itemView->getAllItems().at(m_selectedItemIndex-1);
-		slectedItem->setFocused(false);
-		this->onFocusChanged(slectedItem,NULL);
-	}
-}
-
 
 void FocusHelper::onEnterClicked(bool isLongPressed)
 {

@@ -9,9 +9,9 @@
 #include "BaseItem.h"
 #include "MainItem.h"
 #include "AppItem.h"
-#include "Data/ParseJson.h"
-#include "../Utils/HandleMessageQueue.h"
-#include "../Utils/JniUtil.h"
+#include "Utils/ParseJson.h"
+#include "Utils/HandleMessageQueue.h"
+#include "Utils/JniUtil.h"
 #include "ToastTextView.h"
 
 #include "json/rapidjson.h"
@@ -44,7 +44,6 @@ Scene* MainLayer::createScene()
 
 bool MainLayer::init()
 {
-	log("axxxx------------mainlayer begin,begin to add the bacround Image!");
 	if(!Layer::init()){
 		return false;
 	}
@@ -53,13 +52,14 @@ bool MainLayer::init()
     m_backgroundImageView =ui:: ImageView::create(MAIN_LAYER_BACKGROUND_IMG);
     m_backgroundImageView->setPosition(Vec2(visibleSize.width/2,visibleSize.height/2));
     this->addChild(m_backgroundImageView,0);
-	log("axxxx------------background Image add complete! begin to create ItemPanel!");
+
     m_itemPanel=ItemPanel::create();
 	m_itemPanel->setItemPanelSize(ITEM_PANEL_SIZE);
 	m_itemPanel->setPosition(Vec2::ZERO);
     this->addChild(m_itemPanel,1);
 
-//    m_itemPanel->addDefaultMainItemByPlistFile("plist/mainData.plist");
+    m_itemPanel->addDefaultMainItemByPlistFile("plist/mainData.plist");
+    log("Add the local Resource Completely!-------------------------@xjx------");
 //    m_itemPanel->addDefaultAppItem();
 
     m_focusHelper = FocusHelper::create();
@@ -81,10 +81,7 @@ bool MainLayer::init()
 	CCDirector::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener,this);
 
 	HandleMessageQueue* handleMessage = HandleMessageQueue::getInstace();
-	handleMessage->registerLayer(this,"MainApp");
-	handleMessage->registerLayer(this,"UserApp");
-	handleMessage->registerLayer(this,"cibn");
-	handleMessage->registerLayer(this,"networkState");
+	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(MainLayer::updateCIBNAuthorization,this),"Cibn");
 
 	this->scheduleUpdate();
 	return true;
@@ -137,12 +134,21 @@ void MainLayer::update(float dt)
 	m_topBar->updateTimeState();
 	int messageCount = m_notificationPanel->getNotificationCount();
 	m_topBar->updateNotificationMessageCountState(messageCount);
+
+	if(m_focusHelper ->getSelectedItemIndex() == 0 && m_itemPanel->getAllItems().size() > 0 )
+	{
+		m_focusHelper->initFocusIndicator();
+	}
+	if(m_focusHelper->getSelectedItemIndex() > 0 && !m_notificationPanel->getLeftNotificationPanelStatus())
+	{
+		m_focusHelper->showFocusIndicator();
+	}
 }
 
 void MainLayer::updateCIBNAuthorization(std::string jsonString)
 {
 	Size visibleSize=Director::getInstance()->getVisibleSize();
-	ValueMap resultData = ParseJson::getIntFromJSON(jsonString);
+	ValueMap resultData = ParseJson::getInfoDataFromJSON(jsonString);
 	int code = resultData["arg0"].asInt();
 	int result = resultData["arg1"].asInt();
 	if(code == 0xffffffff)
@@ -184,61 +190,6 @@ void MainLayer::addTestItems()
     item5->setItemData(itemData5);
     m_itemPanel->addItem(item5);
 }
-
-void MainLayer::receiveMessageData(std::string messageTitle,std::string jsonString)
-{
-	m_focusHelper->clearFocusIndicator();
-
-	Vector<ItemData*> itemVector;
-	if(messageTitle == "MainApp" || messageTitle == "UserApp" || messageTitle == "NotificationApp")
-	{
-		//
-		if(!ParseJson::getItemVectorFromJSON(jsonString, itemVector))
-		{
-			log("MainLayer:parse json Failed~~~~~~~~~~~~~~~~~~~~~~~~~~@xjx");
-			return;
-		}
-
-		if(messageTitle.compare("MainApp") == 0)
-		{
-			log("Update MainApp--------------------------------------------------@xjx");
-			m_itemPanel->updateMainApps(itemVector);
-		}
-		else if(messageTitle.compare("UserApp") == 0)
-		{
-			log("Update UserApp--------------------------------------------------@xjx");
-			m_itemPanel->updateUserApps(itemVector);
-		}
-		else if(messageTitle.compare("NotificationApp") == 0)
-		{
-			//......
-		}
-	}
-	else
-	{
-		if(messageTitle == "cibn")
-		{
-			log("Update Cibn--------------------------------------------------@xjx");
-			this->updateCIBNAuthorization(jsonString);
-		}
-		else if(messageTitle == "networkState")
-		{
-			log("Update networkState--------------------------------------------------@xjx");
-			m_topBar->updateWifiState(jsonString);
-		}
-	}
-
-	if(m_focusHelper ->getSelectedItemIndex() == 0 && m_itemPanel->getAllItems().size() > 0)
-	{
-		m_focusHelper->initFocusIndicator();
-	}
-	if(m_focusHelper->getSelectedItemIndex() > 0)
-	{
-		m_focusHelper->showFocusIndicator();
-	}
-
-}
-
 
 
 

@@ -11,7 +11,7 @@
 using namespace std;
 
  queue< map<string,string> >  HandleMessageQueue::m_messageQueue;
-map<string , ReceiveMessageProtocol* > HandleMessageQueue::m_layerMap;
+map<string , MsgCallbackFunc > HandleMessageQueue::m_funcMap;
  mutex messageMutex;
  HandleMessageQueue* HandleMessageQueue::intentHandleMessageQueue = NULL;
  bool HandleMessageQueue::isBackground = false;
@@ -44,18 +44,13 @@ HandleMessageQueue::~HandleMessageQueue()
 
 bool HandleMessageQueue::init()
 {
-	//
-//    Scheduler* scheduler = Director::getInstance()->getScheduler();        //----------------基于定时器回调函数的形式
-//    scheduler->schedule(schedule_selector(HandleMessageQueue::handleMessage),this,1,false);
-
     std::thread t1(&HandleMessageQueue::startThread,this);  //------基于多线程的方式
     t1.detach();
 	return true;
 }
 
 
-void HandleMessageQueue::registerLayer(ReceiveMessageProtocol* layer, string messageType)
-
+void HandleMessageQueue::registerMsgCallbackFunc(MsgCallbackFunc layer, string messageType)
 {
 	//......
 	if(layer == nullptr)
@@ -63,43 +58,9 @@ void HandleMessageQueue::registerLayer(ReceiveMessageProtocol* layer, string mes
 		log("The registered layer is null!");
 		return;
 	}
-
-	m_layerMap.insert(pair<string,ReceiveMessageProtocol*>(messageType,layer));
-
+	m_funcMap.insert(pair<string,MsgCallbackFunc>(messageType,layer));
 }
 
-
-void HandleMessageQueue::handleMessage(float dt)
-{
-
-//	int messageCount = m_messageQueue.size();
-//	while(!m_messageQueue.empty() && messageCount > 0)
-//	{
-//		bool flag = true;
-//		map<string, string> message = m_messageQueue.front();
-//		string messageTitle = (*message.begin()).first;
-//		string messageContent = (*message.begin()).second;
-//		log("The message will be processed by Layer:%s-----------------xjx", messageTitle.c_str());
-////		ReceiveMessageProtocol* testLayer =(ReceiveMessageProtocol*) m_layerVector.front();
-//		for(auto member : m_layerMap)
-//		{
-//			if( layer != nullptr && messageTitle.compare(member.first) == 0 )
-//			{
-//				//
-//				ReceiveMessageProtocol* hello =( ReceiveMessageProtocol*)layer;
-//				hello->receiveMessageData(messageTitle,messageContent );
-//				m_messageQueue.pop();
-//				flag = false;
-//			}
-//		}
-//		if(flag)
-//		{
-//			m_messageQueue.pop();
-//			m_messageQueue.push(message);
-//		}
-//		messageCount -= 1;
-//	}
-}
 
 void HandleMessageQueue::pushMessage(string messageTitle, string messageContent)
 {
@@ -133,15 +94,15 @@ void HandleMessageQueue::startThread(void* arg)
 
 					log("@xjx ==================== start thread - %d-  %s ", messageCount ,messageTitle.c_str());
 
-					for(auto layer : m_layerMap)
+					for(auto func : m_funcMap)
 					{
-							if(messageTitle.compare(layer.first) == 0 )
+							if(messageTitle.compare(func.first) == 0 )
 							{
 								//
-								Director::getInstance()->getScheduler()->performFunctionInCocosThread( [arg,layer,messageTitle,messageContent]
+								Director::getInstance()->getScheduler()->performFunctionInCocosThread( [arg,func,messageTitle,messageContent]
 								{
-										(layer.second)->receiveMessageData(messageTitle,messageContent );
-
+//										(layer.second)->receiveMessageData(messageTitle,messageContent );
+										(func.second)(messageContent);
 								 } );
 								m_messageQueue.pop();
 								flag = false;

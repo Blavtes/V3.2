@@ -18,7 +18,7 @@
 #define __WeBoxLauncher__ParseJson__
 
 #include "cocos2d.h"
-#include "ItemData.h"
+#include "../Data/ItemData.h"
 
 class ParseJson
 {
@@ -27,7 +27,7 @@ public:
     ~ParseJson();
 
     static bool getItemVectorFromJSON(std::string jsonString, Vector<ItemData*>& itemVector);
-    static ValueMap getIntFromJSON(std::string jsonString);
+    static ValueMap getInfoDataFromJSON(std::string jsonString);
 private:
 
 };

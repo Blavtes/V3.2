@@ -8,8 +8,8 @@
 #include "LeftNotificationPanel.h"
 #include "PrefixConst.h"
 #include "NotificationItem.h"
-#include "../Utils/HandleMessageQueue.h"
-#include "Data/ParseJson.h"
+#include "Utils/HandleMessageQueue.h"
+#include "Utils/ParseJson.h"
 
 LeftNotificationPanel::LeftNotificationPanel()
 {
@@ -87,7 +87,7 @@ bool LeftNotificationPanel::init()
 	m_focusHelper->retain();
 
 	HandleMessageQueue* handleMessage = HandleMessageQueue::getInstace();
-	handleMessage->registerLayer(this,"NotificationApp");
+	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(LeftNotificationPanel::updateLeftNotification,this),"NotificationApp");
 	return true;
 }
 
@@ -133,10 +133,11 @@ bool LeftNotificationPanel::getLeftNotificationPanelStatus()
 	return m_statusFlag;
 }
 
-
-void LeftNotificationPanel::receiveMessageData(std::string messageTitle, std::string jsonString)
+void LeftNotificationPanel::updateLeftNotification(std::string jsonString)
 {
-	ValueMap resultData = ParseJson::getIntFromJSON(jsonString);
+	m_focusHelper->clearFocusIndicator();
+
+	ValueMap resultData = ParseJson::getInfoDataFromJSON(jsonString);
 	int code = resultData["arg0"].asInt();
 	bool state = resultData["arg1"].asBool();
 	std::string message = resultData["arg2"].asString();
@@ -145,21 +146,23 @@ void LeftNotificationPanel::receiveMessageData(std::string messageTitle, std::st
 	{
 		return;
 	}
-	this->updateLeftNotification(code,message,state);
-}
 
-void LeftNotificationPanel::updateLeftNotification(int code, std::string message, bool state)
-{
-	for(int i=0;i<m_itemPanel->getAllItems().size();i++)
+	for(int i = 0; i < m_itemPanel->getAllItems().size(); i++)
 	{
 		BaseItem* tempItem = m_itemPanel->getAllItems().at(i);
-		if(tempItem->getItemData()->getCode() == code)
+		if(tempItem->getItemData()->getCode() == code && state)
 		{
+			m_focusHelper->showFocusIndicator();
 			return;
+		}
+		else if(tempItem->getItemData()->getCode() == code)
+		{
+			m_itemPanel->removeItemByIndex(i);
+			m_focusHelper->showFocusIndicator(); //---------after deleted Item, should be re-show the indicator
+			return ;
 		}
 	}
 
-	m_focusHelper->clearFocusIndicator();
 	ItemData* notificationItemData = ItemData::create();
 	notificationItemData ->setBackgroundImageFilePath(BANNER_Background_Image);
 	if(code == CODE_SYSTEM_UPGRADE)
@@ -180,10 +183,7 @@ void LeftNotificationPanel::updateLeftNotification(int code, std::string message
 		notificationItemData->setForegroundImageFilePath(Left_USBIcon_Image);
 		notificationItemData->setHintText(Left_Item_USB_Insert_Title);
 	}
-	else
-	{
-		//
-	}
+
 	NotificationItem* notificationItem = NotificationItem::create();
 	notificationItem->setItemData(notificationItemData);
 	m_itemPanel->addItem(notificationItem);

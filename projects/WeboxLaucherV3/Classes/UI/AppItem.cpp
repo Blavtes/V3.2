@@ -48,21 +48,15 @@ void AppItem::setForegroundImage(std::string foregroundImageFilePath)
 
 void AppItem::setForegroundSpriteByData(void *data, int w, int h)
 {
-
     Texture2D* textu = new Texture2D();
     textu->initWithData(data, w * h * 4, Texture2D::PixelFormat::RGBA8888, w, h, Size(w, h));
-//    textu->set
     m_forgroundSprite->setTexture(textu);
     m_forgroundSprite->setTextureRect(Rect(0,0,textu->getContentSize().width,textu->getContentSize().height));
-//    m_forgroundSprite->setTexture("bottom-bac-1.png");
     m_forgroundSprite->setOpacityModifyRGB(true);
     m_forgroundSprite->setBlendFunc(BlendFunc::ALPHA_PREMULTIPLIED);
     m_forgroundSprite->setPosition(Vec2(m_itemSize.width/2,m_itemSize.height/3*2));
-
     textu->release();
 }
-
-
 
 void AppItem::onEnterClicked(bool isLongPressed)
 {
@@ -72,10 +66,6 @@ void AppItem::onEnterClicked(bool isLongPressed)
 	}
 	else
 	{
-		log("Call AppItem:the Action of the item is : %s:++++++++++++++++++++++@xjx",m_itemData->getAction().c_str());
-		log("Call AppItem:the Package of the item is : %s:+++++++++++++@xjx",m_itemData->getPackage().c_str());
-		log("Call AppItem:the Class of the item is : %s:++++++++++++++@xjx",m_itemData->getClass().c_str());
-//		startActivityJNI(m_itemData->getAction(), NULL, NULL, NULL);
 		JniUtil::startActivityJNI(m_itemData->getAction().c_str(),m_itemData->getPackage().c_str(),m_itemData->getClass().c_str());
 	}
 }

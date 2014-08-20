@@ -27,6 +27,7 @@ public:
 	void moveFocusIndicatorToLeft();
 	void moveFocusIndicatorToDown();
 	void moveFocusIndicatorToUp();
+	void updateItemView();
 	void showFocusIndicator();
 	void clearFocusIndicator();
 

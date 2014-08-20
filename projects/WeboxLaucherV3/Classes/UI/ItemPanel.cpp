@@ -9,6 +9,8 @@
 #include "AppItem.h"
 #include "MainItem.h"
 #include "NotificationItem.h"
+#include "Utils/ParseJson.h"
+#include "Utils/HandleMessageQueue.h"
 USING_NS_CC;
 
 ItemPanel::ItemPanel()
@@ -46,6 +48,11 @@ bool ItemPanel::init()
 		return false;
 	}
 	this->setEnabled(true);
+
+	HandleMessageQueue* handleMessage = HandleMessageQueue::getInstace(); //---------------------------------register msg processing func
+	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(ItemPanel::updateMainApps,this),"MainApp");
+	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(ItemPanel::updateUserApps,this),"UserApp");
+	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(ItemPanel::updateMainAppsInfo,this),"MainAppInfo");
 	return true;
 }
 
@@ -145,7 +152,7 @@ void ItemPanel::removeItemByObject(BaseItem* deletedItem)
 	this->removeItemByIndex(deletedItemIndex);
 }
 
-void ItemPanel::removeItemByIndex(int deletedItemIndex)
+void ItemPanel::removeItemByIndex(int deletedItemIndex)  //---------after deleted Item, should be re-show the indicator manually
 {
 	if(deletedItemIndex < 0 || deletedItemIndex >= m_itemVector->size())
 	{
@@ -216,74 +223,22 @@ int ItemPanel::findItemIndexByItemData(ItemData* itemData)
 	return -1;
 }
 
-void ItemPanel::updateAllItems(Vector<ItemData*> itemVector)
-{
-	//.......
-//	log("update items%zd:===========================@xjx", itemVector.size());
-//		for(int i = 0 ; i < itemVector.size(); i++ )
-//		{
-//			//
-//			bool flag = true;
-//			ItemData* itemData = itemVector.at(i);
-//			for(auto existItem : *m_itemVector)
-//			{
-//				if(itemData->getID() == existItem->getItemData()->getID() && false)
-//				{
-//					log("update items===========================@xjx");
-//					existItem->setItemData(itemData);
-//					flag = false;
-//				 }
-//			}
-//			if(flag)
-//			{
-//				if(itemData->getCategoryTag().compare("MainItem") == 0 || itemData->getHeight() > 200 )
-//				{
-//					log("add main items:%d===========================@xjx",i);
-//					auto item = MainItem::create();
-//					item->setItemData(itemData);
-//					this->insertItemByIndex(item,i);
-//				}
-//				else if(itemData->getCategoryTag().compare("UserItem") == 0 || itemData->getHeight() > 50)
-//				{
-//					//.......
-//					if(itemData->getProFlag() == -1)
-//					{
-//						//
-////						this->removeItemByIndex(clickedItemIndex-1);
-//					}
-//					else if(itemData->getProFlag() == 1)
-//					{
-//						log("add app items:%d===========================@xjx",i);
-//						auto item = AppItem::create();
-//						item->setItemData(itemData);
-//						item->setBackgroundImage(APPITEM_FILE_BG_IMG);
-//						if(!itemData->getPackage().empty())
-//						{
-//							log("The foreground image data package is:%s-----------------@xjx",itemData->getPackage().c_str());
-//							void* data  = JniUtil::getIconDataWithPackage(itemData->getPackage().c_str());
-//							item->setForegroundSpriteByData((void*)data,itemData->getWidth(),itemData->getHeight());
-//						}
-//						this->addItem(item);
-//					}
-//				}
-//				else
-//				{
-//					auto item = NotificationItem::create();
-//					//..........
-//					this->addItem(item);
-//				}
-//			 }
-//		}
-}
 
-void ItemPanel::updateMainApps(Vector<ItemData*> itemVector)
+void ItemPanel::updateMainApps(std::string jsonString)
 {
 	//
+	Vector<ItemData*> itemVector;
+	if(!ParseJson::getItemVectorFromJSON(jsonString, itemVector))
+	{
+		log("ItemPanel:Parse Json String Failed!~~~~~~~~~~~~~~~~~~~~~~~~~~@xjx\n");
+		return;
+	}
+
 	if(m_mainItemCount == 0)
 	{
 		for(int i = 0 ; i < itemVector.size(); i++ )
 		{
-			log("add main items:%d===========================@xjx",i);
+			log("ItemPanel:Add MainApp At The First Time, The MainApp number is:%d===========================@xjx\n",i);
 			ItemData* itemData = itemVector.at(i);
 			auto item = MainItem::create();
 			item->setItemData(itemData);
@@ -295,22 +250,27 @@ void ItemPanel::updateMainApps(Vector<ItemData*> itemVector)
 	{
 		for(int i = 0 ; i < itemVector.size(); i++ )
 		{
-			log("update main items:%d===========================@xjx",i);
 			ItemData* itemData = itemVector.at(i);
-			if(itemData->getID() == m_itemVector->at(i)->getItemData()->getID() && i <= m_mainItemCount )
-			{
-				m_itemVector->at(i)->setItemData(itemData);
-			}
-			else if( i <= m_mainItemCount)
+			if( i < m_mainItemCount)
 			{
 				//
-				this->removeItemByIndex(i);
-				auto item = MainItem::create();
-				item->setItemData(itemData);
-				this->insertItemByIndex(item,i);
+				if(itemData->getID() == m_itemVector->at(i)->getItemData()->getID() )  //-------------update
+				{
+					log("ItemPanel:Update MainApp,The MainApp number is:%d===========================@xjx",i);
+					m_itemVector->at(i)->setItemData(itemData);
+				}
+				else                                                                                                                                       //----------------replace
+				{
+					log("ItemPanel:Replace MainApp,The MainApp number is:%d===========================@xjx",i);
+					this->removeItemByIndex(i);
+					auto item = MainItem::create();
+					item->setItemData(itemData);
+					this->insertItemByIndex(item,i);
+				}
 			}
-			else if( i > m_mainItemCount)
+			else  																															//-------------------insert
 			{
+				log("ItemPanel:Insert MainApp,The MainApp number is:%d===========================@xjx",i);
 				auto item = MainItem::create();
 				item->setItemData(itemData);
 				this->insertItemByIndex(item,i);
@@ -318,17 +278,52 @@ void ItemPanel::updateMainApps(Vector<ItemData*> itemVector)
 			}
 		}
 	}
-	if(itemVector.size() < m_mainItemCount)
+	if(itemVector.size() < m_mainItemCount)																		 //--------------------delete
 	{
+		log("ItemPanel:Delete MainApp.===========================@xjx");
 		for(int i = itemVector.size(); i< m_mainItemCount; i++)
 		{
 			this->removeItemByIndex(i);
 		}
+		m_mainItemCount =  itemVector.size();
 	}
+
 }
-void ItemPanel::updateUserApps(Vector<ItemData*> itemVector)
+
+void ItemPanel::updateMainAppsInfo(std::string jsonString)
 {
 	//
+	ValueMap mainAppInfoMap = ParseJson::getInfoDataFromJSON(jsonString);
+   int index=  mainAppInfoMap.at("arg0").asInt();
+   if(index == 0xffffffff)
+   {
+	   return;
+   }
+   std::string description =mainAppInfoMap.at("arg1").asString();
+   std::string title = mainAppInfoMap.at("arg2").asString();
+   if(index >=0 && index < m_mainItemCount)
+   {
+	   MainItem* mainItem =dynamic_cast<MainItem*>( m_itemVector->at(index));
+	   if(nullptr != mainItem)
+	   {
+		   ItemData* mainItemData = mainItem->getItemData();
+		   mainItemData->setDescription(description);
+		   mainItemData->setTitle(title);
+		   mainItem->setHintText(description);
+	   }
+   }
+}
+
+void ItemPanel::updateUserApps(string jsonString)
+{
+	//
+	Vector<ItemData*> itemVector;
+	if(!ParseJson::getItemVectorFromJSON(jsonString, itemVector))
+	{
+		log("ItemPanel:Parse Json String Failed!~~~~~~~~~~~~~~~~~~~~~~~~~~@xjx\n");
+		return;
+	}
+
 	for(int i=0; i<itemVector.size();i++)
 	{
 		ItemData* itemData = itemVector.at(i);
@@ -345,7 +340,7 @@ void ItemPanel::updateUserApps(Vector<ItemData*> itemVector)
 		}
 		else if(itemData->getProFlag() == 1)
 		{
-			log("add app items:%d===========================@xjx",i);
+			log("ItemPanel:Add UserApp , The UserApp number is:%d===========================@xjx\n",i);
 			auto item = AppItem::create();
 			item->setItemData(itemData);
 			item->setBackgroundImage(APPITEM_FILE_BG_IMG);
@@ -386,6 +381,7 @@ void ItemPanel::addDefaultMainItemByPlistFile(std::string filePath)
     mainItemData1->setHintText(map1.at("hint").asString());
     mainItem1->setItemData(mainItemData1);
    this->addItem(mainItem1);
+   m_mainItemCount++;
 
     auto mainItem2 = MainItem::create();
     auto mainItemData2 = ItemData::create();
@@ -395,6 +391,7 @@ void ItemPanel::addDefaultMainItemByPlistFile(std::string filePath)
     mainItemData2->setHintText(map2.at("hint").asString());
     mainItem2->setItemData(mainItemData2);
    this->addItem(mainItem2);
+   m_mainItemCount++;
 
    auto mainItem3 = MainItem::create();
    auto mainItemData3 = ItemData::create();
@@ -404,6 +401,7 @@ void ItemPanel::addDefaultMainItemByPlistFile(std::string filePath)
    mainItemData3->setHintText(map3.at("hint").asString());
    mainItem3->setItemData(mainItemData3);
   this->addItem(mainItem3);
+  m_mainItemCount++;
 
   auto mainItem4 = MainItem::create();
   auto mainItemData4 = ItemData::create();
@@ -413,6 +411,17 @@ void ItemPanel::addDefaultMainItemByPlistFile(std::string filePath)
   mainItemData4->setHintText(map4.at("hint").asString());
   mainItem4->setItemData(mainItemData4);
  this->addItem(mainItem4);
+ m_mainItemCount++;
+
+// auto mainItem5 = MainItem::create();
+// auto mainItemData5 = ItemData::create();
+// mainItemData5->setBackgroundImageFilePath(map4.at("backgroundUrl").asString());
+// mainItemData5->setForegroundImageFilePath(map4.at("topIconUrl").asString());
+// mainItemData5->setBottomBackGroundImageFilePath(map4.at("bottomPanelUrl").asString());
+// mainItemData5->setHintText(map4.at("hint").asString());
+// mainItem5->setItemData(mainItemData5);
+//this->addItem(mainItem5);
+//m_mainItemCount++;
 }
 
 void ItemPanel::addDefaultAppItem()

@@ -9,7 +9,6 @@
 #define TOPBARPANEL_H_
 
 #include "cocos2d.h"
-#include "ReceiveMessageProtocol.h"
 USING_NS_CC;
 
 
@@ -24,7 +23,6 @@ public:
 	void updateWifiState(std::string jsonString);
 	void updateNotificationMessageCountState(int messageCount);
 	void updateTimeState();
-	void update(float dt);
 private:
     ui::Text* m_timeText;
     ui::Text* m_dateText;

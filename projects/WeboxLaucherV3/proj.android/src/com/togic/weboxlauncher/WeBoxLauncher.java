@@ -163,6 +163,7 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 			LogUtil.v(TAG, "########## onError");
 		}
 
+		//------------==================================================================================Send CIBN begin  Info
 		@Override
 		public void onCibnCheckBegin() throws RemoteException {
 			// TODO Auto-generated method stub
@@ -176,11 +177,12 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 					Gson gson = new Gson();
 					String str = gson.toJson(mif);
 					Log.v("\r\n@cibn -----@xjx++++++++++++++++receive cibn  json : ", str);
-					nativeJsonString(str,"cibn" );
+					nativeJsonString(str,"Cibn" );
 				}
 			});
 		}
 
+		//------------==================================================================================Send CIBN update Info
 		@Override
 		public void onCibnCheckEnd(final boolean result) throws RemoteException {
 			// TODO Auto-generated method stub
@@ -194,7 +196,7 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 					Gson gson = new Gson();
 					String str = gson.toJson(mif);
 					Log.v("\r\n@cibn -----@xjx++++++++++++++++receive cibn  json : ", str);
-					nativeJsonString(str,"cibn" );
+					nativeJsonString(str,"Cibn" );
 				}
 			});
 		}
@@ -423,7 +425,9 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 
 		return null;
 	}
+	
 
+	//------------==================================================================================Send NetWork state update Info
 	@Override
 	public void onNetworkStateChanged(final int state, final int level) {
 		final NetworkState temp = mTempState;
@@ -445,7 +449,7 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 				Gson gson = new Gson();
 				String str = gson.toJson(mif);
 				Log.v("\r\n@networkState -----@xjx++++++++++++++++receive networkState  json : ", str);
-				nativeJsonString(str,"networkState" );
+				nativeJsonString(str,"NetworkState" );
 			}
 		});
 
@@ -482,6 +486,7 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 		}
 	}
 
+	//------------==================================================================================Send MainApp HintText update Info
 	@Override
 	public void onReceiveNFInfo(final int code, final ArrayList<NFInfo> infos) {
 		runOnGLThread(new Runnable() {
@@ -489,17 +494,19 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 			public void run() {
 				final NFInfo[] array = new NFInfo[infos.size()];
 				infos.toArray(array);
-				MJsonInfo mif = new MJsonInfo(array);
+				Object[] mainAppHintText = {code,infos.get(0).description,infos.get(0).title};
+				MJsonInfo mif = new MJsonInfo(mainAppHintText);
 				Gson gson = new Gson();
 				String str = gson.toJson(mif);
 				Log.v("\r\n@mainAppHintText -----@xjx++++++++++++++++receive mainAppHintText  json : ", str);
+				nativeJsonString(str,"MainAppInfo" );
 				// @xjx
 				// nativeSendNFInfo(code, array);
 			}
 		});
 	}
 	
-	//------------==================================================================================Send Notification Info
+	//------------==================================================================================Send Notification update Info
 	@Override
 	public void onReceiveNotification(final int code, final Notification info) {
 		runOnGLThread(new Runnable() {
