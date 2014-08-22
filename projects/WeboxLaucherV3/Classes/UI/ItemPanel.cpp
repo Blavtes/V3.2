@@ -324,16 +324,16 @@ void ItemPanel::updateUserApps(string jsonString)
 		return;
 	}
 
+	std::string backgroundImageFilePaths[]={APPITEM_FILE_BG_IMG, APPITEM_SET_BG_IMG, APPITEM_APPSTORE_BG_IMG};
 	for(int i=0; i<itemVector.size();i++)
 	{
 		ItemData* itemData = itemVector.at(i);
 		if(itemData->getProFlag() == -1)
 		{
-			log("delete app items:%d===========================@xjx",i);
+			log("ItemPanel:Delete UserApp,The UserApp number is:%d===========================@xjx",i);
 			int index = this->findItemIndexByItemData(itemData);
 			if(index == -1)
 			{
-				//
 				return;
 			}
 			this->removeItemByIndex(index);
@@ -343,11 +343,14 @@ void ItemPanel::updateUserApps(string jsonString)
 			log("ItemPanel:Add UserApp , The UserApp number is:%d===========================@xjx\n",i);
 			auto item = AppItem::create();
 			item->setItemData(itemData);
-			item->setBackgroundImage(APPITEM_FILE_BG_IMG);
+			item->setBackgroundImage(backgroundImageFilePaths[(int)(CCRANDOM_0_1()*3)]);
 			if(!itemData->getPackage().empty())
 			{
-				log("The foreground image data package is:%s-----------------@xjx",itemData->getPackage().c_str());
-				void* data  = JniUtil::getIconDataWithPackage(itemData->getPackage().c_str());
+				void* data  = JniUtil::getIconDataWithPackage(itemData->getPackage().c_str()); //------Get Image Data from Network
+				if(data == NULL)
+				{
+					return;
+				}
 				item->setForegroundSpriteByData((void*)data,itemData->getWidth(),itemData->getHeight());
 			}
 			this->addItem(item);
@@ -456,18 +459,6 @@ void ItemPanel::addDefaultAppItem()
     return ;
 }
 
-void ItemPanel::autoScrollPanel(int offsetX, ScrollDirection direction)
-{
-	Vec2 curPos=this->getInnerContainer()->getPosition();
-	if(direction == ScrollDirection::Scroll_to_Left)
-	{
-		this->getInnerContainer()->setPosition(Vec2(curPos.x-offsetX,curPos.y));
-	}
-	else if(direction == ScrollDirection::Scroll_to_Right)
-	{
-		this->getInnerContainer()->setPosition(Vec2(curPos.x+offsetX,curPos.y));
-	}
-}
 
 void ItemPanel::onEnterClicked(int clickedItemIndex, bool isLongPressed) //事件的分开处理
 {

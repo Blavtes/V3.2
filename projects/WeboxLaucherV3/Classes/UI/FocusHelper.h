@@ -27,9 +27,11 @@ public:
 	void moveFocusIndicatorToLeft();
 	void moveFocusIndicatorToDown();
 	void moveFocusIndicatorToUp();
+	void adjustIndicatorAndPanelPosition(Vec2);
 	void updateItemView();
 	void showFocusIndicator();
 	void clearFocusIndicator();
+	void updateIndicatorSize(float dt);
 
     void onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event);
     void onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event);
@@ -46,6 +48,8 @@ protected:
 	int m_contentOffsetX;//used for move panel
 	int m_pressedCount;//used for long pressed
 	bool m_pressedFlag;
+	Size m_deltaSize;
+
 
 };
 
