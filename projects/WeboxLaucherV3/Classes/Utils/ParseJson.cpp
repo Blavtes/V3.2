@@ -90,6 +90,10 @@ ValueMap ParseJson::getInfoDataFromJSON(std::string jsonString)
 			 dataMap.insert(valType("arg0",Value(flag)));
 			 return  dataMap;
 		 }
+		 if(doc.HasMember("items"))
+		 {
+			 //
+		 }
 		 const rapidjson::Value& datas = doc["items"];
 		 if(datas.IsArray())
 		 {

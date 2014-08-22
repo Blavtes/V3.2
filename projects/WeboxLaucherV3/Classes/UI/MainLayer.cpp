@@ -60,7 +60,6 @@ bool MainLayer::init()
 
     m_itemPanel->addDefaultMainItemByPlistFile("plist/mainData.plist");
     log("Add the local Resource Completely!-------------------------@xjx------");
-//    m_itemPanel->addDefaultAppItem();
 
     m_focusHelper = FocusHelper::create();
     m_focusHelper->bindItemPanel(m_itemPanel);  //delay bind
@@ -86,6 +85,7 @@ bool MainLayer::init()
 	this->scheduleUpdate();
 	return true;
 }
+
 
 void MainLayer::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 {

@@ -127,6 +127,9 @@ typedef enum{
 	Scroll_to_down
 }ScrollDirection;
 
+#define ACTION_DURATION_TIME  0.2
+
+
 
 #include                                       "jni/Java_org_cocos2dx_lib_Cocos2dxHelper.h"
 

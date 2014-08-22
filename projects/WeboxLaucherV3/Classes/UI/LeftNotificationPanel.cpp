@@ -58,13 +58,13 @@ bool LeftNotificationPanel::init()
 	m_titleImage = ui::ImageView::create();
 	m_titleImage->loadTexture(MARK_NOTIFICATION_ICON_IMG);
 	Size titleImageSize = m_titleImage->getContentSize();
-	m_titleImage->setPosition(Vec2(60,this->getContentSize().height - titleImageSize.height/2-60));
+	m_titleImage->setPosition(Vec2(80,this->getContentSize().height - titleImageSize.height/2-60));
 	this->addChild(m_titleImage);
 
 	m_titleText = ui::Text::create();
 	m_titleText->setString(LEFT_NEWNOTIFICATION_TITLE);
 	Size titleTextSize = m_titleText->getContentSize();
-	m_titleText->setPosition(Vec2(140, m_titleImage->getPosition().y));
+	m_titleText->setPosition(Vec2(160, m_titleImage->getPosition().y+5));
 	m_titleText->setFontSize(35);
 	m_titleText->setTextHorizontalAlignment(TextHAlignment::CENTER);
 	m_titleText->setTextVerticalAlignment(TextVAlignment::CENTER);

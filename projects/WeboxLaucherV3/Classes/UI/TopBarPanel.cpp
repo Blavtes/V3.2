@@ -136,7 +136,10 @@ void TopBarPanel::updateWifiState(std::string jsonString)
     	m_networkImageView->loadTexture(NETWORK_NET_IMG);
     	break;
    case kNetwork_State_Wifi:
-    	m_networkImageView->loadTexture(NETWORK_WIFI_IMG);
+	   if(FileUtils::getInstance()->isFileExist(wifiImageFilePath))
+	   {
+		   m_networkImageView->loadTexture(wifiImageFilePath);
+	   }
     	break;
    default:
     	break;

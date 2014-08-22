@@ -32,8 +32,6 @@ public:
 	void updateMainApps(std::string jsonString);
 	void updateMainAppsInfo(std::string jsonString);
 	void updateUserApps(std::string jsonString);
-
-	void autoScrollPanel(int offsetX, ScrollDirection direction);
 	void onEnterClicked(int clickedItemIndex, bool isLongPressed);
 
 	void addDefaultMainItemByPlistFile(std::string filePath);
