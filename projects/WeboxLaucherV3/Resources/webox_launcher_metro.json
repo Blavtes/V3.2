@@ -1,61 +1,58 @@
 {
-"version": 5,
-"background": "assets/image/launcher/Launcher1_01.jpg",
-"items":
-[
-  {
-    "_id": 20,
-    "width": 400,
-    "height": 200,
-    "action": "togic.intent.action.LIVE_TV",
-    "gravity": 1,
-    "clip": false,
-    "background": "assets/image/item/item_tv_bg.png",
-    "bottom_bg": "assets/image/item/item_tv_bottom_bg.png",
-    "icon": "assets/image/item/icon_tv.png",
-    "title": "",
-    "isshow": -1
-  },
-  {
-    "_id": 21,
-    "width": 400,
-    "height": 200,
-    "action": "togic.intent.action.ONLINE_VIDEO",
-    "gravity": 3,
-    "clip": false,
-    "background": "assets/image/item/item_video_bg.png",
-    "bottom_bg": "assets/image/item/item_video_bottom_bg.png",
-    "icon": "assets/image/item/icon_video.png",
-    "title": "",
-    "isshow": 1
-  },
-  {
-    "_id": 22,
-    "width": 400,
-    "height": 200,
-    "action": "togic.intent.action.ALBUM",
-    "gravity": 4,
-    "clip": true,
-    "background": "assets/image/item/item_album_bg.png",
-    "bottom_bg": "assets/image/item/item_album_bottom_bg.png",
-    "icon": "assets/image/item/icon_album.png",
-    "title": "",
-    "isshow": 1
-  },
-  {
-    "_id": 23,
-    "width": 400,
-    "height": 200,
-    "action": "togic.intent.action.LIVE_VIDEO_PROGRAM_MY_FAVOR",
-    "gravity": 3,
-    "clip": false,
-    "background": "assets/image/item/item_history_bg.png",
-    "bottom_bg": "assets/image/item/item_history_bottom_bg.png",
-    "icon": "assets/image/item/icon_history.png",
-    "title": "",
-    "isshow": 1
-  }
-  
-]
-
+    "version": 51,
+    "background": "image/item/bg.png",
+    "items": [
+        {
+            "_id": 20,
+            "width": 260,
+            "height": 432,
+            "action": "togic.intent.action.LIVE_TV",
+            "gravity": 1,
+            "clip": false,
+            "background": "image/item/item_tv_bg.png",
+            "bottom_bg":"",
+            "icon": "",
+            "title": "",
+            "isshow": -1
+        },
+        {
+            "_id": 21,
+            "width": 260,
+            "height": 432,
+            "action": "togic.intent.action.ONLINE_VIDEO",
+            "gravity": 3,
+            "clip": false,
+            "background": "image/item/item_video_bg.png",
+            "bottom_bg":"",
+            "icon":"",
+            "title":"",
+            "isshow": 0
+        },
+        {
+            "_id": 22,
+            "width": 260,
+            "height": 432,
+            "action": "togic.intent.action.ALBUM",
+            "gravity": 4,
+            "clip": true,
+            "background": "image/item/item_album_bg.png",
+            "bottom_bg":"",
+            "icon":"",
+            "title":"",
+            "isshow": 0
+        },
+        {
+            "_id": 23,
+            "width": 260,
+            "height": 432,
+            "action": "togic.intent.action.LIVE_VIDEO_PROGRAM_MY_FAVOR",
+            "gravity": 3,
+            "clip": false,
+            "background": "image/item/item_history_bg.png",
+            "bottom_bg":"",
+            "icon":"",
+            "title":"",
+            "isshow": 0
+        }
+    ]
 }

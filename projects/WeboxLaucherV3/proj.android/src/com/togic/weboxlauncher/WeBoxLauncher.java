@@ -60,8 +60,11 @@ import com.togic.weboxlauncher.app.AppInfo;
 import com.togic.weboxlauncher.app.AppWatcher;
 import com.togic.weboxlauncher.app.AppsManager;
 import com.togic.weboxlauncher.http.CibnApi;
+import com.togic.weboxlauncher.model.BaseInfo;
 import com.togic.weboxlauncher.model.CombData;
 import com.togic.weboxlauncher.model.ItemData;
+import com.togic.weboxlauncher.model.MJsonInfo;
+import com.togic.weboxlauncher.model.Minfo;
 import com.togic.weboxlauncher.model.Page;
 import com.togic.weboxlauncher.notification.NFInfoManager;
 import com.togic.weboxlauncher.notification.NFInfoManager.NFInfoMonitor;
@@ -70,6 +73,7 @@ import com.togic.weboxlauncher.notification.NotificationManager;
 import com.togic.weboxlauncher.notification.NotificationManager.NotificationMonitor;
 import com.togic.weboxlauncher.util.CommonUtil;
 import com.togic.weboxlauncher.util.LogUtil;
+import com.togic.weboxlauncher.util.MMetroParser;
 import com.togic.weboxlauncher.util.MetroParser;
 import com.togic.weboxlauncher.util.NetworkStateManager;
 import com.togic.weboxlauncher.util.NetworkStateManager.NetworkState;
@@ -133,29 +137,7 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 	private IMetroCallback.Stub mMetroCallback = new IMetroCallback.Stub() {
 		@Override
 		public void onRefreshPage(final Page page) {
-			runOnGLThread(new Runnable() {
-				@Override
-				public void run() {
-					final ItemData[] Infos = new ItemData[page.getItems()
-							.size()];
-					final Minfo[] minfos = new Minfo[page.getItems().size()];
-					page.getItems().toArray(Infos);
-					for (int i = 0; i < minfos.length; i++) {
-						Minfo minf = new Minfo((CombData) Infos[i]);
-						minfos[i] = minf;
-					}
-					Log.v(TAG, " ////// ishow " + Infos[0].isshow);
-					Log.v(TAGM, "-----IMetroCallback start !");
-					// @xjx
-					MJsonInfo mjInfo = new MJsonInfo(minfos);
-					Gson gson = new Gson();
-					String str = gson.toJson(mjInfo);
-					Log.v(TAGM, "-----@allappIMetroCallback receive Main APP str : " + str + "  version " +   page.version + "\r\n");
-					nativeJsonString(str,"MainApp");
-					// nativeImageDataUpdataNotification(Infos,
-					// page.background);
-				}
-			});
+			
 		}
 
 		@Override
@@ -199,6 +181,13 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 					nativeJsonString(str,"Cibn" );
 				}
 			});
+		}
+
+		@Override
+		public void onRefreshMetroDate(String date) throws RemoteException {
+			// TODO Auto-generated method stub
+//			Log.v("@ppp", "==========================" + date);
+			//nativeJsonString(date,"MainApp");
 		}
 	};
 
@@ -645,7 +634,7 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 	}
 
 	private static String getJsonInfosFromLocal() {
-		return MetroParser.getInfos(sInstance);
+		return MMetroParser.initParse(sInstance);
 	}
 
 	protected void registerCallback() {
@@ -746,67 +735,7 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 		return;
 	}
 
-	public class BaseInfo {
-		BaseInfo() {
-		}
-
-		BaseInfo(AppInfo aif) {
-			width = aif.iconWidth;
-			height = aif.iconHeight;
-			actionName = aif.getClassName();
-			packageName = aif.getPackageName();
-			label = aif.label;
-			className = aif.getClassName();
-
-			proflag = aif.proFlag;
-		}
-
-		public int proflag;
-		public int width;
-		public int height;
-		public String actionName;
-		public String packageName;
-		public String label;
-		 public String className;
-	}
-
-	public class Minfo extends BaseInfo {
-		Minfo() {
-		}
-
-		Minfo(CombData id) {
-			 width = id.width;
-			 height= id.height;
-			 actionName= id.action;
-			 packageName= id.packageName;
-			 label = id.title;
-			 className= id.className;
-			 isShow= id.isshow;
-			 visible= id.visible;
-			backgroundImageFilePath = id.background;
-			foregroundImageFilePath = id.icon;
-			bottomBackGroundImageFilePath = id.bottomBg;
-
-			_id=id.id;
-			category_tag = id.category_tag;
-		}
-		 public int isShow;
-		 public int visible;
-		public String backgroundImageFilePath;
-		public String foregroundImageFilePath;
-		public String bottomBackGroundImageFilePath;
-
-		public int _id;
-		public String category_tag;
-	}
-
-	public class MJsonInfo {
-		MJsonInfo(Object  infos) {
-			items = infos;
-		}
-
-		public Object items;
-	}
+	
 
 	@Override
 	//-++++++++++++++================================================send message to update User Apps

@@ -128,8 +128,8 @@ public class MetroApi {
                         .getUngzippedContent(resp.getEntity()));
 
                 if (!CommonUtil.isEmptyString(str)) {
-                    CommonUtil.writeCache(ctx, fileName, str,
-                            getHeader(resp.getHeaders("Last-Modified")));
+//                    CommonUtil.writeCache(ctx, fileName, str,
+//                            getHeader(resp.getHeaders("Last-Modified")));
                 } else {
                     str = CommonUtil.getStringFromInputStream(ctx
                             .openFileInput(fileName));

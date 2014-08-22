@@ -25,8 +25,10 @@ import android.os.IInterface;
 import android.os.Looper;
 import android.os.Message;
 import android.os.RemoteException;
+import android.util.Log;
 import android.view.View;
 
+import com.google.gson.Gson;
 import com.togic.launcher.util.image.impl.FileNameRuleImageUrl;
 import com.togic.launcher.util.image.impl.ImageSDCardCache;
 import com.togic.launcher.util.image.impl.ImageSDCardCache.OnImageSDCallbackListener;
@@ -35,12 +37,13 @@ import com.togic.launcher.util.image.util.CacheSizeUtils;
 import com.togic.weboxlauncher.IMetroCallback;
 import com.togic.weboxlauncher.WLBackendService;
 import com.togic.weboxlauncher.backend.SystemManager.LocalMonitor;
-import com.togic.weboxlauncher.http.CibnApi;
+import com.togic.weboxlauncher.model.MJsonInfo;
+import com.togic.weboxlauncher.model.MetroDate;
 import com.togic.weboxlauncher.model.Page;
 import com.togic.weboxlauncher.util.CibnParser;
-import com.togic.weboxlauncher.util.LogUtil;
-import com.togic.weboxlauncher.util.MetroParser;
 import com.togic.weboxlauncher.util.CibnParser.CibnCallback;
+import com.togic.weboxlauncher.util.LogUtil;
+import com.togic.weboxlauncher.util.MMetroParser.MParserCallback;
 import com.togic.weboxlauncher.util.MetroParser.ParserCallback;
 
 /**
@@ -298,7 +301,9 @@ public class MetroManager extends BaseManager implements LocalMonitor,
         }
 
         mReadingMetro = true;
-        MetroParser.parse(mService, this, mMetroCache, mFirstReadMetro, mCheckCibnResult);
+        //MetroParser.parse(mService, this, mMetroCache, mFirstReadMetro, mCheckCibnResult);
+//        MMetroParser.parse(mService, new mmcallback(), mMetroCache);
+
         mReadingMetro = false;
     }
     private void checkCibn() {
@@ -471,5 +476,42 @@ public class MetroManager extends BaseManager implements LocalMonitor,
         mCheckCibnResult = result;
 
         scheduleTask(MSG_READ_METRO, 0);
+	}
+	
+	public class mmcallback implements MParserCallback
+	{
+
+		@Override
+		public void onPreloadSuccess(String cacheDir) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onParseFinished(boolean firstRead, Page page) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onParseFinishedN(MetroDate md) {
+			// TODO Auto-generated method stub
+			if(null != md)
+			{
+				
+				Log.v("@ppp" , "===================================!!!!!!!!!!!!!!!!!!!!!!!@ppp");
+				MJsonInfo mif = new MJsonInfo(md.toMinfos());
+				for (IInterface cbk : mMetroCallbacks.getCallbacks()) {
+		            try {
+						((IMetroCallback) cbk).onRefreshMetroDate((new Gson()).toJson(mif));
+					} catch (RemoteException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		        }
+				
+			}
+			
+		}
 	}
 }

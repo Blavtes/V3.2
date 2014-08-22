@@ -21,6 +21,7 @@ import com.togic.weboxlauncher.model.Page;
 interface IMetroCallback {
     void onError();
     void onRefreshPage(in Page page);
+    void onRefreshMetroDate(in String date);
     void onCibnCheckBegin();
     void onCibnCheckEnd(in boolean result);
 }
