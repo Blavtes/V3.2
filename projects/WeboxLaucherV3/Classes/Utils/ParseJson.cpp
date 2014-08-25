@@ -120,3 +120,38 @@ ValueMap ParseJson::getInfoDataFromJSON(std::string jsonString)
 		 }
 		return dataMap;
  }
+
+ bool ParseJson::getAirPlayMusicDataFromJSON(std::string jsonString, Vector<AirplayMusicData*>& itemVector)
+{
+	//
+	 std::string jsonContent =jsonString;
+	 if (FileUtils::getInstance()->isFileExist(jsonString))
+	 {
+		 jsonContent = FileUtils::getInstance()->getStringFromFile(jsonString);
+	 }
+	 log("jsonString content is : %s",jsonContent.c_str());
+
+	  rapidjson::Document doc;
+	  doc.Parse<0>(jsonContent.c_str());
+	  if (doc.HasParseError())
+	  {
+	       log("getParseError %s \n",doc.GetParseError());
+	       return false;
+	  }
+	  const rapidjson::Value& items = doc["items"];
+	  if (items.IsArray())
+	  {
+	      for (unsigned int i = 0;  i < items.Size(); i++)
+	      {
+	      	const rapidjson::Value& jsonItem = items[i];
+	      	AirplayMusicData* musicData = AirplayMusicData::create(jsonItem);
+	        itemVector.pushBack(musicData);
+	      }
+	  }
+	  else if(items.IsObject())
+	  {
+		  AirplayMusicData * musicData = AirplayMusicData::create(items);
+		  itemVector.pushBack(musicData);
+	  }
+	 return true;
+}

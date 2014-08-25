@@ -6,13 +6,14 @@
  */
 
 #include "FocusHelper.h"
+#include "Utils/SizeTo.h"
 
 FocusHelper::FocusHelper()
 {
 	m_itemView = NULL;
 	m_focusIndicator = NULL;
-	m_focusPaddingX = 31;
-	m_focusPaddingY = 31;
+	m_focusPaddingX = 26;
+	m_focusPaddingY = 26;
 	m_selectedItemIndex =0;
 	m_contentOffsetX = 0;
 	m_pressedCount = 0;
@@ -137,6 +138,10 @@ void FocusHelper::moveFocusIndicatorToRight()
 		Vec2 destItemPos=destItem->getPosition();
 //		m_focusIndicator->setContentSize(Size(destItemSize.width + m_focusPaddingX*2,destItemSize.height+m_focusPaddingY*2));
 		m_deltaSize = Size(destItemSize.width + m_focusPaddingX*2,destItemSize.height+m_focusPaddingY*2) - m_focusIndicator->getContentSize();
+
+		SizeTo* sizeAdjust = SizeTo::create(1.5,destItemSize.width,destItemSize.height);
+		m_focusIndicator->runAction(sizeAdjust);
+
 		this->adjustIndicatorAndPanelPosition(destItemPos);
 		this->onFocusChanged(curItem,destItem);
 	}
@@ -153,25 +158,30 @@ void FocusHelper::adjustIndicatorAndPanelPosition(Vec2 pos)
 	Vec2 nextIndicatorPos = panelPos+pos;
     if(nextIndicatorPos.x >= visibleSize.width - 170)
     {
-        MoveTo* indicatorMove = MoveTo::create(ACTION_DURATION_TIME,pos);
-        EaseSineIn* sineActionIndicator = EaseSineIn::create(indicatorMove);
-         m_focusIndicator->runAction(sineActionIndicator);
+        MoveTo* indicatorMove = MoveTo::create(0.2,pos);
+//        EaseSineOut* sineActionIndicator = EaseSineOut::create(indicatorMove);
+         m_focusIndicator->runAction(indicatorMove);
 
-		MoveTo* panelMove = MoveTo::create(ACTION_DURATION_TIME,Vec2(visibleSize.width - 170-pos.x,0));
-        EaseSineIn* sineActionPanel= EaseSineIn::create(panelMove);
+		MoveTo* panelMove = MoveTo::create(3,Vec2(visibleSize.width - 170-pos.x,0));
+//		EaseSineOut* sineActionPanel= EaseSineOut::create(panelMove);
+		EaseExponentialOut* sineActionPanel= EaseExponentialOut::create(panelMove);
+		sineActionPanel->setDuration(1);
+//		EaseRateAction * sineActionPanel= EaseRateAction::create(panelMove);
 		m_itemView->getInnerContainer()->runAction(sineActionPanel);
     }
     else if(nextIndicatorPos.x <= 170)
     {
-        MoveTo* indicatorMove = MoveTo::create(ACTION_DURATION_TIME,pos);
+        MoveTo* indicatorMove = MoveTo::create(0.2,pos);
        m_focusIndicator->runAction(indicatorMove);
 
      	MoveTo* panelMove = MoveTo::create(ACTION_DURATION_TIME,Vec2(  - pos.x+170,0));
-		m_itemView->getInnerContainer()->runAction(panelMove);
+		EaseExponentialOut* sineActionPanel= EaseExponentialOut::create(panelMove);
+		sineActionPanel->setDuration(1);
+		m_itemView->getInnerContainer()->runAction(sineActionPanel);
     }
     else
     {
-        MoveTo* indicatorMove = MoveTo::create(ACTION_DURATION_TIME,pos);
+        MoveTo* indicatorMove = MoveTo::create(0.1,pos);
          m_focusIndicator->runAction(indicatorMove);
     }
 

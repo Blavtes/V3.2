@@ -111,6 +111,31 @@
 #define Left_Item_Like_Title                       "剧集有更新"
 #define Left_Item_Like_Bann_Title                  "喜欢的剧集有更新"
 
+//-------------------------------------------------------------define for Airplay----------------------------------------------
+#define AirPlay_Background_image                  "image/airplay/airbackground.png"
+#define AirPlay_MusicMark_image                   "image/airplay/musicicon.png"
+#define AirPlay_Icon                              "image/airplay/airplayicon.png"
+
+#define AIRPLAY_DEFAULT_TITLE                      "未知歌名"
+#define AIRPLAY_DEFAULT_ALBUM                      "未知专辑"
+#define AIRPLAY_DEFAULT_ARTIST                     "未知歌手"
+
+typedef enum {
+     AP_START    = 0x10,
+     AP_PLAY     = 0x20,
+     AP_PASUE    = 0x30,
+     AP_FASTF    = 0x40,
+     AP_STOP     = 0x50,
+     AP_INFO     = 0x60,
+     AP_STOPSLD  = 0x70,
+     AP_STARTSLD = 0x80,
+     AP_VOLUME   = 0x90,
+     AP_COVT     = 0xa0,
+     AP_META     = 0xb0,
+     AP_ERROR    = 0xff
+}kAirplayStruct;
+
+
 #define LONGPRESS_DEFALUTCOUNT 10
 #define MAX_HEIGHT    1000
 
@@ -127,7 +152,7 @@ typedef enum{
 	Scroll_to_down
 }ScrollDirection;
 
-#define ACTION_DURATION_TIME  0.2
+#define ACTION_DURATION_TIME  1
 
 
 

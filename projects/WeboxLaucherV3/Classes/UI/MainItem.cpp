@@ -76,6 +76,7 @@ void MainItem::onFocusChange(ui::Widget* widgetLoseFocus, ui::Widget* widgetGetF
 		{
 			//......action
 			ScaleTo* action = ScaleTo::create(0.2,1);
+			action->setTag(11);
 			mainItemLoseFocus->m_foregroundImage->runAction(action);
 		}
 		widgetLoseFocus->setFocused(false);
@@ -87,6 +88,7 @@ void MainItem::onFocusChange(ui::Widget* widgetLoseFocus, ui::Widget* widgetGetF
 		{
 			//......action
 			ScaleTo* action = ScaleTo::create(0.2,1.1);
+			action->setTag(12);
 			mainItemGetFocus->m_foregroundImage->runAction(action);
 		}
 		widgetGetFocus->setFocused(true);

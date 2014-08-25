@@ -23,10 +23,13 @@ LOCAL_SRC_FILES := hellocpp/main.cpp \
                   ../../Classes/UI/FocusHelper.cpp \
                   ../../Classes/UI/NotificationItem.cpp \
                  ../../Classes/UI/ToastTextView.cpp \
+                 ../../Classes/UI/AirPlayPanel.cpp  \
                    ../../Classes/Data/ItemData.cpp  \
+                   ../../Classes/Data/AirplayMusicData.cpp \
                    ../../Classes/Utils/ParseJson.cpp \
                    ../../Classes/Utils/HandleMessageQueue.cpp \
-                   ../../Classes/Utils/JniUtil.cpp 
+                   ../../Classes/Utils/JniUtil.cpp  \
+                   ../../Classes/Utils/SizeTo.cpp 
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../Classes
 

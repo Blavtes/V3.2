@@ -19,6 +19,7 @@
 
 #include "cocos2d.h"
 #include "../Data/ItemData.h"
+#include "../Data/AirplayMusicData.h"
 
 class ParseJson
 {
@@ -28,6 +29,7 @@ public:
 
     static bool getItemVectorFromJSON(std::string jsonString, Vector<ItemData*>& itemVector);
     static ValueMap getInfoDataFromJSON(std::string jsonString);
+    static bool getAirPlayMusicDataFromJSON(std::string jsonString, Vector<AirplayMusicData*>& itemVector);
 private:
 
 };
