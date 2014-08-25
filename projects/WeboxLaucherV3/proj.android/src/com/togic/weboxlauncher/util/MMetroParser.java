@@ -25,8 +25,6 @@ public class MMetroParser {
     private static final String TAG = "MetroParser";
 
     public static final String FILE_METRO = getMetroFileName();
-    
-    public static int sVesion = -1;
 
     public interface MParserCallback {
         public void onPreloadSuccess(String cacheDir);
@@ -38,79 +36,85 @@ public class MMetroParser {
     
     public static final String initParse(final Context ctx)
     {
-    	String str = CommonUtil.getStringFromCach(ctx, FILE_METRO);
-    	
-    	if(str == null)
-    	{
-    		Log.v("@ppp", "MetroDate md !!!!!!!!!!!!!! getStringFromAsset");
-    	    str = CommonUtil.getStringFromAsset(ctx, FILE_METRO);
-    	}
-    	else
-    	{
-    	}
+    	String str = getLocalString(ctx);
     	if(str == null)
     	{
     		return null;
     	}
-    	else
-    	{
-    		Log.v("@ppp", "MetroDate json !!!!!!!!!!!!!! " + str);
-    	}
-    	
     	Gson gson = new Gson();
-
-        Log.v("@ppp", "MetroDate md !!!!!!!!!!!!!! 1");
-
-
-        Log.v("@ppp", "MetroDate md !!!!!!!!!!!!!! 11" + str);
-        
         MetroDate md = gson.fromJson(str, MetroDate.class);
-
-        Log.v("@ppp", "MetroDate md !!!!!!!!!!!!!! 2");
-        sVesion = md.version;
-        
         MJsonInfo mif = new MJsonInfo(md.toMinfos());
-        Log.v("@ppp", "MetroDate md !!!!!!!!!!!!!! 3");
         str = gson.toJson(mif);
-
-        Log.v("@ppp", "MetroDate md !!!!!!!!!!!!!! " + str);
-        
         return str;
     }
 
+    private static final String getLocalString(final Context ctx)
+    {
+    	String str = CommonUtil.getStringFromCach(ctx, FILE_METRO);
+    	
+    	if(str == null)
+    	{
+    	    str = CommonUtil.getStringFromAsset(ctx, FILE_METRO);
+    	    Log.v("@metro", "MetroDate md from ass!!!!!!!!!!!!!");
+    	}
+    	else
+    	{
+            Log.v("@metro", "MetroDate md from local!!!!!!!!!!!!!!");
+    	}
+    	return str;
+    }
+
     public static final void parse(final Context ctx,
-            final MParserCallback callback, ImageSDCardCache cache) {
+    		boolean readFromLocal,
+            final MParserCallback callback, 
+            ImageSDCardCache cache) 
+    {
+    	Log.v("@metro", "==parse==start !");
     	MetroDate md = null;
+
         if (cache != null) {
-            final MetroApi api = MetroApi.getInstance(ctx);
-            String str = api.getString(ctx, FILE_METRO,true);
-            Gson gson = new Gson();
-            Log.v("@ppp", "MetroDate md !!!!!!!!!!!!!!");
-            
-            md = gson.fromJson(str, MetroDate.class);
-            
-            if(sVesion >= md.version)
+        	
+        	Gson gson = new Gson();
+        	
+        	int sVesion = -1;
+            String str = getLocalString(ctx);
+            if(str != null && str.length() >0)
             {
-            	return;
+            	Vinfo vif = gson.fromJson(str, Vinfo.class);
+            	if(null != vif)
+            	{
+            		sVesion = vif.version;  
+            	}
+            }
+            
+            if(readFromLocal)
+            {
+            	Log.v("@metro", "==parse== read first !" + str);
+            	md = gson.fromJson(str, MetroDate.class);
             }
             else
             {
-            	sVesion = md.version;
-            	MJsonInfo mif = new MJsonInfo(md.toMinfos());
-            	CommonUtil.writeCache(ctx, FILE_METRO, (new Gson()).toJson(mif), null);
+	            Log.v("@metro", "==parse== read from net !");
+	            final MetroApi api = MetroApi.getInstance(ctx);
+	            str = api.getString(ctx, FILE_METRO,true);
+	            Log.v("@metro", "==parse== read from net 2!" + str);
+	            if(str != null && str.length() >=0)
+	            {
+	            	md = gson.fromJson(str, MetroDate.class);
+	            	if (preloadMetro(cache, md) && fixUrl(cache, md)) {
+		            	str = gson.toJson(md);
+		            	CommonUtil.writeCache(ctx, FILE_METRO, str, null);
+		            	Log.v("@metro", "==parse==json fromnet !!!!!!!!!!!!!! " + str);
+		            }
+	            }
+	            else
+	            {
+	            	Log.v("@metro", "==no http str");
+	            }
             }
-            if (preloadMetro(cache, md) && fixUrl(cache, md)) {
-
-                callback.onPreloadSuccess(cache.getCacheFolder());
-            }
-        } else {
-            // Don't notify UI update if preload failed.
-            LogUtil.w(TAG, "sdcard cache is null");
-            callback.onParseFinished(false, null);
-            return;
         }
 
-        //callback.onParseFinishedN(md);
+        callback.onParseFinishedN(md);
     }
 
 	public static String getInfos(Context ctx) {
@@ -131,7 +135,7 @@ public class MMetroParser {
         for (MetroItemDate item : md.items) {
         	item.background = getDownloadResult(cache, item.background);
         	item.icon = getDownloadResult(cache, item.icon);
-        	item.bottom_bg = getDownloadResult(cache, item.bottom_bg);
+        	item.bottom_bg = getDownloadResult(cache, item.bottom_bg); 
         }
 
         return true;
@@ -368,4 +372,10 @@ public class MMetroParser {
             return "webox_launcher_metro.json";
         }
     }
+    
+    class Vinfo{
+    	public int version;
+    }
+    
+    
 }

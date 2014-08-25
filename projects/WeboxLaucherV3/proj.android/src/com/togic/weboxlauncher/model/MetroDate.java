@@ -26,8 +26,8 @@ public class MetroDate {
 			{   
 				MetroItemDate mid = items[i];
 				Minfo mf = new Minfo();
-			    mf.width = mid.width;
-			    mf.height= mid.height;
+			    mf.width = 260;
+			    mf.height= 432;
 			    mf.actionName= mid.action;
 			    mf.label = mid.title;
 			    mf.isShow= 0;

@@ -43,6 +43,7 @@ import com.togic.weboxlauncher.model.Page;
 import com.togic.weboxlauncher.util.CibnParser;
 import com.togic.weboxlauncher.util.CibnParser.CibnCallback;
 import com.togic.weboxlauncher.util.LogUtil;
+import com.togic.weboxlauncher.util.MMetroParser;
 import com.togic.weboxlauncher.util.MMetroParser.MParserCallback;
 import com.togic.weboxlauncher.util.MetroParser.ParserCallback;
 
@@ -86,6 +87,7 @@ public class MetroManager extends BaseManager implements LocalMonitor,
     public MetroManager(WLBackendService s, SystemManager m) {
         mService = s;
         mSystem = m;
+        mPcall = new mmcallback();
     }
 
     public void create() {
@@ -110,18 +112,26 @@ public class MetroManager extends BaseManager implements LocalMonitor,
         checkNetworkSync();
 
         final int delay = mService.getMediumInterval();
-        if (mPage.isValid()) {
-            notifyRefreshPage(cbk, mPage);
-
-            if (mNetworkReady) {
-                scheduleTask(MSG_READ_METRO, delay);
-                scheduleTask(MSG_CIBN_CHECK_INVOL, 1000);
-            }
-        } else if (!isReadingMetro()) {
-            // read default layout and data.
-            mFirstReadMetro = true;
-            scheduleTask(MSG_READ_METRO, 0);
+        if(mJsonInfo != null)
+        {
+        	notifyMetroDate(cbk);
         }
+        else
+        {
+        	scheduleTask(MSG_READ_METRO, 0);
+        }
+//        if (mPage.isValid()) {
+//            notifyRefreshPage(cbk, mPage);
+//
+//            if (mNetworkReady) {
+//                scheduleTask(MSG_READ_METRO, delay);
+//                scheduleTask(MSG_CIBN_CHECK_INVOL, 1000);
+//            }
+//        } else if (!isReadingMetro()) {
+//            // read default layout and data.
+//            mFirstReadMetro = true;
+//            scheduleTask(MSG_READ_METRO, 0);
+//        }
     }
 
     public void unregisterMetroCallback(IMetroCallback cbk) {
@@ -199,10 +209,7 @@ public class MetroManager extends BaseManager implements LocalMonitor,
                     && mMetroCallbacks.size() > 0) {
                 scheduleTask(MSG_READ_METRO, delay);
             }
-
-//            if (mNetworkChangeCount < MAX_NETWORK_CHANGED) {
-                scheduleTask(MSG_CIBN_CHECK_INVOL, 15);
-//            }
+            scheduleTask(MSG_CIBN_CHECK_INVOL, 15);
         }
     }
 
@@ -302,7 +309,7 @@ public class MetroManager extends BaseManager implements LocalMonitor,
 
         mReadingMetro = true;
         //MetroParser.parse(mService, this, mMetroCache, mFirstReadMetro, mCheckCibnResult);
-//        MMetroParser.parse(mService, new mmcallback(), mMetroCache);
+        MMetroParser.parse(mService, mFirstReadMetro, mPcall, mMetroCache);
 
         mReadingMetro = false;
     }
@@ -478,6 +485,19 @@ public class MetroManager extends BaseManager implements LocalMonitor,
         scheduleTask(MSG_READ_METRO, 0);
 	}
 	
+	MJsonInfo mJsonInfo;
+	mmcallback mPcall;
+	int vesion = -1;
+	
+	private void notifyMetroDate(IMetroCallback cbk)
+	{
+		try {
+			cbk.onRefreshMetroDate((new Gson()).toJson(mJsonInfo));
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	public class mmcallback implements MParserCallback
 	{
 
@@ -494,24 +514,42 @@ public class MetroManager extends BaseManager implements LocalMonitor,
 		}
 
 		@Override
-		public void onParseFinishedN(MetroDate md) {
+		public synchronized void onParseFinishedN(MetroDate md) {
 			// TODO Auto-generated method stub
+
+			int delay = mService.getShortInterval();
 			if(null != md)
 			{
+				if (mFirstReadMetro) {
+	                mFirstReadMetro = false;
+	                delay = mService.getMediumInterval();
+	            } else {
+	                delay = mService.getLongInterval();
+	            }
 				
-				Log.v("@ppp" , "===================================!!!!!!!!!!!!!!!!!!!!!!!@ppp");
-				MJsonInfo mif = new MJsonInfo(md.toMinfos());
-				for (IInterface cbk : mMetroCallbacks.getCallbacks()) {
-		            try {
-						((IMetroCallback) cbk).onRefreshMetroDate((new Gson()).toJson(mif));
-					} catch (RemoteException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-		        }
-				
+				vesion = md.version;
+
+				if(mJsonInfo== null || vesion < md.version)
+				{					
+					mJsonInfo = new MJsonInfo(md.toMinfos());
+					for (IInterface cbk : mMetroCallbacks.getCallbacks()) {
+			            try {
+			            	String str = (new Gson()).toJson(mJsonInfo);
+							((IMetroCallback) cbk).onRefreshMetroDate(str);
+						} catch (RemoteException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+			        }
+				}
+				else
+				{
+					Log.v("@metro" , "!!!!!!!!!vesion" + vesion + ">= md.version" + md.version + "delay " + delay);
+				}
 			}
-			
+			if (mNetworkReady) {
+	            scheduleTask(MSG_READ_METRO, delay);
+	        }
 		}
 	}
 }

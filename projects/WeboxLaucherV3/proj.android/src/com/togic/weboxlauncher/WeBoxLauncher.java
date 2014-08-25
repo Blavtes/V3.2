@@ -187,7 +187,7 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 		public void onRefreshMetroDate(String date) throws RemoteException {
 			// TODO Auto-generated method stub
 //			Log.v("@ppp", "==========================" + date);
-			//nativeJsonString(date,"MainApp");
+			nativeJsonString(date,"MainApp");
 		}
 	};
 

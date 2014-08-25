@@ -25,6 +25,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.content.Context;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.WindowManager;
 
 import com.togic.remote.http.AbstractHttpApi;
@@ -36,8 +37,7 @@ public class MetroApi {
 
     private static final String TAG = "MetroApi";
 
-//    public static final String DOMAIN = "http://qvod.togic.com/";
-    public static final String DOMAIN = "http://192.168.6.125/";
+    public static final String DOMAIN = "http://qvod.togic.com/";
     public static final String API = "metro";
 
     private final String mApi;
@@ -108,8 +108,6 @@ public class MetroApi {
         final String url = fullUrl(fileName,cibnResult);
         final String lastModified = CommonUtil.getCacheFileLastModified(ctx,
                 fileName);
-        LogUtil.v(TAG, "******* read string from " + url
-                + ", last modified is " + lastModified);
 
         final HttpGet get = mHttpApi.createHttpGet(url);
         LogUtil.i(TAG, "http url :" + get.getURI());
@@ -121,24 +119,14 @@ public class MetroApi {
         try {
             final HttpResponse resp = mHttpApi.executeHttpRequest(get);
             final int statusCode = resp.getStatusLine().getStatusCode();
-            LogUtil.v(TAG, "statusCode is " + statusCode);
+            LogUtil.v("@metro", "statusCode is " + statusCode);
             switch (statusCode) {
             case 200:
                 str = CommonUtil.getStringFromInputStream(AbstractHttpApi
                         .getUngzippedContent(resp.getEntity()));
-
-                if (!CommonUtil.isEmptyString(str)) {
-//                    CommonUtil.writeCache(ctx, fileName, str,
-//                            getHeader(resp.getHeaders("Last-Modified")));
-                } else {
-                    str = CommonUtil.getStringFromInputStream(ctx
-                            .openFileInput(fileName));
-                }
                 break;
             case 304:
                 // not changed
-                str = CommonUtil.getStringFromInputStream(ctx
-                        .openFileInput(fileName));
                 break;
             case 403:
                 break;
