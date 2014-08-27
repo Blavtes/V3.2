@@ -94,6 +94,8 @@ bool LeftNotificationPanel::init()
 void LeftNotificationPanel::show()
 {
 	//
+	this->stopAllActions();
+	log("@show=======================%d",m_statusFlag?1:0);
 	if(!m_statusFlag)
 	{
 		m_statusFlag = true;
@@ -126,6 +128,12 @@ void LeftNotificationPanel::onKeyReleased(EventKeyboard::KeyCode keyCode, Event*
 	{
 		m_focusHelper->onKeyReleased(keyCode,event);
 	}
+
+	if(keyCode == EventKeyboard::KeyCode::KEY_BACK)
+	{
+		m_statusFlag = true;
+		this->show();
+	}
 }
 
 bool LeftNotificationPanel::getLeftNotificationPanelStatus()
@@ -136,7 +144,6 @@ bool LeftNotificationPanel::getLeftNotificationPanelStatus()
 void LeftNotificationPanel::updateLeftNotification(std::string jsonString)
 {
 	m_focusHelper->clearFocusIndicator();
-
 	ValueMap resultData = ParseJson::getInfoDataFromJSON(jsonString);
 	int code = resultData["arg0"].asInt();
 	bool state = resultData["arg1"].asBool();
@@ -146,21 +153,29 @@ void LeftNotificationPanel::updateLeftNotification(std::string jsonString)
 	{
 		return;
 	}
-
 	for(int i = 0; i < m_itemPanel->getAllItems().size(); i++)
 	{
 		BaseItem* tempItem = m_itemPanel->getAllItems().at(i);
-		if(tempItem->getItemData()->getCode() == code && state)
+		if(tempItem->getItemData()->getCode() == code && state) // -------received the botification repeatly
 		{
 			m_focusHelper->showFocusIndicator();
+			m_statusFlag = false;
+			this->show();
 			return;
 		}
-		else if(tempItem->getItemData()->getCode() == code)
+		else if(tempItem->getItemData()->getCode() == code)  //------exsit, delete it!
 		{
 			m_itemPanel->removeItemByIndex(i);
 			m_focusHelper->showFocusIndicator(); //---------after deleted Item, should be re-show the indicator
+			m_statusFlag = true;
 			return ;
 		}
+	}
+
+	if(!state)
+	{
+		m_focusHelper->showFocusIndicator();
+		return;
 	}
 
 	ItemData* notificationItemData = ItemData::create();
@@ -168,18 +183,25 @@ void LeftNotificationPanel::updateLeftNotification(std::string jsonString)
 	if(code == CODE_SYSTEM_UPGRADE)
 	{
 		notificationItemData->setCode(code);
+		notificationItemData->setAction("com.togic.settings.activity.SettingNavigateActivity");
+		notificationItemData->setPackage("com.togic.settings");
+		notificationItemData->setClass("com.togic.settings.activity.SettingNavigateActivity");
 		notificationItemData->setForegroundImageFilePath(Left_UpdateIcon_Image);
 		notificationItemData->setHintText(Left_Item_Update_Title);
 	}
 	else if(code == CODE_CHASE_DRAMA)
 	{
 		notificationItemData->setCode(code);
+		notificationItemData->setAction( "togic.intent.action.LIVE_VIDEO_PROGRAM_MY_FAVOR");
 		notificationItemData->setForegroundImageFilePath(Left_LikeIcon_Image);
 		notificationItemData->setHintText(Left_Item_Like_Title);
 	}
 	else if(code == CODE_MOUNT_UNMOUNT)
 	{
 		notificationItemData->setCode(code);
+		notificationItemData->setAction("com.togic.filebrowser.MainActivity");
+		notificationItemData->setPackage("com.togic.filebrowser");
+		notificationItemData->setClass("com.togic.filebrowser.MainActivity");
 		notificationItemData->setForegroundImageFilePath(Left_USBIcon_Image);
 		notificationItemData->setHintText(Left_Item_USB_Insert_Title);
 	}
@@ -187,6 +209,7 @@ void LeftNotificationPanel::updateLeftNotification(std::string jsonString)
 	NotificationItem* notificationItem = NotificationItem::create();
 	notificationItem->setItemData(notificationItemData);
 	m_itemPanel->addItem(notificationItem);
+
 
 	if(m_focusHelper ->getSelectedItemIndex() == 0 && m_itemPanel->getAllItems().size() > 0)
 	{
@@ -196,6 +219,9 @@ void LeftNotificationPanel::updateLeftNotification(std::string jsonString)
 	{
 		m_focusHelper->showFocusIndicator();
 	}
+
+	m_statusFlag = false;
+	this->show();
 }
 
 int LeftNotificationPanel::getNotificationCount()

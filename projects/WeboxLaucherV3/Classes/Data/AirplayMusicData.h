@@ -35,7 +35,7 @@ public:
     int      m_eventType;
     int      m_intValue;
     int      m_longValue;
-    float    m_floatValue;
+    double    m_floatValue;
     string   m_stringValue;
     string   m_stringSession;
     string   m_stringCoverart;

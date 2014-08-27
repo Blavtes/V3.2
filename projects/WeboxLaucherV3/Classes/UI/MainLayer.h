@@ -13,6 +13,7 @@
 #include "FocusHelper.h"
 #include "TopBarPanel.h"
 #include "LeftNotificationPanel.h"
+#include "AirPlayPanel.h"
 #include "queue"
 #include "unistd.h"
 USING_NS_CC;
@@ -37,6 +38,7 @@ private:
 	FocusHelper* m_focusHelper; //middle
 	TopBarPanel* m_topBar;  //top
 	LeftNotificationPanel* m_notificationPanel;//left according to the Key-Menu
+	AirPlayPanel* m_airPlayPanel;
 };
 
 #endif /* MAINLAYER_H_ */

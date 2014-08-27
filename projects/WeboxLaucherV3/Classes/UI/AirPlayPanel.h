@@ -51,7 +51,7 @@ public:
 
     virtual bool init();
 
-    void showAirPlayInfo();
+    void showAirPlayInfo(std::string jsonString);
     void moveIconPosition(bool isMove);
     AirPlayInfo *getAirPlayInfo();
     ui::ImageView *getAirPlayIcon();

@@ -99,7 +99,7 @@ bool TopBarPanel::init()
 
     m_notificationHintImage = ui::ImageView::create();
     m_notificationHintImage->loadTexture(NORTIFICATION_HINT_IMG);
-    m_notificationHintImage->setPosition(Vec2(visibleSize.width-320, this->getContentSize().height/2-6));
+    m_notificationHintImage->setPosition(Vec2(visibleSize.width-325, this->getContentSize().height/2-3));
     m_notificationHintImage->setVisible(false);
     this->addChild(m_notificationHintImage);
 

@@ -26,8 +26,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Handler;
+import android.provider.ContactsContract.CommonDataKinds.Event;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.togic.weboxlauncher.model.MJsonInfo;
 import com.togic.weboxlauncher.util.LogUtil;
 import com.togic.weboxlauncher.util.MountedDevice;
 
@@ -313,9 +316,10 @@ public class NotificationManager {
             String string = intent.getStringExtra("Intent.action.musicairplay");
 
             if (string != null) {
-                  Log.d("#cocos2d-x->MusicBroadCastReceiver#","======= gson-->\n\r " + string);
+                  Log.d("@airplay","airplay --- " +  string);
+                  AirplayEvent ae = (new Gson()).fromJson(string, AirplayEvent.class);
                   for (NotificationMonitor monitor : mMonitors) {
-                      monitor.onReceiveJsonString(CODE_AIRPLAY_INFO, string);
+                      monitor.onReceiveJsonString(CODE_AIRPLAY_INFO, (new Gson()).toJson(new MJsonInfo(ae)));
                   }
                   return;
 			}
@@ -323,8 +327,22 @@ public class NotificationManager {
             boolean status = intent.getBooleanExtra("music_status", false);
             Log.d(TAG, "MusicBroadCastReceiver " + status);
             for (NotificationMonitor monitor : mMonitors) {
-                 monitor.onReceiveJsonString(CODE_AIRPLAY_STATUS, status + "");
+                 monitor.onReceiveJsonString(CODE_AIRPLAY_STATUS,  (new Gson()).toJson(new MJsonInfo(status)));
              }
         }
+    }
+    
+    private class AirplayEvent {
+        private int eventType = -1;
+        private int intValue = -1;
+        private long longValue = -1;
+        private float floatValue = -1.0f;
+        private String stringValue = null;
+        private String stringSession = null;
+        private String stringCoverart = null;
+        private String stringTitle = null;
+        private String stringAlbum = null;
+        private String stringArtist = null;
+        private boolean booleanValue = false;
     }
 }

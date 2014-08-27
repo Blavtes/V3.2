@@ -64,3 +64,18 @@ void NotificationItem::setBackgroundImage(std::string backgroundImageFilePath)
 		 m_hintText->setPosition(Vec2(m_itemSize.width - textSize.width/2 -10,m_itemSize.height/2));
 	 }
  }
+
+
+ void NotificationItem::onEnterClicked(bool isLongPressed)
+ {
+ 	log("Call The NotificationItem!------------------------xjx");
+ 	if(m_itemData->getCode() == 10 || m_itemData->getCode() == 12 )
+ 	{
+ 		JniUtil::startActivityJNI(m_itemData->getAction().c_str(),m_itemData->getPackage().c_str(),m_itemData->getClass().c_str());
+ 	}
+ 	else if(m_itemData->getCode() == 11 )
+ 	{
+ 		JniUtil::startActivityJNI(m_itemData->getAction().c_str(),nullptr,nullptr);
+ 	}
+
+ }

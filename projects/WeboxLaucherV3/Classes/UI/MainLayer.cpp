@@ -13,7 +13,6 @@
 #include "Utils/HandleMessageQueue.h"
 #include "Utils/JniUtil.h"
 #include "ToastTextView.h"
-
 #include "json/rapidjson.h"
 #include "json/document.h"
 
@@ -26,6 +25,7 @@ MainLayer::MainLayer()
 	m_backgroundImageView = nullptr;
 	m_topBar = nullptr;
 	m_notificationPanel = nullptr;
+	m_airPlayPanel = nullptr;
 }
 
 MainLayer::~MainLayer()
@@ -74,6 +74,10 @@ bool MainLayer::init()
     m_notificationPanel->setPosition(Vec2(-notificationPanelSize.width,0));
     this->addChild(m_notificationPanel,20);
 
+    m_airPlayPanel = AirPlayPanel::create();
+    m_airPlayPanel->setPosition(Vec2::ZERO);
+    this->addChild(m_airPlayPanel);
+
 	auto listener = EventListenerKeyboard::create();
 	listener->onKeyPressed = CC_CALLBACK_2(MainLayer::onKeyPressed,this);
 	listener->onKeyReleased= CC_CALLBACK_2(MainLayer::onKeyReleased,this);
@@ -117,15 +121,8 @@ void MainLayer::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
 	{
 		log("MainLayer----the key Menu is clicked!---------------------------xjx");
 		m_notificationPanel ->show();
-		if(m_notificationPanel->getLeftNotificationPanelStatus())
-		{
-			m_focusHelper->clearFocusIndicator();
-		}
-		else
-		{
-			m_focusHelper->showFocusIndicator();
-		}
 	}
+
 }
 
 void MainLayer::update(float dt)
@@ -134,7 +131,11 @@ void MainLayer::update(float dt)
 	m_topBar->updateTimeState();
 	int messageCount = m_notificationPanel->getNotificationCount();
 	m_topBar->updateNotificationMessageCountState(messageCount);
-
+	m_airPlayPanel->moveIconPosition(messageCount != 0);
+	if(m_notificationPanel->getLeftNotificationPanelStatus())
+	{
+		m_focusHelper->clearFocusIndicator();
+	}
 	if(m_focusHelper ->getSelectedItemIndex() == 0 && m_itemPanel->getAllItems().size() > 0 )
 	{
 		m_focusHelper->initFocusIndicator();

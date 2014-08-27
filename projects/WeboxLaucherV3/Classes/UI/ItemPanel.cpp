@@ -462,6 +462,11 @@ void ItemPanel::addDefaultAppItem()
 
 void ItemPanel::onEnterClicked(int clickedItemIndex, bool isLongPressed) //事件的分开处理
 {
+	if(clickedItemIndex <=0 || clickedItemIndex > m_itemVector->size())
+	{
+		log("clickedItemIndex is invalid!!!!!!!---------@show");
+		return;
+	}
 	BaseItem* clickedItem = m_itemVector->at(clickedItemIndex-1);
 	AppItem* clickedAppItem = dynamic_cast<AppItem*>(clickedItem);
 	NotificationItem*  clickedNotificationItem =  dynamic_cast<NotificationItem*>(clickedItem);
@@ -471,7 +476,11 @@ void ItemPanel::onEnterClicked(int clickedItemIndex, bool isLongPressed) //事�
 	}
 	else if(clickedNotificationItem != NULL)
 	{
-		this->removeItemByObject(clickedNotificationItem);
+		clickedNotificationItem->onEnterClicked(false);
+//		if(clickedNotificationItem->getItemData()->getCode() == 10)
+//		{
+//			this->removeItemByObject(clickedNotificationItem);
+//		}
 	}
 	else
 	{

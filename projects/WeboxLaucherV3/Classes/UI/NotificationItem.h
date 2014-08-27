@@ -21,6 +21,7 @@ public:
 	void setBackgroundImage(std::string backgroundImageFilePath);
 	void setForegroundImage(std::string forgroundImageFilePath);
     void setHintText(std::string hintText);
+	virtual void onEnterClicked(bool isLongPressed);
 
 protected:
 

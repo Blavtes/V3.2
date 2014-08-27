@@ -63,7 +63,7 @@ bool AirplayMusicData::init(const rapidjson::Value& jsonItem)
 		}
 		if(jsonItem.HasMember("longValue"))
 		{
-			m_longValue = jsonItem["longValue"].GetInt64();
+			m_longValue = jsonItem["longValue"].GetInt();
 		}
 		if (jsonItem.HasMember("floatValue"))
 		{

@@ -522,6 +522,8 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 		runOnGLThread(new Runnable() {
 			@Override
 			public void run() {
+				Log.v("@airplay============================", json);
+				nativeJsonString(json,"AirPlay");
 				// @xjx
 				// nativeSendAirPlayMusic(code, json);
 				

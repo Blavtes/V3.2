@@ -152,7 +152,7 @@ typedef enum{
 	Scroll_to_down
 }ScrollDirection;
 
-#define ACTION_DURATION_TIME  1
+#define ACTION_DURATION_TIME  0.2
 
 
 

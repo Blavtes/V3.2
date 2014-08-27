@@ -16,6 +16,8 @@
 
 #include "AirPlayPanel.h"
 #include "PrefixConst.h"
+#include "Utils/HandleMessageQueue.h"
+#include "Utils/ParseJson.h"
 
 AirPlayInfo::AirPlayInfo()
 : m_author(nullptr)
@@ -154,12 +156,13 @@ bool AirPlayPanel::init()
 
     m_airPlayImage = ui::ImageView::create();
     m_airPlayImage->loadTexture(AirPlay_Icon);
-    m_airPlayImage->setAnchorPoint(Vec2::ZERO);
-    m_airPlayImage->setPosition(Vec2(880.0f, visibleSize.height - 99.0f));
+    m_airPlayImage->setAnchorPoint(Vec2(0.5, 0.5));
+    m_airPlayImage->setPosition(Vec2(960.0f, visibleSize.height - 75.0f));
     this->addChild(m_airPlayImage);
-
     m_airPlayImage->setVisible(false);
-    showAirPlayInfo();
+
+    HandleMessageQueue* handleMessage = HandleMessageQueue::getInstace();
+    handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(AirPlayPanel::showAirPlayInfo,this),"AirPlay");
 
     return true;
 }
@@ -167,15 +170,12 @@ bool AirPlayPanel::init()
 
 void AirPlayPanel::moveIconPosition(bool isMove)
 {
-
-    m_airPlayImage->stopAllActions();
     float offset = 0;
     if (isMove)
     {
-        offset = -62.0f;
+        offset = -55.0f;
     }
-    MoveTo *move = MoveTo::create(0.25f, Vec2(m_airPlayImage->getPosition().x + offset,m_airPlayImage->getPosition().y));
-   m_airPlayImage->runAction(move);
+    m_airPlayImage->setPosition(Vec2(960 + offset,m_airPlayImage->getPosition().y));
 }
 
 ui::ImageView* AirPlayPanel::getAirPlayIcon()
@@ -188,12 +188,30 @@ AirPlayInfo *AirPlayPanel::getAirPlayInfo()
     return m_showInfo;
 }
 
-void AirPlayPanel::showAirPlayInfo()
+void AirPlayPanel::showAirPlayInfo(std::string jsonString)
 {
+	log("AirPlayPanel:::::Receive data from java notification is %s------------@airplay",jsonString.c_str());
+	 Vector<AirplayMusicData*> airplayMusicData;
+	 bool flag = ParseJson::getAirPlayMusicDataFromJSON(jsonString,airplayMusicData);
+	 if(!flag)
+	 {
+		    m_airPlayImage->setVisible(false);
+		    return;
+	 }
+	 if(airplayMusicData.size() == 0)
+	 {
+		 log("No airplayMusicData parsed from JSON-----------------------------@airplay");
+		 return;
+	 }
+	 AirplayMusicData* musicData = airplayMusicData.at(0);
+	 m_showInfo->updataShowInfo(musicData);
+
     if ( m_showInfo->getAuthorLabel()->getString().empty()  && m_showInfo->getSongNameLabel()->getString().empty())
     {
         return;
     }
+	 log("data received successful!-----------------------------@airplay");
+	m_airPlayImage->setVisible(true);
     float authorWidth = m_showInfo->getAuthorLabel()->getContentSize().width;
     float songWidth = m_showInfo->getSongNameLabel()->getContentSize().width;
     float offset = 0.0f;
@@ -206,11 +224,10 @@ void AirPlayPanel::showAirPlayInfo()
     {
         scaleEnd = songWidth;
     }
-
     offset = 112.0f+ scaleEnd + 28.0f;
     m_showInfo->getBackground()->setScaleX(offset / 330.0f);
-    m_airPlayImage->setVisible(true);
     m_showInfo->stopAllActions();
+    log("Begin to run Action, the position X is : %f------------------------------------@airplay",  offset);
     MoveTo *movebegin = MoveTo::create(0.5f, Vec2(40, 20));
     MoveTo *moveStop = MoveTo::create(3.0f, Vec2(40, 20));
     MoveTo *moveEnd = MoveTo::create(0.5f, Vec2(-offset, 20));

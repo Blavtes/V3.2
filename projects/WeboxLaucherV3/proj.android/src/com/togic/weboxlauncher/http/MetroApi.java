@@ -110,7 +110,7 @@ public class MetroApi {
                 fileName);
 
         final HttpGet get = mHttpApi.createHttpGet(url);
-        LogUtil.i(TAG, "http url :" + get.getURI());
+        LogUtil.i("@metro", "url : " + url);
         if (!CommonUtil.isEmptyString(lastModified)) {
             get.addHeader("If-Modified-Since", lastModified);
         }

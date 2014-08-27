@@ -28,6 +28,7 @@ public:
 	void moveFocusIndicatorToDown();
 	void moveFocusIndicatorToUp();
 	void adjustIndicatorAndPanelPosition(Vec2);
+	void adjustIndicatorSize();
 	void updateItemView();
 	void showFocusIndicator();
 	void clearFocusIndicator();

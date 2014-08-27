@@ -148,6 +148,11 @@ ValueMap ParseJson::getInfoDataFromJSON(std::string jsonString)
 	        itemVector.pushBack(musicData);
 	      }
 	  }
+	  else if(items.IsBool())
+	  {
+		  log("json is a bool value!===================@airplay");
+		  return items.GetBool();
+	  }
 	  else if(items.IsObject())
 	  {
 		  AirplayMusicData * musicData = AirplayMusicData::create(items);

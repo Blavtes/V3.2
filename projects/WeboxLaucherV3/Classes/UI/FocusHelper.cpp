@@ -10,8 +10,8 @@
 
 FocusHelper::FocusHelper()
 {
-	m_itemView = NULL;
-	m_focusIndicator = NULL;
+	m_itemView = nullptr;
+	m_focusIndicator = nullptr;
 	m_focusPaddingX = 26;
 	m_focusPaddingY = 26;
 	m_selectedItemIndex =0;
@@ -138,11 +138,11 @@ void FocusHelper::moveFocusIndicatorToRight()
 		Vec2 destItemPos=destItem->getPosition();
 //		m_focusIndicator->setContentSize(Size(destItemSize.width + m_focusPaddingX*2,destItemSize.height+m_focusPaddingY*2));
 		m_deltaSize = Size(destItemSize.width + m_focusPaddingX*2,destItemSize.height+m_focusPaddingY*2) - m_focusIndicator->getContentSize();
-
-		SizeTo* sizeAdjust = SizeTo::create(1.5,destItemSize.width,destItemSize.height);
-		m_focusIndicator->runAction(sizeAdjust);
-
+//
+//		SizeTo* sizeAdjust = SizeTo::create(1.5,destItemSize.width,destItemSize.height);
+//		m_focusIndicator->runAction(sizeAdjust);
 		this->adjustIndicatorAndPanelPosition(destItemPos);
+		this->adjustIndicatorSize();
 		this->onFocusChanged(curItem,destItem);
 	}
 	return;
@@ -159,14 +159,11 @@ void FocusHelper::adjustIndicatorAndPanelPosition(Vec2 pos)
     if(nextIndicatorPos.x >= visibleSize.width - 170)
     {
         MoveTo* indicatorMove = MoveTo::create(0.2,pos);
-//        EaseSineOut* sineActionIndicator = EaseSineOut::create(indicatorMove);
          m_focusIndicator->runAction(indicatorMove);
 
 		MoveTo* panelMove = MoveTo::create(3,Vec2(visibleSize.width - 170-pos.x,0));
-//		EaseSineOut* sineActionPanel= EaseSineOut::create(panelMove);
 		EaseExponentialOut* sineActionPanel= EaseExponentialOut::create(panelMove);
 		sineActionPanel->setDuration(1);
-//		EaseRateAction * sineActionPanel= EaseRateAction::create(panelMove);
 		m_itemView->getInnerContainer()->runAction(sineActionPanel);
     }
     else if(nextIndicatorPos.x <= 170)
@@ -174,21 +171,27 @@ void FocusHelper::adjustIndicatorAndPanelPosition(Vec2 pos)
         MoveTo* indicatorMove = MoveTo::create(0.2,pos);
        m_focusIndicator->runAction(indicatorMove);
 
-     	MoveTo* panelMove = MoveTo::create(ACTION_DURATION_TIME,Vec2(  - pos.x+170,0));
-		EaseExponentialOut* sineActionPanel= EaseExponentialOut::create(panelMove);
-		sineActionPanel->setDuration(1);
-		m_itemView->getInnerContainer()->runAction(sineActionPanel);
+       if(panelPos.x != 0 )
+       {
+			MoveTo* panelMove = MoveTo::create(ACTION_DURATION_TIME,Vec2(  - pos.x+170,0));
+			EaseExponentialOut* sineActionPanel= EaseExponentialOut::create(panelMove);
+			sineActionPanel->setDuration(1);
+			m_itemView->getInnerContainer()->runAction(sineActionPanel);
+       }
     }
     else
     {
         MoveTo* indicatorMove = MoveTo::create(0.1,pos);
          m_focusIndicator->runAction(indicatorMove);
     }
+}
 
+void FocusHelper::adjustIndicatorSize()
+{
+	//
 	 Director::getInstance()->getScheduler()->unschedule(schedule_selector(FocusHelper::updateIndicatorSize),this);  //---------pause the former scheduler
-     log("delta size is width:%f----height:%f=================@SizeTo",m_deltaSize.width,m_deltaSize.height);
+    log("delta size is width:%f----height:%f=================@SizeTo",m_deltaSize.width,m_deltaSize.height);
 	 Director::getInstance()->getScheduler()->schedule(schedule_selector(FocusHelper::updateIndicatorSize),this,0.005,9,0,false);//---------------start a new scheduler
-
 }
 
 void FocusHelper::moveFocusIndicatorToLeft()
@@ -240,7 +243,8 @@ void FocusHelper::moveFocusIndicatorToLeft()
 		Vec2 destItemPos=destItem->getPosition();
 //		m_focusIndicator->setContentSize(Size(destItemSize.width + m_focusPaddingX*2,destItemSize.height+m_focusPaddingY*2));
 		m_deltaSize = Size(destItemSize.width + m_focusPaddingX*2,destItemSize.height+m_focusPaddingY*2) - m_focusIndicator->getContentSize();
-		adjustIndicatorAndPanelPosition(destItemPos);
+		this->adjustIndicatorAndPanelPosition(destItemPos);
+		this->adjustIndicatorSize();
 		this->onFocusChanged(curItem,destItem);
 	}
 
@@ -330,6 +334,7 @@ void FocusHelper::showFocusIndicator()
 	int itemCount = m_itemView->getAllItems().size();
 	if(itemCount == 0)
 	{
+		m_selectedItemIndex = 0;
 		m_focusIndicator->setVisible(false);
 		return;
 	}
@@ -339,6 +344,11 @@ void FocusHelper::showFocusIndicator()
 		if(m_selectedItemIndex > itemCount)
 		{
 			m_selectedItemIndex = m_itemView->getAllItems().size();
+			//-------get the former size, and calculate the m_deltaSize
+		}
+		else
+		{
+			m_deltaSize = Size::ZERO;
 		}
 		BaseItem* slectedItem	=  m_itemView->getAllItems().at(m_selectedItemIndex-1);
 		slectedItem->setFocused(true);
@@ -347,7 +357,6 @@ void FocusHelper::showFocusIndicator()
 		Size itemSize = slectedItem->getSize();
 		Vec2  pos =slectedItem->getPosition();
 		m_focusIndicator->setContentSize(Size(itemSize.width + m_focusPaddingX*2,itemSize.height +m_focusPaddingY*2));
-//		m_focusIndicator->setPosition(pos);
 		this->adjustIndicatorAndPanelPosition(pos);
 		m_focusIndicator->setVisible(true);
 	}
@@ -386,6 +395,10 @@ void FocusHelper::updateItemView()
 
 void FocusHelper::onEnterClicked(bool isLongPressed)
 {
+	if(m_focusIndicator == nullptr || m_selectedItemIndex == 0)
+	{
+		return;
+	}
 	m_focusIndicator->setVisible(false);
 	m_itemView->onEnterClicked(m_selectedItemIndex,isLongPressed);
 	this->showFocusIndicator();
@@ -436,7 +449,8 @@ void FocusHelper::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 
 void FocusHelper::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
 {
-	 switch(keyCode){
+	 switch(keyCode)
+	 {
 	 case EventKeyboard::KeyCode::KEY_DPAD_CENTER:
 		 if(m_pressedCount <=  LONGPRESS_DEFALUTCOUNT)
 		 {
