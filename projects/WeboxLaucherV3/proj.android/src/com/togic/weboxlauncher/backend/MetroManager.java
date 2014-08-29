@@ -390,11 +390,13 @@ public class MetroManager extends BaseManager implements LocalMonitor,
 	}
 
 	MJsonInfo mJsonInfo;
+	String mBackGroundUrl = null;
 	mmcallback mPcall;
 	int vesion = -1;
 
 	private void notifyMetroDate(IMetroCallback cbk) {
 		try {
+			cbk.onRefreshMetroDate((new Gson()).toJson(new MJsonInfo(mBackGroundUrl)));
 			cbk.onRefreshMetroDate((new Gson()).toJson(mJsonInfo));
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
@@ -434,9 +436,10 @@ public class MetroManager extends BaseManager implements LocalMonitor,
 					vesion = md.version;
 
 					mJsonInfo = new MJsonInfo(md.toMinfos());
+					mBackGroundUrl = md.background;
 					for (IInterface cbk : mMetroCallbacks.getCallbacks()) {
 						try {
-							((IMetroCallback) cbk).onRefreshMetroDate((new Gson()).toJson(new MJsonInfo(md.background)));
+							((IMetroCallback) cbk).onRefreshMetroDate((new Gson()).toJson(new MJsonInfo(mBackGroundUrl)));
 							String str = (new Gson()).toJson(mJsonInfo);
 							((IMetroCallback) cbk).onRefreshMetroDate(str);
 						} catch (RemoteException e) {

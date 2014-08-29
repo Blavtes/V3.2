@@ -23,7 +23,7 @@ def get_num_of_cpu():
 			return cpuinfo.cpu._getNCPUs()
 	except Exception:
 		print "Can't know cpuinfo, use default 1 cpu"
-		return 1
+		return 2
 
 def check_environment_variables_sdk():
     ''' Checking the environment ANDROID_SDK_ROOT, which will be used for building
