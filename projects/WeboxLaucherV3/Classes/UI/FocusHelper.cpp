@@ -56,7 +56,7 @@ void FocusHelper::bindItemPanel(ItemPanel* itemPanel,std::string focusIndicatorI
 		CC_SAFE_RETAIN(itemPanel);
 		CC_SAFE_RELEASE(m_itemView);
 		m_itemView = itemPanel;
-		if(m_itemView->getAllItems().size() > 0 )
+		if(m_itemView->getMainItemCount() > 0 && m_itemView->getAllItems().size() > 0 )
 		{
 			this->initFocusIndicator(focusIndicatorImageFilePath);
 		}
@@ -86,6 +86,11 @@ void FocusHelper::initFocusIndicator(std::string focusIndicatorImageFilePath)
 int FocusHelper::getSelectedItemIndex()
 {
 	return m_selectedItemIndex;
+}
+
+void  FocusHelper::setSelectedItemIndex(int selectedIndex)
+{
+	m_selectedItemIndex = selectedIndex;
 }
 
 
@@ -137,18 +142,14 @@ void FocusHelper::moveFocusIndicatorToRight()
 		Size destItemSize = destItem->getSize();
 		Vec2 destItemPos=destItem->getPosition();
 //		m_focusIndicator->setContentSize(Size(destItemSize.width + m_focusPaddingX*2,destItemSize.height+m_focusPaddingY*2));
-		m_deltaSize = Size(destItemSize.width + m_focusPaddingX*2,destItemSize.height+m_focusPaddingY*2) - m_focusIndicator->getContentSize();
-//
-//		SizeTo* sizeAdjust = SizeTo::create(1.5,destItemSize.width,destItemSize.height);
-//		m_focusIndicator->runAction(sizeAdjust);
-		this->adjustIndicatorAndPanelPosition(destItemPos);
-		this->adjustIndicatorSize();
+		Size indicatorSize =  Size(destItemSize.width + m_focusPaddingX*2,destItemSize.height+m_focusPaddingY*2);
+		this->adjustIndicatorAndPanelPosition(destItemPos,indicatorSize);
 		this->onFocusChanged(curItem,destItem);
 	}
 	return;
 }
 
-void FocusHelper::adjustIndicatorAndPanelPosition(Vec2 pos)
+void FocusHelper::adjustIndicatorAndPanelPosition(Vec2 pos, Size indicatorSize)
 {
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	m_focusIndicator->stopAllActions();  //-------------------------stop former Action, otherwise the new Action will be ignored!
@@ -156,20 +157,20 @@ void FocusHelper::adjustIndicatorAndPanelPosition(Vec2 pos)
 	Vec2 indicatorPos = m_focusIndicator->getPosition();
 	Vec2 panelPos = m_itemView->getInnerContainer()->getPosition();
 	Vec2 nextIndicatorPos = panelPos+pos;
+	SizeTo* sizeAdjust = SizeTo::create(ACTION_DURATION_TIME,indicatorSize.width,indicatorSize.height);
     if(nextIndicatorPos.x >= visibleSize.width - 170)
     {
-        MoveTo* indicatorMove = MoveTo::create(0.2,pos);
-         m_focusIndicator->runAction(indicatorMove);
+        MoveTo* indicatorMove = MoveTo::create(ACTION_DURATION_TIME,pos);
+        m_focusIndicator->runAction(Spawn::createWithTwoActions(sizeAdjust,indicatorMove));
 
 		MoveTo* panelMove = MoveTo::create(3,Vec2(visibleSize.width - 170-pos.x,0));
 		EaseExponentialOut* sineActionPanel= EaseExponentialOut::create(panelMove);
-		sineActionPanel->setDuration(1);
 		m_itemView->getInnerContainer()->runAction(sineActionPanel);
     }
     else if(nextIndicatorPos.x <= 170)
     {
-        MoveTo* indicatorMove = MoveTo::create(0.2,pos);
-       m_focusIndicator->runAction(indicatorMove);
+        MoveTo* indicatorMove = MoveTo::create(ACTION_DURATION_TIME,pos);
+        m_focusIndicator->runAction(Spawn::createWithTwoActions(sizeAdjust,indicatorMove));
 
        if(panelPos.x != 0 )
        {
@@ -181,18 +182,11 @@ void FocusHelper::adjustIndicatorAndPanelPosition(Vec2 pos)
     }
     else
     {
-        MoveTo* indicatorMove = MoveTo::create(0.1,pos);
-         m_focusIndicator->runAction(indicatorMove);
+        MoveTo* indicatorMove = MoveTo::create(ACTION_DURATION_TIME,pos);
+        m_focusIndicator->runAction(Spawn::createWithTwoActions(sizeAdjust,indicatorMove));
     }
 }
 
-void FocusHelper::adjustIndicatorSize()
-{
-	//
-	 Director::getInstance()->getScheduler()->unschedule(schedule_selector(FocusHelper::updateIndicatorSize),this);  //---------pause the former scheduler
-    log("delta size is width:%f----height:%f=================@SizeTo",m_deltaSize.width,m_deltaSize.height);
-	 Director::getInstance()->getScheduler()->schedule(schedule_selector(FocusHelper::updateIndicatorSize),this,0.005,9,0,false);//---------------start a new scheduler
-}
 
 void FocusHelper::moveFocusIndicatorToLeft()
 {
@@ -242,9 +236,8 @@ void FocusHelper::moveFocusIndicatorToLeft()
 		Size destItemSize = destItem->getSize();
 		Vec2 destItemPos=destItem->getPosition();
 //		m_focusIndicator->setContentSize(Size(destItemSize.width + m_focusPaddingX*2,destItemSize.height+m_focusPaddingY*2));
-		m_deltaSize = Size(destItemSize.width + m_focusPaddingX*2,destItemSize.height+m_focusPaddingY*2) - m_focusIndicator->getContentSize();
-		this->adjustIndicatorAndPanelPosition(destItemPos);
-		this->adjustIndicatorSize();
+		Size indicatorSize =  Size(destItemSize.width + m_focusPaddingX*2,destItemSize.height+m_focusPaddingY*2);
+		this->adjustIndicatorAndPanelPosition(destItemPos,indicatorSize);
 		this->onFocusChanged(curItem,destItem);
 	}
 
@@ -278,8 +271,8 @@ void FocusHelper::moveFocusIndicatorToDown()
 		}
 		else if( abs(nextItemPos.y - curItemPos.y) > heightThreshold && abs(nextItemPos.x - curItemPos.x) < MARGIN_MIDDLE)
 		{
+			m_focusIndicator->stopAllActions();
 			m_focusIndicator->setContentSize(Size(nextItemSize.width + m_focusPaddingX*2,nextItemSize.height+m_focusPaddingY*2));
-//			m_focusIndicator->setPosition(nextItemPos);
 	     	MoveTo* focusindicatorMove = MoveTo::create(ACTION_DURATION_TIME,nextItemPos);
 	     	m_focusIndicator->runAction(focusindicatorMove);
 			m_selectedItemIndex = tempFocusIndex;
@@ -317,6 +310,7 @@ void FocusHelper::moveFocusIndicatorToUp()
 		}
 		else if( abs(nextItemPos.y - curItemPos.y) > heightThreshold && abs(nextItemPos.x - curItemPos.x) < MARGIN_MIDDLE)
 		{
+			m_focusIndicator->stopAllActions();
 			m_focusIndicator->setContentSize(Size(nextItemSize.width + m_focusPaddingX*2,nextItemSize.height+m_focusPaddingY*2));
 //			m_focusIndicator->setPosition(nextItemPos);
 	     	MoveTo* focusindicatorMove = MoveTo::create(ACTION_DURATION_TIME,nextItemPos);
@@ -334,6 +328,7 @@ void FocusHelper::showFocusIndicator()
 	int itemCount = m_itemView->getAllItems().size();
 	if(itemCount == 0)
 	{
+		log("FocusHelper::the items is o-----------------------------------@clear!!!");
 		m_selectedItemIndex = 0;
 		m_focusIndicator->setVisible(false);
 		return;
@@ -346,18 +341,16 @@ void FocusHelper::showFocusIndicator()
 			m_selectedItemIndex = m_itemView->getAllItems().size();
 			//-------get the former size, and calculate the m_deltaSize
 		}
-		else
-		{
-			m_deltaSize = Size::ZERO;
-		}
 		BaseItem* slectedItem	=  m_itemView->getAllItems().at(m_selectedItemIndex-1);
 		slectedItem->setFocused(true);
 		this->onFocusChanged(nullptr,slectedItem);
 
 		Size itemSize = slectedItem->getSize();
 		Vec2  pos =slectedItem->getPosition();
-		m_focusIndicator->setContentSize(Size(itemSize.width + m_focusPaddingX*2,itemSize.height +m_focusPaddingY*2));
-		this->adjustIndicatorAndPanelPosition(pos);
+//		m_focusIndicator->setContentSize(Size(itemSize.width + m_focusPaddingX*2,itemSize.height +m_focusPaddingY*2));
+		Size indicatorSize = Size(itemSize.width + m_focusPaddingX*2,itemSize.height +m_focusPaddingY*2);
+		this->adjustIndicatorAndPanelPosition(pos,indicatorSize);
+		log("FocusHelper::showFocusIndicator-222222----------------------------------@clear!!!");
 		m_focusIndicator->setVisible(true);
 	}
 
@@ -385,8 +378,6 @@ void FocusHelper::updateItemView()
 	Vec2 panelPos = m_itemView->getInnerContainer()->getPosition();
 	if(lastItemPos.x + panelPos.x < m_itemView->getContentSize().width -170)
 	{
-		MoveBy* panelMove = MoveBy::create(ACTION_DURATION_TIME,Vec2(visibleSize.width - 170-lastItemPos.x,0));
-
 		Size curInnerContainerSize =  m_itemView->getInnerContainerSize();
 		Size newInnerContainerSize = Size(lastItemPos.x +lastItemSize.width/2 + 40,  curInnerContainerSize.height);
 		m_itemView->setInnerContainerSize(newInnerContainerSize);
@@ -462,13 +453,6 @@ void FocusHelper::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
 	 default:
 		 break;
 	 }
-}
-
-void FocusHelper::updateIndicatorSize(float dt)
-{
-	//
-	log("FocusIndicator size is width:%f----height:%f=================@SizeTo",m_focusIndicator->getContentSize().width,m_focusIndicator->getContentSize().height);
-	m_focusIndicator->setContentSize(m_focusIndicator->getContentSize()  + m_deltaSize*0.1);
 }
 
 

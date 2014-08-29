@@ -24,6 +24,10 @@ public:
 	bool getLeftNotificationPanelStatus();
     void onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event);
     void onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event);
+    virtual bool onTouchBegan(Touch *touch, Event *unused_event);
+    virtual void onTouchMoved(Touch *touch, Event *unused_event);
+    virtual void onTouchEnded(Touch *touch, Event *unused_event);
+    virtual void onTouchCancelled(Touch *touch, Event *unused_event);
 	void show();
 	void updateLeftNotification( std::string jsonString);
 	int getNotificationCount();

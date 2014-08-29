@@ -36,6 +36,7 @@ public:
 
 	void addDefaultMainItemByPlistFile(std::string filePath);
 	void addDefaultAppItem();
+	int getMainItemCount();
 private:
 	Vector<BaseItem*> * m_itemVector;
 	int m_curColumnWidth;

@@ -44,6 +44,7 @@ bool BaseItem::init()
 
 	m_itemData = ItemData::create();
 	m_itemData->retain();
+
 	return true;
 }
 
@@ -105,6 +106,7 @@ void BaseItem::setHintText(std::string text)
  void BaseItem::onEnterClicked(bool isLongPressed)
 {
 	//....processed this event in the sub-class;
+	 log("@touch-------------------------Call the sub class !!!!!");
 }
 
 

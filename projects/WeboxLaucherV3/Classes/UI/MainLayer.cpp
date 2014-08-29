@@ -9,6 +9,7 @@
 #include "BaseItem.h"
 #include "MainItem.h"
 #include "AppItem.h"
+#include "ClearnAppItem.h"
 #include "Utils/ParseJson.h"
 #include "Utils/HandleMessageQueue.h"
 #include "Utils/JniUtil.h"
@@ -49,44 +50,50 @@ bool MainLayer::init()
 	}
 
 	Size visibleSize=Director::getInstance()->getVisibleSize();
-    m_backgroundImageView =ui:: ImageView::create(MAIN_LAYER_BACKGROUND_IMG);
-    m_backgroundImageView->setPosition(Vec2(visibleSize.width/2,visibleSize.height/2));
-    this->addChild(m_backgroundImageView,0);
+  	 m_backgroundImageView =ui:: ImageView::create(MAIN_LAYER_BACKGROUND_IMG);
+  	 m_backgroundImageView->setPosition(Vec2(visibleSize.width/2,visibleSize.height/2));
+  	 this->addChild(m_backgroundImageView,0);
 
-    m_itemPanel=ItemPanel::create();
+  	 m_itemPanel=ItemPanel::create();
 	m_itemPanel->setItemPanelSize(ITEM_PANEL_SIZE);
 	m_itemPanel->setPosition(Vec2::ZERO);
-    this->addChild(m_itemPanel,1);
+	this->addChild(m_itemPanel,1);
 
-    m_itemPanel->addDefaultMainItemByPlistFile("plist/mainData.plist");
-    log("Add the local Resource Completely!-------------------------@xjx------");
+	m_focusHelper = FocusHelper::create();
+	m_focusHelper->bindItemPanel(m_itemPanel);  //delay bind
+	m_focusHelper->retain();
 
-    m_focusHelper = FocusHelper::create();
-    m_focusHelper->bindItemPanel(m_itemPanel);  //delay bind
-    m_focusHelper->retain();
+//	this->addTestItems(0);
 
-    m_topBar = TopBarPanel::create();
+	m_topBar = TopBarPanel::create();
 	m_topBar->setPosition(Vec2(10,visibleSize.height-120));
-    this->addChild(m_topBar,1);
+	this->addChild(m_topBar,1);
 
-    m_notificationPanel = LeftNotificationPanel::create();
-    Size notificationPanelSize = m_notificationPanel->getContentSize();
-    m_notificationPanel->setPosition(Vec2(-notificationPanelSize.width,0));
-    this->addChild(m_notificationPanel,20);
+	m_notificationPanel = LeftNotificationPanel::create();
+	Size notificationPanelSize = m_notificationPanel->getContentSize();
+	m_notificationPanel->setPosition(Vec2(-notificationPanelSize.width,0));
+	this->addChild(m_notificationPanel,20);
 
-    m_airPlayPanel = AirPlayPanel::create();
-    m_airPlayPanel->setPosition(Vec2::ZERO);
-    this->addChild(m_airPlayPanel);
+	m_airPlayPanel = AirPlayPanel::create();
+	m_airPlayPanel->setPosition(Vec2::ZERO);
+	this->addChild(m_airPlayPanel);
 
-	auto listener = EventListenerKeyboard::create();
-	listener->onKeyPressed = CC_CALLBACK_2(MainLayer::onKeyPressed,this);
-	listener->onKeyReleased= CC_CALLBACK_2(MainLayer::onKeyReleased,this);
-	CCDirector::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener,this);
+	auto listenerKeyboard = EventListenerKeyboard::create();
+	listenerKeyboard->onKeyPressed = CC_CALLBACK_2(MainLayer::onKeyPressed,this);
+	listenerKeyboard->onKeyReleased= CC_CALLBACK_2(MainLayer::onKeyReleased,this);
+	CCDirector::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listenerKeyboard,this);
+
+	this->setTouchMode(Touch::DispatchMode::ONE_BY_ONE);
+	auto listenerTouch = EventListenerTouchOneByOne::create();
+	listenerTouch->onTouchBegan = CC_CALLBACK_2(MainLayer::onTouchBegan,this);
+	listenerTouch->onTouchEnded = CC_CALLBACK_2(MainLayer::onTouchEnded,this);
+	CCDirector::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listenerTouch,this);
 
 	HandleMessageQueue* handleMessage = HandleMessageQueue::getInstace();
 	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(MainLayer::updateCIBNAuthorization,this),"Cibn");
 
 	this->scheduleUpdate();
+	this->scheduleOnce(schedule_selector(MainLayer::addTestItems),3);
 	return true;
 }
 
@@ -125,6 +132,59 @@ void MainLayer::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
 
 }
 
+
+bool MainLayer::onTouchBegan(Touch *touch, Event *unusedEvent)
+{
+	 log("@touch-------------------------MainLayer::Call the onTouchBegan!");
+//	 if(!m_notificationPanel->getLeftNotificationPanelStatus())
+//	 {
+//		 //
+//		 m_itemPanel->setTouchEnabled(false);
+//		 return false;
+//	 }
+//	 else
+//	 {
+//		 m_itemPanel->setTouchEnabled(true);
+//	 }
+	 return true;
+}
+
+ void MainLayer::onTouchMoved(Touch *touch, Event *unused_event)
+{
+	return;
+}
+ void MainLayer::onTouchCancelled(Touch *touch, Event *unused_event)
+{
+	return;
+}
+
+ void MainLayer::onTouchEnded(Touch *touch, Event *unusedEvent)
+{
+	  Vec2 startPos = touch->getStartLocation();
+	  Vec2 endPos = touch->getLocation();
+	  Vec2 deltaPos = endPos - startPos;
+	  if(!m_notificationPanel->getLeftNotificationPanelStatus())
+	  {
+		  for(BaseItem* item : m_itemPanel->getAllItems())
+		  {
+			  if(item->hitTest(startPos) && deltaPos.length() < 10 )
+			  {
+				  log("@touch-------------------------MainLayer::Call the onTouchEnded !!!!!");
+				  item->onEnterClicked(false);
+				  int focusIndex = m_itemPanel->getAllItems().getIndex(item);
+				  if(focusIndex > 0  && focusIndex <= m_itemPanel->getAllItems().size())
+				  {
+					  m_focusHelper->clearFocusIndicator();
+					  m_focusHelper->setSelectedItemIndex(focusIndex+1);
+					  m_focusHelper->showFocusIndicator();
+				  }
+			  }
+		  }
+	  }
+	  return;
+}
+
+
 void MainLayer::update(float dt)
 {
 	//
@@ -136,7 +196,7 @@ void MainLayer::update(float dt)
 	{
 		m_focusHelper->clearFocusIndicator();
 	}
-	if(m_focusHelper ->getSelectedItemIndex() == 0 && m_itemPanel->getAllItems().size() > 0 )
+	if(m_focusHelper ->getSelectedItemIndex() == 0 && m_itemPanel->getMainItemCount() > 0 && m_itemPanel->getAllItems().size() > 0 )
 	{
 		m_focusHelper->initFocusIndicator();
 	}
@@ -171,25 +231,20 @@ void MainLayer::updateCIBNAuthorization(std::string jsonString)
 
 }
 
-void MainLayer::addTestItems()
+void MainLayer::addTestItems(float dt)
 {
-    auto item4=AppItem::create();
-    auto itemData4 = ItemData::create();
-    itemData4->setBackgroundImageFilePath(APPITEM_SET_BG_IMG);
-    itemData4->setForegroundImageFilePath(APPITEM_SET_FG_IMG);
-    itemData4->setHintText("app 1");
-    itemData4->setPackage("");
-    item4->setItemData(itemData4);
-    m_itemPanel->addItem(item4);
-
-    auto item5=AppItem::create();
-    auto itemData5 = ItemData::create();
-    itemData5->setBackgroundImageFilePath(APPITEM_FILE_BG_IMG);
-    itemData5->setForegroundImageFilePath(APPITEM_FILE_FG_IMG);
-    itemData5->setHintText("app 2");
-    itemData5->setPackage("");
-    item5->setItemData(itemData5);
-    m_itemPanel->addItem(item5);
+	ItemData* clearData = ItemData::create();
+	clearData->setBackgroundImageFilePath(APPITEM_FILE_BG_IMG);
+	clearData->setHintText(APP_CLEARN_TITLE);
+	clearData->setPackage("");
+	clearData->setClass("");
+	ClearnAppItem* clearnItem = ClearnAppItem::create();
+	clearnItem->setItemData(clearData);
+//	m_itemPanel->addItem(clearnItem);
+	if(m_itemPanel->getAllItems().size() > m_itemPanel->getMainItemCount()+3)
+	{
+		m_itemPanel->insertItemByIndex(clearnItem,m_itemPanel->getMainItemCount()+3);
+	}
 }
 
 

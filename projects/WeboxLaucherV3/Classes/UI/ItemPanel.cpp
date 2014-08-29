@@ -48,11 +48,22 @@ bool ItemPanel::init()
 		return false;
 	}
 	this->setEnabled(true);
+	this->setDirection(Direction::BOTH);
+
+	this->setTouchEnabled(false);
+	auto listenerTouch = EventListenerTouchOneByOne::create();
+	listenerTouch->setSwallowTouches(false);
+	listenerTouch->onTouchBegan = CC_CALLBACK_2(ItemPanel::onTouchBegan,this);
+	listenerTouch->onTouchEnded = CC_CALLBACK_2(ItemPanel::onTouchEnded,this);
+	listenerTouch->onTouchMoved = CC_CALLBACK_2(ItemPanel::onTouchMoved,this);
+	listenerTouch->onTouchCancelled = CC_CALLBACK_2(ItemPanel::onTouchCancelled,this);
+	CCDirector::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listenerTouch,this);
 
 	HandleMessageQueue* handleMessage = HandleMessageQueue::getInstace(); //---------------------------------register msg processing func
 	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(ItemPanel::updateMainApps,this),"MainApp");
 	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(ItemPanel::updateUserApps,this),"UserApp");
 	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(ItemPanel::updateMainAppsInfo,this),"MainAppInfo");
+
 	return true;
 }
 
@@ -487,6 +498,11 @@ void ItemPanel::onEnterClicked(int clickedItemIndex, bool isLongPressed) //äº‹ä»
 		clickedItem->onEnterClicked(isLongPressed);
 	}
 
+}
+
+int ItemPanel::getMainItemCount()
+{
+	return m_mainItemCount;
 }
 
 

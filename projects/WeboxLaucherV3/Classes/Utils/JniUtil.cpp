@@ -118,3 +118,17 @@ bool  JniUtil::startActivityJNI(const char* action, const char* pkgName, const c
     return true;
 }
 
+void JniUtil::getClearnMemoryJNI(bool issystem)
+{
+	#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+	JniMethodInfo t;
+	if (JniHelper::getStaticMethodInfo(t, "com/togic/weboxlauncher/WeBoxLauncher", "getBeginClearnMemory", "(Z)V"))
+	{
+		// jstring keys = t.env->NewStringUTF(issystem);
+		t.env->CallStaticVoidMethod(t.classID, t.methodID,(jboolean)issystem);
+		t.env->DeleteLocalRef(t.classID);
+		// t.env->DeleteLocalRef(keys);
+	}
+	#endif
+}
+

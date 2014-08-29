@@ -16,37 +16,30 @@
 
 #include "AirplayMusicData.h"
 
-AirplayMusicData::AirplayMusicData()
-: m_eventType(-1)
-, m_intValue(-1)
-, m_longValue(-1)
-, m_floatValue(-0.1f)
-, m_stringTitle("")
-, m_stringArtist("")
-, m_stringAlbum("")
-, m_stringValue("")
-, m_stringSession("")
-, m_stringCoverart("")
-, m_booleanValue(false)
+AirplayMusicData::AirplayMusicData() :
+		m_eventType(-1), m_intValue(-1), m_longValue(-1), m_floatValue(
+		                -0.1f), m_stringTitle(""), m_stringArtist(""), m_stringAlbum(
+		                ""), m_stringValue(""), m_stringSession(""), m_stringCoverart(
+		                ""), m_booleanValue(false)
 {
-    
+
 }
 
 AirplayMusicData::~AirplayMusicData()
 {
-    
+
 }
 
 AirplayMusicData* AirplayMusicData::create(const rapidjson::Value& jsonItem)
 {
-    AirplayMusicData *airdata = new AirplayMusicData();
-    if (airdata && airdata->init(jsonItem))
-    {
-        airdata->autorelease();
-        return airdata;
-    }
-    delete airdata;
-    return NULL;
+	AirplayMusicData *airdata = new AirplayMusicData();
+	if (airdata && airdata->init(jsonItem))
+	{
+		airdata->autorelease();
+		return airdata;
+	}
+	delete airdata;
+	return NULL;
 }
 
 bool AirplayMusicData::init(const rapidjson::Value& jsonItem)
@@ -61,7 +54,7 @@ bool AirplayMusicData::init(const rapidjson::Value& jsonItem)
 		{
 			m_intValue = jsonItem["intValue"].GetInt();
 		}
-		if(jsonItem.HasMember("longValue"))
+		if (jsonItem.HasMember("longValue"))
 		{
 			m_longValue = jsonItem["longValue"].GetInt();
 		}
@@ -73,30 +66,31 @@ bool AirplayMusicData::init(const rapidjson::Value& jsonItem)
 		{
 			m_stringValue = jsonItem["stringValue"].GetString();
 		}
-		if(jsonItem.HasMember("stringSession"))
+		if (jsonItem.HasMember("stringSession"))
 		{
 			m_stringSession = jsonItem["stringSession"].GetString();
 		}
-		if(jsonItem.HasMember("stringCoverart"))
+		if (jsonItem.HasMember("stringCoverart"))
 		{
-			m_stringCoverart = jsonItem["stringCoverart"].GetString();
+			m_stringCoverart =
+			                jsonItem["stringCoverart"].GetString();
 		}
-		if(jsonItem.HasMember("stringTitle"))
+		if (jsonItem.HasMember("stringTitle"))
 		{
 			m_stringTitle = jsonItem["stringTitle"].GetString();
 		}
-		if(jsonItem.HasMember("stringAlbum"))
+		if (jsonItem.HasMember("stringAlbum"))
 		{
-			m_stringAlbum= jsonItem["stringAlbum"].GetString();
+			m_stringAlbum = jsonItem["stringAlbum"].GetString();
 		}
-		if(jsonItem.HasMember("stringArtist"))
+		if (jsonItem.HasMember("stringArtist"))
 		{
 			m_stringArtist = jsonItem["stringArtist"].GetString();
 		}
-		if(jsonItem.HasMember("booleanValue"))
+		if (jsonItem.HasMember("booleanValue"))
 		{
-			m_booleanValue= jsonItem["booleanValue"].GetBool();
+			m_booleanValue = jsonItem["booleanValue"].GetBool();
 		}
-    }
-    return true;
+	}
+	return true;
 }

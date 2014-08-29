@@ -25,7 +25,6 @@ public:
 	void setSize(Size itemSize);
 	virtual void setItemData(ItemData* itemData);
 	virtual ItemData* getItemData();
-
 	virtual void setForegroundImage(std::string forgroundImageFilePath);
 	virtual void setBackgroundImage(std::string backgroundImageFilePath);
 	virtual void setHintText(std::string hintText);

@@ -57,6 +57,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.togic.launcher.model.nf.NFInfo;
 import com.togic.launcher.util.image.util.PackageUtils;
+import com.togic.taskclean.service.TaskCleanService;
 import com.togic.weboxlauncher.app.AppInfo;
 import com.togic.weboxlauncher.app.AppWatcher;
 import com.togic.weboxlauncher.app.AppsManager;
@@ -99,6 +100,7 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 	private static final int NETWORK_CHECK_DELAY = 5 * 1000;
 
 	private NetworkState mTempState = new NetworkState(-1, -1);
+	private static TaskCleanService taskCleanService = null;
 
 	private boolean mHasBindService = false;
 	private boolean mHasStartSettings = false;
@@ -110,6 +112,7 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 	private long NetWorkStateCount = BASE_WORK_COUNT;
 	private final static String mCibnUmengEvent = "getMacAddress";
 	private final String ACTION_REMOTE_LOWPOWER = "action.remote.lowpower";
+	private final String ACTION_TASKCLEAN = "com.togic.taskclean.finish_clean";
 	private Handler mMainHandler = new Handler();
 	private Runnable mCheckNetworkTask = new Runnable() {
 		@Override
@@ -200,6 +203,7 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		sInstance = this;
+                 taskCleanService = new TaskCleanService(sInstance);
 		create();
 	}
 
@@ -644,7 +648,26 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 	private static String getJsonInfosFromLocal() {
 		return MMetroParser.initParse(sInstance);
 	}
+	private static void getBeginClearnMemory(boolean issystem) {
+		Log.v(TAG, " getClearnMemory  " + issystem);
+		taskCleanService.clean(issystem);
+	}
+	
+	//------------==================================================================================Send memory clean  info
+	public void postMemoryLong(final float memory) {
+		runOnGLThread(new Runnable() {
+			@Override
+			public void run() {
 
+//				nativePostClearnM(memory);
+				MJsonInfo mif = new MJsonInfo(memory);
+				Gson gson = new Gson();
+				String str = gson.toJson(mif);
+				Log.v(TAG, "/////// post memory " + str);
+				nativeJsonString(str,"ClearMemory" );
+			}
+		});
+	}
 	protected void registerCallback() {
 		if (mService == null) {
 			return;
@@ -678,6 +701,16 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 			} else if (ACTION_REMOTE_LOWPOWER.equals(arg1.getAction())) {
 				// @xjx
 				// nativeLowPower(0);
+			}else if (ACTION_TASKCLEAN.equals(arg1.getAction())) {
+				Log.v(TAG, Float.parseFloat(arg1.getExtra(
+						"release memory").toString())
+						+ " M  memory ");
+				new Timer().schedule(new TimerTask() {
+					public void run() {
+						postMemoryLong(Math.abs(Float.parseFloat(arg1.getExtra(
+								"release memory").toString())));
+					}
+				}, 2000);
 			}
 		}
 	};
@@ -685,6 +718,7 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 	private void registerTickBroadcast() {
 		IntentFilter intflt = new IntentFilter(Intent.ACTION_TIME_TICK);
 		intflt.addAction(ACTION_REMOTE_LOWPOWER);
+		intflt.addAction(ACTION_TASKCLEAN);
 		registerReceiver(mTickBroadcast, intflt);
 	}
 

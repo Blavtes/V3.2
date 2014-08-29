@@ -40,6 +40,7 @@
 //#define LEFT_NEWNOTIFICATION_TITLE                 "新消息\"(%d)\""
 #define LEFT_NEWNOTIFICATION_TITLE                 "新消息"
 #define LEFT_LINE_IMAGE                            "image/notification/notification_line.png"
+#define NOTIFICATIONPANEL_FOCUS_INDICATOR_IMG             "image/select/selectnoti.png"
 //------------------------------------------------------------------defined for topBar---------------------------------------------
 #define NORTIFICATION_HINT_IMG                "image/notification/newnotification.png"
 #define NOTIFICATION_COUNT_IMG                "image/notification/noti_mark_%d.png"
@@ -120,6 +121,26 @@
 #define AIRPLAY_DEFAULT_ALBUM                      "未知专辑"
 #define AIRPLAY_DEFAULT_ARTIST                     "未知歌手"
 
+//-------------------------------------------------------------define for ClearMemory----------------------------------------------
+
+#define APPITEM_CLEAN_Img                   "image/appitem/app_clean.png"
+#define APPITEM_CLEAN_Img_Sm               "image/appitem/app_clean_2.png"
+#define CLEARN_MEMORY_NOTI                       "clearn_memory_noti"
+
+#define APP_ClEARN_CLS                    "com.togic.taskclean.MainActivity"
+#define APP_CLEARN_PACKAGE              "com.togic.taskclean"
+#define APP_CLEARN_TITLE                    "一键加速"
+
+#define AppItem_bottomBar_Position    Vec2(130,30)
+#define DEFALUT_APPCOUNT_OFFSET 2
+
+
+
+
+
+
+
+
 typedef enum {
      AP_START    = 0x10,
      AP_PLAY     = 0x20,
@@ -152,7 +173,13 @@ typedef enum{
 	Scroll_to_down
 }ScrollDirection;
 
-#define ACTION_DURATION_TIME  0.2
+#define ACTION_DURATION_TIME  0.15
+
+
+
+
+
+
 
 
 

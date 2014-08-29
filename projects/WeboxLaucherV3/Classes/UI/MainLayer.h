@@ -27,17 +27,22 @@ public:
 	static Scene* createScene();
 	virtual bool init();
 
-    void onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event);
-    void onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event);
+	void onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event);
+	void onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event);
+	virtual bool onTouchBegan(Touch *touch, Event *unused_event);
+	virtual void onTouchMoved(Touch *touch, Event *unused_event);
+	virtual void onTouchEnded(Touch *touch, Event *unused_event);
+	virtual void onTouchCancelled(Touch *touch, Event *unused_event);
+
 	void updateCIBNAuthorization(std::string jsonString);
-	void addTestItems();
+	void addTestItems(float dt);
 	void update(float dt);
 private:
 	ui::ImageView* m_backgroundImageView; //background
 	ItemPanel* m_itemPanel;
 	FocusHelper* m_focusHelper; //middle
 	TopBarPanel* m_topBar;  //top
-	LeftNotificationPanel* m_notificationPanel;//left according to the Key-Menu
+	LeftNotificationPanel* m_notificationPanel; //left according to the Key-Menu
 	AirPlayPanel* m_airPlayPanel;
 };
 

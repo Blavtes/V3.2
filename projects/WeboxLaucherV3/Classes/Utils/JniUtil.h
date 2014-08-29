@@ -14,17 +14,15 @@ USING_NS_CC;
 class JniUtil{
 
 public:
+	JniUtil();
+	~JniUtil();
+	static void uninstallSilentJni(const char* pckname);
+	static void onClickEvtJni(const char* pckname,const char* key);
+	static const char* getJsonInfoFromLocalJni(void);
 
-    JniUtil();
-
-    ~JniUtil();
-
-    static void uninstallSilentJni(const char* pckname);
-    static void onClickEvtJni(const char* pckname,const char* key);
-    static const char* getJsonInfoFromLocalJni(void);
-
-    static void* getIconDataWithPackage(const char* pack);
-    static bool startActivityJNI(const char* action, const char* pkgName, const char* clsName);
+	static void* getIconDataWithPackage(const char* pack);
+	static bool startActivityJNI(const char* action, const char* pkgName, const char* clsName);
+	static void getClearnMemoryJNI(bool issystem);
 };
 #endif /* defined(__WeBoxLauncher__JniUtil__) */
 

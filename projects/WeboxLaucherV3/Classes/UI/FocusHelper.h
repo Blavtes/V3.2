@@ -27,18 +27,17 @@ public:
 	void moveFocusIndicatorToLeft();
 	void moveFocusIndicatorToDown();
 	void moveFocusIndicatorToUp();
-	void adjustIndicatorAndPanelPosition(Vec2);
-	void adjustIndicatorSize();
+	void adjustIndicatorAndPanelPosition(Vec2 pos, Size indicatorSize);
 	void updateItemView();
 	void showFocusIndicator();
 	void clearFocusIndicator();
-	void updateIndicatorSize(float dt);
 
     void onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event);
     void onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event);
     void onEnterClicked(bool isLongPressed);
     void onFocusChanged(ui::Widget* loseFocusWidget, ui::Widget* getFocusWidget);
     int getSelectedItemIndex();
+    void  setSelectedItemIndex(int selectedIndex);
 
 protected:
 	ItemPanel* m_itemView;

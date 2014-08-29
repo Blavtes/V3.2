@@ -23,26 +23,26 @@ USING_NS_CC;
 
 using namespace std;
 
-class AirplayMusicData : public Ref
+class AirplayMusicData: public Ref
 {
 public:
-    AirplayMusicData();
-    ~AirplayMusicData();
-    static AirplayMusicData* create( const rapidjson::Value& jsonItem);
-    virtual bool init(const rapidjson::Value& jsonItem);
+	AirplayMusicData();
+	~AirplayMusicData();
+	static AirplayMusicData* create(const rapidjson::Value& jsonItem);
+	virtual bool init(const rapidjson::Value& jsonItem);
 
 public:
-    int      m_eventType;
-    int      m_intValue;
-    int      m_longValue;
-    double    m_floatValue;
-    string   m_stringValue;
-    string   m_stringSession;
-    string   m_stringCoverart;
-    string   m_stringTitle;
-    string   m_stringAlbum;
-    string   m_stringArtist;
-    bool     m_booleanValue;
+	int m_eventType;
+	int m_intValue;
+	int m_longValue;
+	double m_floatValue;
+	string m_stringValue;
+	string m_stringSession;
+	string m_stringCoverart;
+	string m_stringTitle;
+	string m_stringAlbum;
+	string m_stringArtist;
+	bool m_booleanValue;
 };
 
 #endif /* defined(__WeBoxLauncher__AirplayMusicData__) */

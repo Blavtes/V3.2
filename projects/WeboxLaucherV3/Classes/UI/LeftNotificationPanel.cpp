@@ -83,11 +83,17 @@ bool LeftNotificationPanel::init()
 	this->addChild(m_itemPanel,1);
 
 	m_focusHelper = FocusHelper::create();
-	m_focusHelper->bindItemPanel(m_itemPanel);
+	m_focusHelper->bindItemPanel(m_itemPanel,NOTIFICATIONPANEL_FOCUS_INDICATOR_IMG);
 	m_focusHelper->retain();
 
 	HandleMessageQueue* handleMessage = HandleMessageQueue::getInstace();
 	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(LeftNotificationPanel::updateLeftNotification,this),"NotificationApp");
+
+	auto listenerTouch = EventListenerTouchOneByOne::create();
+	listenerTouch->onTouchBegan = CC_CALLBACK_2(LeftNotificationPanel::onTouchBegan,this);
+	listenerTouch->onTouchEnded = CC_CALLBACK_2(LeftNotificationPanel::onTouchEnded,this);
+	CCDirector::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listenerTouch,this);
+
 	return true;
 }
 
@@ -199,9 +205,9 @@ void LeftNotificationPanel::updateLeftNotification(std::string jsonString)
 	else if(code == CODE_MOUNT_UNMOUNT)
 	{
 		notificationItemData->setCode(code);
-		notificationItemData->setAction("com.togic.filebrowser.MainActivity");
+		notificationItemData->setAction("com.togic.filebrowser.Main");
 		notificationItemData->setPackage("com.togic.filebrowser");
-		notificationItemData->setClass("com.togic.filebrowser.MainActivity");
+		notificationItemData->setClass("com.togic.filebrowser.Main");
 		notificationItemData->setForegroundImageFilePath(Left_USBIcon_Image);
 		notificationItemData->setHintText(Left_Item_USB_Insert_Title);
 	}
@@ -213,7 +219,7 @@ void LeftNotificationPanel::updateLeftNotification(std::string jsonString)
 
 	if(m_focusHelper ->getSelectedItemIndex() == 0 && m_itemPanel->getAllItems().size() > 0)
 	{
-		m_focusHelper->initFocusIndicator();
+		m_focusHelper->initFocusIndicator(NOTIFICATIONPANEL_FOCUS_INDICATOR_IMG);
 	}
 	if(m_focusHelper->getSelectedItemIndex() > 0)
 	{
@@ -227,4 +233,45 @@ void LeftNotificationPanel::updateLeftNotification(std::string jsonString)
 int LeftNotificationPanel::getNotificationCount()
 {
 	return m_itemPanel->getAllItems().size();
+}
+
+bool LeftNotificationPanel::onTouchBegan(Touch *touch, Event *unusedEvent)
+{
+	 log("@touch-------------------------LeftNotificationPanel::Call the onTouchBegan!");
+	 return true;
+}
+
+ void LeftNotificationPanel::onTouchMoved(Touch *touch, Event *unused_event)
+{
+	return;
+}
+ void LeftNotificationPanel::onTouchCancelled(Touch *touch, Event *unused_event)
+{
+	return;
+}
+
+ void LeftNotificationPanel::onTouchEnded(Touch *touch, Event *unusedEvent)
+{
+	  Vec2 startPos = touch->getStartLocation();
+	  Vec2 endPos = touch->getLocation();
+	  Vec2 deltaPos = endPos - startPos;
+	  if(m_statusFlag)
+	  {
+		  for(BaseItem* item : m_itemPanel->getAllItems())
+		  {
+			  if(item->hitTest(startPos) && deltaPos.length() < 10 )
+			  {
+				  log("@touch-------------------------LeftNotificationPanel::Call the onTouchEnded !!!!!");
+				  item->onEnterClicked(false);
+				  int focusIndex = m_itemPanel->getAllItems().getIndex(item);
+				  if(focusIndex > 0  && focusIndex <= m_itemPanel->getAllItems().size())
+				  {
+					  m_focusHelper->clearFocusIndicator();
+					  m_focusHelper->setSelectedItemIndex(focusIndex+1);
+					  m_focusHelper->showFocusIndicator();
+				  }
+			  }
+		  }
+	  }
+	  return;
 }
