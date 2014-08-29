@@ -41,4 +41,27 @@
     <string name="notify_info_history_description_default">收藏喜爱影片</string>
     <string name="notify_info_album_title_default">相册</string>
     <string name="notify_info_album_description_default">分享美好瞬间</string>
+    
+    <string name="str_cloudy">多云</string>
+	<string name="str_sunny">晴</string>
+	<string name="str_shade">阴</string>
+	<string name="str_smoke">浮尘</string>
+	<string name="str_h_sand_storm">强沙尘暴</string>
+	<string name="str_sand_storm">沙尘暴</string>
+	<string name="str_fog">雾</string>
+	<string name="str_sand_blowing">扬沙</string>
+	<string name="str_s_snow">小雪</string>
+	<string name="str_m_snow">中雪</string>
+	<string name="str_l_snow">大雪</string>
+	<string name="str_h_snow">暴雪</string>
+	<string name="str_snow_shower">阵雪</string>
+	<string name="str_s_rain">小雨</string>
+	<string name="str_m_rain">中雨</string>
+	<string name="str_l_rain">大雨</string>
+	<string name="str_h_rain">暴雨</string>
+	<string name="str_hh_rain">大暴雨</string>
+	<string name="str_hhh_rain">特大暴雨</string>
+	<string name="str_shower">阵雨</string>
+	<string name="str_thunder_shower">雷阵雨</string>
+
 </resources>

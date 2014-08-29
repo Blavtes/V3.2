@@ -52,6 +52,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.togic.launcher.model.nf.NFInfo;
@@ -186,8 +187,13 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 		@Override
 		public void onRefreshMetroDate(String date) throws RemoteException {
 			// TODO Auto-generated method stub
-			Log.v("@1112", "==========================" + date);
 			nativeJsonString(date,"MainApp");
+		}
+
+		@Override
+		public void onRefreshWeaDate(String date) throws RemoteException {
+			// TODO Auto-generated method stub
+			Log.v("@1112", "==========================1" + date);
 		}
 	};
 

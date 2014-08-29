@@ -18,10 +18,12 @@ package com.togic.weboxlauncher;
 
 import com.togic.weboxlauncher.backend.MetroManager;
 import com.togic.weboxlauncher.backend.SystemManager;
+import com.togic.weboxlauncher.backend.WeatherManager;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.os.RemoteException;
 
 /**
  * @author mountains.liu@togic.com @date 2013-2-28
@@ -47,16 +49,20 @@ public class WLBackendService extends Service {
         @Override
         public void registerMetroCallback(IMetroCallback cbk) {
             mMetroMgr.registerMetroCallback(cbk);
+            mWeathMgr.registerMetroCallback(cbk);
         }
 
         @Override
         public void unregisterMetroCallback(IMetroCallback cbk) {
             mMetroMgr.unregisterMetroCallback(cbk);
+            mWeathMgr.unregisterMetroCallback(cbk);
         }
+
     };
 
     private SystemManager mSystemMgr;
     private MetroManager mMetroMgr;
+    private WeatherManager mWeathMgr;
 
     @Override
     public void onCreate() {
@@ -82,13 +88,16 @@ public class WLBackendService extends Service {
     private void createEnv() {
         mSystemMgr = new SystemManager(this);
         mMetroMgr = new MetroManager(this, mSystemMgr);
+        mWeathMgr = new WeatherManager(this, mSystemMgr);
         mSystemMgr.create();
         mMetroMgr.create();
+        mWeathMgr.create();
     }
 
     private void destryEnv() {
         mSystemMgr.destroy();
         mMetroMgr.destroy();
+        mWeathMgr.destroy();
     }
 
     private static final int INTERVAL_TASK_LONG = 90 * 60 * 1000;
