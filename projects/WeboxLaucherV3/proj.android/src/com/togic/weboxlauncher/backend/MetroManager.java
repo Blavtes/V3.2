@@ -436,6 +436,7 @@ public class MetroManager extends BaseManager implements LocalMonitor,
 					mJsonInfo = new MJsonInfo(md.toMinfos());
 					for (IInterface cbk : mMetroCallbacks.getCallbacks()) {
 						try {
+							((IMetroCallback) cbk).onRefreshMetroDate((new Gson()).toJson(new MJsonInfo(md.background)));
 							String str = (new Gson()).toJson(mJsonInfo);
 							((IMetroCallback) cbk).onRefreshMetroDate(str);
 						} catch (RemoteException e) {
