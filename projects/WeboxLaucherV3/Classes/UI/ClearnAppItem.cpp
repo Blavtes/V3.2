@@ -150,8 +150,8 @@ void ClearnAppItem::getClearnMemory(std::string  memory) {
 			move2);
 	ro_label->runAction(seqrola);
 
-	char str[100];
-	sprintf(str, "已清理%.1f M内存", atof(memory.c_str()));
+
+	std::string str = "已清理" + memory + "M内存";
 	ro_end->setString(str);
 	ro_end->setVisible(true);
 //    ro_end->setString((CCString::createWithFormat("已清理%.1f M内存",memory->floatValue())->getCString()));

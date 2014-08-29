@@ -32,6 +32,7 @@ public:
 	void updateMainApps(std::string jsonString);
 	void updateMainAppsInfo(std::string jsonString);
 	void updateUserApps(std::string jsonString);
+	void showTVItem(std::string jsonString);
 	void onEnterClicked(int clickedItemIndex, bool isLongPressed);
 
 	void addDefaultMainItemByPlistFile(std::string filePath);
@@ -45,6 +46,7 @@ private:
 	int m_leftMargin;
 	int m_middleMargin;
 	int m_mainItemCount;
+	std::string m_jsonString;
 };
 
 #endif /* ITEMPANEL_H_ */

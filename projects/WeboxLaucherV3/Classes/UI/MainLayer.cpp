@@ -50,8 +50,15 @@ bool MainLayer::init()
 	}
 
 	Size visibleSize=Director::getInstance()->getVisibleSize();
+<<<<<<< HEAD
   	 m_backgroundImageView =ui:: ImageView::create(MAIN_LAYER_BACKGROUND_IMG);
   	 m_backgroundImageView->setPosition(Vec2(visibleSize.width/2,visibleSize.height/2));
+=======
+//  	 m_backgroundImageView =ui:: ImageView::create(MAIN_LAYER_BACKGROUND_IMG);
+	m_backgroundImageView = ui::ImageView::create();
+	m_backgroundImageView->setAnchorPoint(Vec2(0,0));
+  	 m_backgroundImageView->setPosition(Vec2::ZERO);
+>>>>>>> 33fb5b7... add class.
   	 this->addChild(m_backgroundImageView,0);
 
   	 m_itemPanel=ItemPanel::create();
@@ -90,12 +97,51 @@ bool MainLayer::init()
 	CCDirector::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listenerTouch,this);
 
 	HandleMessageQueue* handleMessage = HandleMessageQueue::getInstace();
-	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(MainLayer::updateCIBNAuthorization,this),"Cibn");
+//	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(MainLayer::updateCIBNAuthorization,this),"Cibn");
+	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(MainLayer::updateBackgroundImage,this),"BackgrounImage");
 
 	this->scheduleUpdate();
 	this->scheduleOnce(schedule_selector(MainLayer::addTestItems),3);
+<<<<<<< HEAD
+=======
+	this->scheduleOnce(schedule_selector(MainLayer::autoStartActivity), 1.02f);
+>>>>>>> 33fb5b7... add class.
 	return true;
 }
+
+void MainLayer::autoStartActivity(float dt)
+{
+CCLOG("###########autoStartActivity####### 111");
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+const char* model = JniUtil::beginAutoStartActivity();
+CCLOG("###########autoStartActivity####### %s",model);
+if (model == NULL) {
+    return;
+}
+if (strncmp(model,"live",strlen("live")) == 0) {
+        CCLOG("###########autoStartActivity####### live");
+//    CCDictionary* pParams = CCDictionary::create();
+//    pParams->setObject(CCBool::create(false), JNI_params_is_entrance);
+//    pParams->setObject(CCBool::create(true), JNI_params_exit_directly);
+
+        JniUtil::startActivityJNI(JNI_TV_Action, NULL, NULL);
+
+} else if (strncmp(model,"togic_video",strlen("togic_video")) == 0) {
+        CCLOG("###########autoStartActivity#######  video");
+//    CCDictionary* pParams = CCDictionary::create();
+//    pParams->setObject(CCBool::create(false), JNI_params_is_entrance);
+//    pParams->setObject(CCBool::create(true), JNI_params_exit_directly);
+//    pParams->setObject(CCBool::create(false), JNI_params_hide_splash);
+
+        JniUtil::startActivityJNI(JNI_Video_Action, NULL, NULL);
+
+} else if (strncmp(model,"movie",strlen("movie")) == 0) {
+    CCLOG("###########autoStartActivity####### move");
+    JniUtil::startActivityJNI(JNI_HuNanTV_Action, NULL, NULL);
+}
+#endif
+}
+
 
 
 void MainLayer::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
@@ -189,9 +235,8 @@ void MainLayer::update(float dt)
 {
 	//
 	m_topBar->updateTimeState();
-	int messageCount = m_notificationPanel->getNotificationCount();
-	m_topBar->updateNotificationMessageCountState(messageCount);
-	m_airPlayPanel->moveIconPosition(messageCount != 0);
+//	int messageCount = m_notificationPanel->getNotificationCount();
+//	m_topBar->updateNotificationMessageCountState(messageCount);
 	if(m_notificationPanel->getLeftNotificationPanelStatus())
 	{
 		m_focusHelper->clearFocusIndicator();
@@ -231,6 +276,16 @@ void MainLayer::updateCIBNAuthorization(std::string jsonString)
 
 }
 
+void MainLayer::updateBackgroundImage(std::string jsonString)
+{
+	ValueMap resultData = ParseJson::getInfoDataFromJSON(jsonString);
+	std::string backgrounImageFilePath = resultData["arg0"].asString();
+	log("xaxa,the update background image file path is:  %s  ",backgrounImageFilePath.c_str());
+	if(FileUtils::getInstance()->isFileExist(backgrounImageFilePath))
+	{
+		m_backgroundImageView->loadTexture(backgrounImageFilePath);
+	}
+}
 void MainLayer::addTestItems(float dt)
 {
 	ItemData* clearData = ItemData::create();
@@ -246,6 +301,7 @@ void MainLayer::addTestItems(float dt)
 		m_itemPanel->insertItemByIndex(clearnItem,m_itemPanel->getMainItemCount()+3);
 	}
 }
+
 
 
 

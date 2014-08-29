@@ -22,6 +22,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.cocos2dx.lib.Cocos2dxActivity;
 import org.cocos2dx.lib.Cocos2dxGLSurfaceView;
@@ -58,6 +60,9 @@ import com.google.gson.Gson;
 import com.togic.launcher.model.nf.NFInfo;
 import com.togic.launcher.util.image.util.PackageUtils;
 import com.togic.taskclean.service.TaskCleanService;
+import com.togic.weather.FileUtil;
+import com.togic.weboxlauncher.MCocos2dxGLSurfaceView.KeyCallBack;
+
 import com.togic.weboxlauncher.app.AppInfo;
 import com.togic.weboxlauncher.app.AppWatcher;
 import com.togic.weboxlauncher.app.AppsManager;
@@ -105,6 +110,8 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 	private boolean mHasBindService = false;
 	private boolean mHasStartSettings = false;
 	private static final String UMENG_PATH = "umeng_use_launcher_time.txt";
+	private static final String AUTO_START_FILE_PATH = "/data/system/systemBoot";
+	private static final String SETTING_SHOWTV_FILE_PTAH = "/data/system/SetingAutoStartTV";
 	private static final int NETWORK_UPDATE_TIME = 8;
 	private static final int UMENG_UPDATE_TIME = NETWORK_UPDATE_TIME * 8;
 	private static final int BASE_TIME = 60;
@@ -196,8 +203,17 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 		@Override
 		public void onRefreshWeaDate(String date) throws RemoteException {
 			// TODO Auto-generated method stub
-			Log.v("@1112", "==========================1" + date);
+			Log.v("@xaxa", "==========================1" + date);
+			nativeJsonString(date,"WeatherState");
 		}
+
+		@Override
+                public void onRefreshMetroBackground(String date)
+                                throws RemoteException {
+	                // TODO Auto-generated method stub
+			Log.v("@xaxa", "==========================1" + date);
+			nativeJsonString(date,"BackgrounImage");
+                }
 	};
 
 	protected void onCreate(Bundle savedInstanceState) {
@@ -320,7 +336,7 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 		Cocos2dxGLSurfaceView glSurfaceView = new MCocos2dxGLSurfaceView(this);
 		// WeBoxLauncher should create stencil buffer
 		glSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 8);
-
+		((MCocos2dxGLSurfaceView)glSurfaceView).regcallback(mKeyCallBack);
 		return glSurfaceView;
 	}
 
@@ -653,18 +669,51 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 		taskCleanService.clean(issystem);
 	}
 	
+	private static String beginAutoStartActivity() {
+		Log.v(TAG, " ///// nativeSendAutoStartApp1 ");
+		try {
+			StringBuilder sBuilder = FileUtil
+					.readFile(AUTO_START_FILE_PATH);
+			Log.v(TAG, " ///// nativeSendAutoStartApp2 ");
+			if(sBuilder == null)
+			{
+				Log.v(TAG, " ///// nativeSendAutoStartApp1 null");
+				return "null";
+			}
+			String string = sBuilder.toString();
+			if(string == null)
+			{
+				Log.v(TAG, " ///// nativeSendAutoStartApp1 string null");
+				return "null";
+			}
+			return string;
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return "null";
+	}
+
+	private static void sendBroadcastToSettingShowTV() {
+		Log.v(TAG, "######## moveXMLFileToDataSys ");
+		Intent intent = new Intent();
+		intent.setAction("Intent.action.launchershowTV");
+		intent.putExtra("Intent.action.launchershowTV", true);
+		sInstance.sendBroadcast(intent);
+	}
+	
+	
 	//------------==================================================================================Send memory clean  info
 	public void postMemoryLong(final float memory) {
 		runOnGLThread(new Runnable() {
 			@Override
 			public void run() {
-
-//				nativePostClearnM(memory);
-				MJsonInfo mif = new MJsonInfo(memory);
-				Gson gson = new Gson();
-				String str = gson.toJson(mif);
-				Log.v(TAG, "/////// post memory " + str);
-				nativeJsonString(str,"ClearMemory" );
+				String memstr = "" + memory;
+				int deu = memstr.indexOf(".");
+				if( deu> 0)
+				{
+					memstr = memstr.substring(0,deu+2);
+				}
+				nativeJsonString(memstr,"ClearMemory" );
 			}
 		});
 	}
@@ -693,7 +742,7 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 	}
 
 	private BroadcastReceiver mTickBroadcast = new BroadcastReceiver() {
-		public void onReceive(Context arg0, Intent arg1) {
+		public void onReceive(Context arg0, final Intent arg1) {
 			LogUtil.v(TAG, "////////////// update sync time");
 			if (Intent.ACTION_TIME_TICK.equals(arg1.getAction())) {
 				// @xjx
@@ -797,5 +846,15 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 		Log.v("\r\n@allapp -----@xjx----------------------receive user APP  json : \n", str);
 		nativeJsonString(str,"UserApp");
 	}
+	
+	private KeyCallBack mKeyCallBack = new KeyCallBack() {
+		
+		@Override
+		public void keyEvnDown(int code) {
+			// TODO Auto-generated method stub
+
+			nativeJsonString("code:" + code,"keybox" );
+		}
+	};
 
 }

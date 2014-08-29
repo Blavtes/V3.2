@@ -22,6 +22,7 @@ ItemPanel::ItemPanel()
 	m_leftMargin = MARGIN_LEFT;
 	m_middleMargin = MARGIN_MIDDLE;
 	m_mainItemCount = 0;
+	m_jsonString = "";
 }
 
 ItemPanel::~ItemPanel()
@@ -63,6 +64,10 @@ bool ItemPanel::init()
 	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(ItemPanel::updateMainApps,this),"MainApp");
 	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(ItemPanel::updateUserApps,this),"UserApp");
 	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(ItemPanel::updateMainAppsInfo,this),"MainAppInfo");
+<<<<<<< HEAD
+=======
+	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(ItemPanel::showTVItem,this),"keybox");
+>>>>>>> 33fb5b7... add class.
 
 	return true;
 }
@@ -238,11 +243,17 @@ int ItemPanel::findItemIndexByItemData(ItemData* itemData)
 void ItemPanel::updateMainApps(std::string jsonString)
 {
 	//
+	m_jsonString = jsonString;
 	Vector<ItemData*> itemVector;
 	if(!ParseJson::getItemVectorFromJSON(jsonString, itemVector))
 	{
 		log("ItemPanel:Parse Json String Failed!~~~~~~~~~~~~~~~~~~~~~~~~~~@xjx\n");
 		return;
+	}
+
+	if(!UserDefault::sharedUserDefault()->getBoolForKey(USER_SHOW_TV_KEY))
+	{
+		itemVector.erase(0);
 	}
 
 	if(m_mainItemCount == 0)
@@ -505,6 +516,28 @@ int ItemPanel::getMainItemCount()
 	return m_mainItemCount;
 }
 
+void ItemPanel::showTVItem(std::string jsonString)
+{
+	//
+	if(UserDefault::sharedUserDefault()->getBoolForKey(USER_SHOW_TV_KEY))
+	{
+		return;
+	}
+	else
+	{
+		UserDefault::sharedUserDefault()->setBoolForKey(USER_SHOW_TV_KEY,true);
+		Vector<ItemData*> itemVector;
+		if(!ParseJson::getItemVectorFromJSON(m_jsonString, itemVector))
+		{
+			log("ItemPanel:Parse Json String Failed!~~~~~~~~~~~~~~~~~~~~~~~~~~@xjx\n");
+			return;
+		}
+		MainItem* mainItem = MainItem::create();
+		mainItem->setItemData(itemVector.at(0));
+		this->insertItemByIndex(mainItem,0);
+	}
+
+}
 
 
 

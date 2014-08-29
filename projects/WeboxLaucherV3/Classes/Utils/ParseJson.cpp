@@ -82,43 +82,73 @@ ValueMap ParseJson::getInfoDataFromJSON(std::string jsonString)
 	     ValueMap dataMap;
 	     int flag = 0xffffffff;
 	     std::string jsonContent =jsonString;
-		 rapidjson::Document doc;
-		 doc.Parse<0>(jsonContent.c_str());
-		 if (doc.HasParseError())
-		 {
-			 log("getParseError %s \n",doc.GetParseError());
-			 dataMap.insert(valType("arg0",Value(flag)));
-			 return  dataMap;
+	     rapidjson::Document doc;
+	     doc.Parse<0>(jsonContent.c_str());
+	     if (doc.HasParseError())
+	     {
+		     log("getParseError %s \n",doc.GetParseError());
+		     dataMap.insert(valType("arg0",Value(flag)));
+		     return  dataMap;
+	     }
+	     if(doc.HasMember("items"))
+	     {
+		     const rapidjson::Value& datas = doc["items"];
+		     if(datas.IsArray())
+		     {
+			      for (unsigned int i = 0;  i < datas.Size(); i++)
+			      {
+				  Value dataV;
+				 const rapidjson::Value & tempData = datas[i];
+				 if(tempData.IsInt())
+				 {
+					 dataV = datas[i].GetInt();
+				 }
+				 else if(tempData.IsString())
+				 {
+					 dataV = datas[i].GetString();
+				 }
+				 else if(tempData.IsBool())
+				 {
+					 dataV = datas[i].GetBool();
+				 }
+				char keyV[100];
+				sprintf(keyV,"arg%d",i);
+				dataMap.insert(valType(keyV,dataV));
+			      }
+			 }
+			 else if(datas.IsString())
+			 {
+				 //
+				 std::string tempData = datas.GetString();
+				 dataMap.insert(valType("arg0",Value(tempData)));
+			 }
+			 else if(datas.IsObject())
+			 {
+				 if(datas.HasMember("low"))
+				 {
+					 std::string lowTemp = datas["low"].GetString();
+					 dataMap.insert(valType("arg0",Value(lowTemp)));
+				 }
+				 if(datas.HasMember("high"))
+				 {
+					 std::string highTemp = datas["high"].GetString();
+					 dataMap.insert(valType("arg1",Value(highTemp)));
+				 }
+				 if(datas.HasMember("image"))
+				 {
+					 std::string imageFilePath = datas["image"].GetString();
+					 dataMap.insert(valType("arg2",Value(imageFilePath)));
+				 }
+			 }
 		 }
-		 if(doc.HasMember("items"))
-		 {
-			 //
-		 }
-		 const rapidjson::Value& datas = doc["items"];
-		 if(datas.IsArray())
-		 {
-		      for (unsigned int i = 0;  i < datas.Size(); i++)
-		      {
-		    	  Value dataV;
-		    	 const rapidjson::Value & tempData = datas[i];
-		    	 if(tempData.IsInt())
-		    	 {
-		    		 dataV = datas[i].GetInt();
-		    	 }
-		    	 else if(tempData.IsString())
-		    	 {
-		    		 dataV = datas[i].GetString();
-		    	 }
-		    	 else if(tempData.IsBool())
-		    	 {
-		    		 dataV = datas[i].GetBool();
-		    	 }
-		    	char keyV[100];
-		    	sprintf(keyV,"arg%d",i);
-		    	dataMap.insert(valType(keyV,dataV));
-		      }
-		 }
+	     else
+	     {
+		     //
+		     std::string nullStr = "";
+		     dataMap.insert(valType("arg0",Value(nullStr)));
+	     }
 		return dataMap;
+
  }
 
  bool ParseJson::getAirPlayMusicDataFromJSON(std::string jsonString, Vector<AirplayMusicData*>& itemVector)

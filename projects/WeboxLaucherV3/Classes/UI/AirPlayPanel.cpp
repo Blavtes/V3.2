@@ -156,8 +156,8 @@ bool AirPlayPanel::init()
 
     m_airPlayImage = ui::ImageView::create();
     m_airPlayImage->loadTexture(AirPlay_Icon);
-    m_airPlayImage->setAnchorPoint(Vec2(0.5, 0.5));
-    m_airPlayImage->setPosition(Vec2(960.0f, visibleSize.height - 75.0f));
+    m_airPlayImage->setAnchorPoint(Vec2(1, 1));
+    m_airPlayImage->setPosition(Vec2(940.0f, visibleSize.height - 56.0f));
     this->addChild(m_airPlayImage);
     m_airPlayImage->setVisible(false);
 
@@ -168,15 +168,15 @@ bool AirPlayPanel::init()
 }
 
 
-void AirPlayPanel::moveIconPosition(bool isMove)
-{
-    float offset = 0;
-    if (isMove)
-    {
-        offset = -55.0f;
-    }
-    m_airPlayImage->setPosition(Vec2(960 + offset,m_airPlayImage->getPosition().y));
-}
+//void AirPlayPanel::moveIconPosition(bool isMove)
+//{
+//    float offset = 0;
+//    if (isMove)
+//    {
+//        offset = -55.0f;
+//    }
+//    m_airPlayImage->setPosition(Vec2(980 + offset,m_airPlayImage->getPosition().y));
+//}
 
 ui::ImageView* AirPlayPanel::getAirPlayIcon()
 {

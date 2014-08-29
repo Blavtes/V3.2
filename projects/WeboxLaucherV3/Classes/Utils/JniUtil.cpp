@@ -132,3 +132,27 @@ void JniUtil::getClearnMemoryJNI(bool issystem)
 	#endif
 }
 
+
+const char* JniUtil::beginAutoStartActivity()
+{
+#if  (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+    JniMethodInfo t;
+    if (JniHelper::getStaticMethodInfo(t, "com/togic/weboxlauncher/WeBoxLauncher", "beginAutoStartActivity", "()Ljava/lang/String;")) {
+        jstring infos = (jstring)t.env->CallStaticObjectMethod(t.classID, t.methodID,NULL);
+        t.env->DeleteLocalRef(t.classID);
+        return t.env->GetStringUTFChars(infos,NULL);
+    }
+#endif
+}
+
+void JniUtil::sendBroadcastToSettingShowTV()
+{
+#if  (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+    JniMethodInfo t;
+    if (JniHelper::getStaticMethodInfo(t, "com/togic/weboxlauncher/WeBoxLauncher", "sendBroadcastToSettingShowTV", "()V")) {
+        t.env->CallStaticVoidMethod(t.classID, t.methodID,NULL);
+        t.env->DeleteLocalRef(t.classID);
+    }
+#endif
+}
+

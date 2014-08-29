@@ -136,6 +136,16 @@
 
 
 
+#define JNI_params_is_entrance                    "intent.extra.is_entrance_actvitiy"
+#define JNI_params_exit_directly                  "intent.extra.exit_directly"
+#define JNI_params_hide_splash                    "intent.extra.show_splash"
+
+#pragma mark ---- JNI Action
+#define JNI_HuNanTV_Action                        "com.starcor.hunan.mgtv"
+#define JNI_TV_Action                             "togic.intent.action.LIVE_TV"
+#define JNI_Video_Action                          "togic.intent.action.ONLINE_VIDEO"
+#define JNI_Album_Action                          "togic.intent.action.ALBUM"
+#define JNI_My_favor_Action                       "togic.intent.action.LIVE_VIDEO_PROGRAM_MY_FAVOR"
 
 
 
@@ -176,6 +186,7 @@ typedef enum{
 #define ACTION_DURATION_TIME  0.15
 
 
+#define USER_SHOW_TV_KEY  "use_tv_key"
 
 
 

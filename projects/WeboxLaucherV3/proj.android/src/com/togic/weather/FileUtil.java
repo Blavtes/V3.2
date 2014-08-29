@@ -112,14 +112,14 @@ public class FileUtil {
             return fileContent;
         } catch (IOException e) {
             Log.i("imagethread", "ioexception");
-            throw new RuntimeException("IOException occurred. ", e);
+            return null;
         } finally {
             if (reader != null) {
                 try {
                     reader.close();
 
                 } catch (IOException e) {
-                    throw new RuntimeException("IOException occurred. ", e);
+                    return null;
                 }
             }
         }

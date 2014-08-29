@@ -34,7 +34,10 @@ public:
 	virtual void onTouchEnded(Touch *touch, Event *unused_event);
 	virtual void onTouchCancelled(Touch *touch, Event *unused_event);
 
+	void autoStartActivity(float dt);
+
 	void updateCIBNAuthorization(std::string jsonString);
+	void updateBackgroundImage(std::string jsonString);
 	void addTestItems(float dt);
 	void update(float dt);
 private:

@@ -242,20 +242,23 @@ void TopBarPanel::updateNotificationMessageCountState(int messageCount)
 //	    m_notificationCountImage->setVisible(false);
 //	    m_notificationHintImage->setVisible(false);
 //	}
+
 }
 
 
 void TopBarPanel::updateWeatherState(std::string jsonString)
 {
-	log("TopBarPanel::The received message is:%s---------------------weather",jsonString.c_str());
+	log("TopBarPanel::The received message is:%sxaxa---------------------weather",jsonString.c_str());
 	ValueMap temperatureMap = ParseJson::getInfoDataFromJSON(jsonString);
-
 	std::string lowTemperature = temperatureMap.at("arg0").asString();
+	if(lowTemperature == "")
+	{
+		return;
+	}
 	std::string highTemperature = temperatureMap.at("arg1").asString();
 	std::string weatherImgFilePath = "image/weather/" +temperatureMap.at("arg2").asString();
 	std::string temperature = lowTemperature + "˚~" + highTemperature + "˚";
-	log("temperature:%s----------------------------weather",temperature.c_str());
-
 	m_weatherStr->setString(temperature);
 	m_weatherImg->loadTexture(weatherImgFilePath);
 }
+

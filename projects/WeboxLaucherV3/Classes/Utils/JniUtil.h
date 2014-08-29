@@ -23,6 +23,9 @@ public:
 	static void* getIconDataWithPackage(const char* pack);
 	static bool startActivityJNI(const char* action, const char* pkgName, const char* clsName);
 	static void getClearnMemoryJNI(bool issystem);
+
+	    static const char* beginAutoStartActivity();
+	    static void sendBroadcastToSettingShowTV();
 };
 #endif /* defined(__WeBoxLauncher__JniUtil__) */
 
