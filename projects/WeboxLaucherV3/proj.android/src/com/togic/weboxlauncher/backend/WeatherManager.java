@@ -17,6 +17,10 @@
 package com.togic.weboxlauncher.backend;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IInterface;
@@ -62,6 +66,7 @@ public class WeatherManager extends BaseManager implements LocalMonitor{
 		mSystem.registerLocalMonitor(this);
 		mWeatherFether = new WeatherFether(mService);
 		mWeatherFether.registerIWeatherFether(mWeatherFetchCallback);
+		initReceiver();
 		
 	}
 	
@@ -227,4 +232,21 @@ public class WeatherManager extends BaseManager implements LocalMonitor{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	private void initReceiver()
+	{
+		final Context ctx = mService;
+        final IntentFilter filter = new IntentFilter();
+        String action = "Intent.action.setting.changeWeather";
+        filter.addAction(action);
+
+        ctx.registerReceiver(mReceiver, filter);
+	}
+	BroadcastReceiver mReceiver = new BroadcastReceiver() {
+		
+		@Override
+		public void onReceive(Context arg0, Intent arg1) {
+			// TODO Auto-generated method stub
+			scheduleTask(MSG_READ_INFO, 0);
+		}
+	};
 }
