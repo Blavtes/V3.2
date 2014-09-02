@@ -106,12 +106,14 @@ void LeftNotificationPanel::show()
 	{
 		m_statusFlag = true;
 		MoveTo* move = MoveTo::create(0.3f,Vec2::ZERO);
-		this->runAction(move);
+		Sequence* actionSequence = Sequence::createWithTwoActions(Show::create(),move);
+		this->runAction(actionSequence);
 	}
 	else
 	{
 		MoveTo* move = MoveTo::create(0.3f,Vec2(-this->getContentSize().width,0));
-		this->runAction(move);
+		Sequence* actionSequence = Sequence::createWithTwoActions(move,Hide::create());
+		this->runAction(actionSequence);
 		m_statusFlag = false;
 	}
 
@@ -150,15 +152,16 @@ bool LeftNotificationPanel::getLeftNotificationPanelStatus()
 void LeftNotificationPanel::updateLeftNotification(std::string jsonString)
 {
 	m_focusHelper->clearFocusIndicator();
-	ValueMap resultData = ParseJson::getInfoDataFromJSON(jsonString);
-	int code = resultData["arg0"].asInt();
-	bool state = resultData["arg1"].asBool();
-	std::string message = resultData["arg2"].asString();
-	log("The received message is code : %d, message : %s=================@NotificationApp",code,message.c_str());
-	if(code == 0xffffffff)
+	ValueMap notificationMap = ParseJson::getInfoDataFromJSON(jsonString);
+	if( notificationMap.size() < 3)
 	{
-		return;
+		log("jsonString parse Failed!");
+		return ;
 	}
+	int code = notificationMap["arg0"].asInt();
+	bool state = notificationMap["arg1"].asBool();
+	std::string message = notificationMap["arg2"].asString();
+	log("The received message is code : %d, message : %s=================@NotificationApp",code,message.c_str());
 	for(int i = 0; i < m_itemPanel->getAllItems().size(); i++)
 	{
 		BaseItem* tempItem = m_itemPanel->getAllItems().at(i);
@@ -173,7 +176,6 @@ void LeftNotificationPanel::updateLeftNotification(std::string jsonString)
 		{
 			m_itemPanel->removeItemByIndex(i);
 			m_focusHelper->showFocusIndicator(); //---------after deleted Item, should be re-show the indicator
-			m_statusFlag = true;
 			return ;
 		}
 	}

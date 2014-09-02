@@ -1,0 +1,58 @@
+{
+    "version": 51,
+    "background": "image/launcher/Launcher1_01.png",
+    "items": [
+        {
+            "_id": 20,
+            "width": 260,
+            "height": 432,
+            "action": "togic.intent.action.LIVE_TV",
+            "gravity": 1,
+            "clip": false,
+            "background": "image/item/item_tv_bg.png",
+            "bottom_bg":"",
+            "icon": "",
+            "title": "",
+            "isshow": -1
+        },
+        {
+            "_id": 21,
+            "width": 260,
+            "height": 432,
+            "action": "togic.intent.action.ONLINE_VIDEO",
+            "gravity": 3,
+            "clip": false,
+            "background": "image/item/item_video_bg.png",
+            "bottom_bg":"",
+            "icon":"",
+            "title":"",
+            "isshow": 0
+        },
+        {
+            "_id": 22,
+            "width": 260,
+            "height": 432,
+            "action": "togic.intent.action.ALBUM",
+            "gravity": 4,
+            "clip": true,
+            "background": "image/item/item_album_bg.png",
+            "bottom_bg":"",
+            "icon":"",
+            "title":"",
+            "isshow": 0
+        },
+        {
+            "_id": 23,
+            "width": 260,
+            "height": 432,
+            "action": "togic.intent.action.LIVE_VIDEO_PROGRAM_MY_FAVOR",
+            "gravity": 3,
+            "clip": false,
+            "background": "image/item/item_history_bg.png",
+            "bottom_bg":"",
+            "icon":"",
+            "title":"",
+            "isshow": 0
+        }
+    ]
+}

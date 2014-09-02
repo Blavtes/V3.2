@@ -45,7 +45,6 @@ import com.togic.weboxlauncher.util.CibnParser.CibnCallback;
 import com.togic.weboxlauncher.util.LogUtil;
 import com.togic.weboxlauncher.util.MMetroParser;
 import com.togic.weboxlauncher.util.MMetroParser.MParserCallback;
-import com.togic.weboxlauncher.util.MetroParser.ParserCallback;
 
 /**
  * @author mts @date 2014年3月6日

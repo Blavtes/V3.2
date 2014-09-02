@@ -183,7 +183,7 @@ typedef enum{
 	Scroll_to_down
 }ScrollDirection;
 
-#define ACTION_DURATION_TIME  0.15
+#define ACTION_DURATION_TIME  0.1
 
 
 #define USER_SHOW_TV_KEY  "use_tv_key"

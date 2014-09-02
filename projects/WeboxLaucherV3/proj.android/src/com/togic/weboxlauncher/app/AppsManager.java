@@ -249,6 +249,7 @@ public class AppsManager {
 //        exclude.add("com.togic.filebrowser");
         exclude.add("com.starcor.hunan");
         exclude.add("com.qzone.familyalbum");
+        exclude.add("com.togic.mgtv.dynamic");
         return new AppFilter(ALL_APPS, Filter.FLAG_EXCLUDE, null, exclude);
     }
 

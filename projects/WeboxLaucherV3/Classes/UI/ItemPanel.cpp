@@ -251,9 +251,13 @@ void ItemPanel::updateMainApps(std::string jsonString)
 		return;
 	}
 
-	if(!UserDefault::sharedUserDefault()->getBoolForKey(USER_SHOW_TV_KEY))
+	if(!UserDefault::getInstance()->getBoolForKey(USER_SHOW_TV_KEY))
 	{
 		itemVector.erase(0);
+	} else {
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+     JniUtil::sendBroadcastToSettingShowTV();
+ #endif
 	}
 
 	if(m_mainItemCount == 0)
@@ -316,24 +320,25 @@ void ItemPanel::updateMainAppsInfo(std::string jsonString)
 {
 	//
 	ValueMap mainAppInfoMap = ParseJson::getInfoDataFromJSON(jsonString);
-   int index=  mainAppInfoMap.at("arg0").asInt();
-   if(index == 0xffffffff)
-   {
-	   return;
-   }
-   std::string description =mainAppInfoMap.at("arg1").asString();
-   std::string title = mainAppInfoMap.at("arg2").asString();
-   if(index >=0 && index < m_mainItemCount)
-   {
-	   MainItem* mainItem =dynamic_cast<MainItem*>( m_itemVector->at(index));
-	   if(nullptr != mainItem)
-	   {
-		   ItemData* mainItemData = mainItem->getItemData();
-		   mainItemData->setDescription(description);
-		   mainItemData->setTitle(title);
-		   mainItem->setHintText(description);
-	   }
-   }
+	if( mainAppInfoMap.size() < 3)
+	{
+		log("jsonString parse Failed!");
+		return ;
+	}
+	int index=  mainAppInfoMap.at("arg0").asInt();
+	std::string description =mainAppInfoMap.at("arg1").asString();
+	std::string title = mainAppInfoMap.at("arg2").asString();
+	if(index >=0 && index < m_mainItemCount)
+	{
+		MainItem* mainItem =dynamic_cast<MainItem*>( m_itemVector->at(index));
+		if(nullptr != mainItem)
+		{
+			ItemData* mainItemData = mainItem->getItemData();
+			mainItemData->setDescription(description);
+			mainItemData->setTitle(title);
+			mainItem->setHintText(description);
+		}
+	}
 }
 
 void ItemPanel::updateUserApps(string jsonString)
@@ -365,7 +370,9 @@ void ItemPanel::updateUserApps(string jsonString)
 			log("ItemPanel:Add UserApp , The UserApp number is:%d===========================@xjx\n",i);
 			auto item = AppItem::create();
 			item->setItemData(itemData);
-			item->setBackgroundImage(backgroundImageFilePaths[(int)(CCRANDOM_0_1()*3)]);
+			char a[100];
+			sprintf(a,"image/appitem/app_bg_%d.png",i%5);
+			item->setBackgroundImage(a);
 			if(!itemData->getPackage().empty())
 			{
 				void* data  = JniUtil::getIconDataWithPackage(itemData->getPackage().c_str()); //------Get Image Data from Network
@@ -392,51 +399,51 @@ void ItemPanel::addDefaultMainItemByPlistFile(std::string filePath)
 		log("Init MainItem plist file is not exist!");
 		return;
 	}
-    ValueMap map = FileUtils::getInstance()->getValueMapFromFile(filePath);
-    ValueMap map1 = map.at("item_tv").asValueMap();
-    ValueMap map2 = map.at("item_video").asValueMap();
-    ValueMap map3 = map.at("item_album").asValueMap();
-    ValueMap map4 = map.at("item_history").asValueMap();
+	ValueMap map = FileUtils::getInstance()->getValueMapFromFile(filePath);
+	ValueMap map1 = map.at("item_tv").asValueMap();
+	ValueMap map2 = map.at("item_video").asValueMap();
+	ValueMap map3 = map.at("item_album").asValueMap();
+	ValueMap map4 = map.at("item_history").asValueMap();
 
-    auto mainItem1 = MainItem::create();
-    auto mainItemData1 = ItemData::create();
-    mainItemData1->setBackgroundImageFilePath(map1.at("backgroundUrl").asString());
-    mainItemData1->setForegroundImageFilePath("");
-    mainItemData1->setBottomBackGroundImageFilePath(map1.at("bottomPanelUrl").asString());
-    mainItemData1->setHintText(map1.at("hint").asString());
-    mainItem1->setItemData(mainItemData1);
-   this->addItem(mainItem1);
-   m_mainItemCount++;
+	auto mainItem1 = MainItem::create();
+	auto mainItemData1 = ItemData::create();
+	mainItemData1->setBackgroundImageFilePath(map1.at("backgroundUrl").asString());
+	mainItemData1->setForegroundImageFilePath("");
+	mainItemData1->setBottomBackGroundImageFilePath(map1.at("bottomPanelUrl").asString());
+	mainItemData1->setHintText(map1.at("hint").asString());
+	mainItem1->setItemData(mainItemData1);
+	this->addItem(mainItem1);
+	m_mainItemCount++;
 
-    auto mainItem2 = MainItem::create();
-    auto mainItemData2 = ItemData::create();
-    mainItemData2->setBackgroundImageFilePath(map2.at("backgroundUrl").asString());
-    mainItemData2->setForegroundImageFilePath(map2.at("topIconUrl").asString());
-    mainItemData2->setBottomBackGroundImageFilePath(map2.at("bottomPanelUrl").asString());
-    mainItemData2->setHintText(map2.at("hint").asString());
-    mainItem2->setItemData(mainItemData2);
-   this->addItem(mainItem2);
-   m_mainItemCount++;
+	auto mainItem2 = MainItem::create();
+	auto mainItemData2 = ItemData::create();
+	mainItemData2->setBackgroundImageFilePath(map2.at("backgroundUrl").asString());
+	mainItemData2->setForegroundImageFilePath(map2.at("topIconUrl").asString());
+	mainItemData2->setBottomBackGroundImageFilePath(map2.at("bottomPanelUrl").asString());
+	mainItemData2->setHintText(map2.at("hint").asString());
+	mainItem2->setItemData(mainItemData2);
+	this->addItem(mainItem2);
+	m_mainItemCount++;
 
-   auto mainItem3 = MainItem::create();
-   auto mainItemData3 = ItemData::create();
-   mainItemData3->setBackgroundImageFilePath(map3.at("backgroundUrl").asString());
-   mainItemData3->setForegroundImageFilePath(map3.at("topIconUrl").asString());
-   mainItemData3->setBottomBackGroundImageFilePath(map3.at("bottomPanelUrl").asString());
-   mainItemData3->setHintText(map3.at("hint").asString());
-   mainItem3->setItemData(mainItemData3);
-  this->addItem(mainItem3);
-  m_mainItemCount++;
+	   auto mainItem3 = MainItem::create();
+	   auto mainItemData3 = ItemData::create();
+	   mainItemData3->setBackgroundImageFilePath(map3.at("backgroundUrl").asString());
+	   mainItemData3->setForegroundImageFilePath(map3.at("topIconUrl").asString());
+	   mainItemData3->setBottomBackGroundImageFilePath(map3.at("bottomPanelUrl").asString());
+	   mainItemData3->setHintText(map3.at("hint").asString());
+	   mainItem3->setItemData(mainItemData3);
+	  this->addItem(mainItem3);
+	  m_mainItemCount++;
 
-  auto mainItem4 = MainItem::create();
-  auto mainItemData4 = ItemData::create();
-  mainItemData4->setBackgroundImageFilePath(map4.at("backgroundUrl").asString());
-  mainItemData4->setForegroundImageFilePath(map4.at("topIconUrl").asString());
-  mainItemData4->setBottomBackGroundImageFilePath(map4.at("bottomPanelUrl").asString());
-  mainItemData4->setHintText(map4.at("hint").asString());
-  mainItem4->setItemData(mainItemData4);
- this->addItem(mainItem4);
- m_mainItemCount++;
+	  auto mainItem4 = MainItem::create();
+	  auto mainItemData4 = ItemData::create();
+	  mainItemData4->setBackgroundImageFilePath(map4.at("backgroundUrl").asString());
+	  mainItemData4->setForegroundImageFilePath(map4.at("topIconUrl").asString());
+	  mainItemData4->setBottomBackGroundImageFilePath(map4.at("bottomPanelUrl").asString());
+	  mainItemData4->setHintText(map4.at("hint").asString());
+	  mainItem4->setItemData(mainItemData4);
+	 this->addItem(mainItem4);
+	 m_mainItemCount++;
 
 // auto mainItem5 = MainItem::create();
 // auto mainItemData5 = ItemData::create();
@@ -519,13 +526,13 @@ int ItemPanel::getMainItemCount()
 void ItemPanel::showTVItem(std::string jsonString)
 {
 	//
-	if(UserDefault::sharedUserDefault()->getBoolForKey(USER_SHOW_TV_KEY))
+	if(UserDefault::getInstance()->getBoolForKey(USER_SHOW_TV_KEY))
 	{
 		return;
 	}
 	else
 	{
-		UserDefault::sharedUserDefault()->setBoolForKey(USER_SHOW_TV_KEY,true);
+		UserDefault::getInstance()->setBoolForKey(USER_SHOW_TV_KEY,true);
 		Vector<ItemData*> itemVector;
 		if(!ParseJson::getItemVectorFromJSON(m_jsonString, itemVector))
 		{

@@ -75,6 +75,11 @@ void NotificationItem::setBackgroundImage(std::string backgroundImageFilePath)
  	}
  	else if(m_itemData->getCode() == 11 )
  	{
+ 		if(m_itemData->getAction()== "com.starcor.hunan.mgtv.fave")
+ 		{
+ 			JniUtil::startActivityJNI(NULL,"com.togic.mgtv.dynamic","com.togic.mgtv.dynamic.MainActivity");
+ 			return;
+ 		}
  		JniUtil::startActivityJNI(m_itemData->getAction().c_str(),nullptr,nullptr);
  	}
 

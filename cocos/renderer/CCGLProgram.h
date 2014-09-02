@@ -219,24 +219,12 @@ public:
      * @lua setUniformLocationI32
      */
     void setUniformLocationWith1i(GLint location, GLint i1);
-    
-    /** calls glUniform2i only if the values are different than the previous call for this same shader program. */
     void setUniformLocationWith2i(GLint location, GLint i1, GLint i2);
-    
-    /** calls glUniform3i only if the values are different than the previous call for this same shader program. */
     void setUniformLocationWith3i(GLint location, GLint i1, GLint i2, GLint i3);
-    
-    /** calls glUniform4i only if the values are different than the previous call for this same shader program. */
     void setUniformLocationWith4i(GLint location, GLint i1, GLint i2, GLint i3, GLint i4);
     
-    /** calls glUniform2iv only if the values are different than the previous call for this same shader program. */
     void setUniformLocationWith2iv(GLint location, GLint* ints, unsigned int numberOfArrays);
-    
-    /** calls glUniform3iv only if the values are different than the previous call for this same shader program. */
     void setUniformLocationWith3iv(GLint location, GLint* ints, unsigned int numberOfArrays);
-    
-    /** calls glUniform4iv only if the values are different than the previous call for this same shader program. */
-    
     void setUniformLocationWith4iv(GLint location, GLint* ints, unsigned int numberOfArrays);
 
     /** calls glUniform1f only if the values are different than the previous call for this same shader program. 
@@ -244,41 +232,18 @@ public:
      * @js NA
      */
     void setUniformLocationWith1f(GLint location, GLfloat f1);
-
-    /** calls glUniform2f only if the values are different than the previous call for this same shader program. 
-     * In js or lua,please use setUniformLocationF32
-     * @js NA
-     */
     void setUniformLocationWith2f(GLint location, GLfloat f1, GLfloat f2);
-
-    /** calls glUniform3f only if the values are different than the previous call for this same shader program. 
-     * In js or lua,please use setUniformLocationF32
-     * @js NA
-     */
     void setUniformLocationWith3f(GLint location, GLfloat f1, GLfloat f2, GLfloat f3);
-
-    /** calls glUniform4f only if the values are different than the previous call for this same shader program. 
-     * In js or lua,please use setUniformLocationF32
-     * @js NA
-     */
     void setUniformLocationWith4f(GLint location, GLfloat f1, GLfloat f2, GLfloat f3, GLfloat f4);
 
     /** calls glUniform2fv only if the values are different than the previous call for this same shader program. */
     void setUniformLocationWith2fv(GLint location, const GLfloat* floats, unsigned int numberOfArrays);
-
-    /** calls glUniform3fv only if the values are different than the previous call for this same shader program. */
     void setUniformLocationWith3fv(GLint location, const GLfloat* floats, unsigned int numberOfArrays);
-
-    /** calls glUniform4fv only if the values are different than the previous call for this same shader program. */
     void setUniformLocationWith4fv(GLint location, const GLfloat* floats, unsigned int numberOfArrays);
 
     /** calls glUniformMatrix2fv only if the values are different than the previous call for this same shader program. */
-    void setUniformLocationWithMatrix2fv(GLint location, const GLfloat* matrixArray, unsigned int numberOfMatrices);
-    
-    /** calls glUniformMatrix3fv only if the values are different than the previous call for this same shader program. */
+    void setUniformLocationWithMatrix2fv(GLint location, const GLfloat* matrixArray, unsigned int numberOfMatrices);//-------------设置投影矩阵
     void setUniformLocationWithMatrix3fv(GLint location, const GLfloat* matrixArray, unsigned int numberOfMatrices);
-    
-    /** calls glUniformMatrix4fv only if the values are different than the previous call for this same shader program. */
     void setUniformLocationWithMatrix4fv(GLint location, const GLfloat* matrixArray, unsigned int numberOfMatrices);
     
     /** will update the builtin uniforms if they are different than the previous call for this same shader program. */

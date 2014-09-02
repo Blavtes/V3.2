@@ -81,7 +81,6 @@ import com.togic.weboxlauncher.notification.NotificationManager.NotificationMoni
 import com.togic.weboxlauncher.util.CommonUtil;
 import com.togic.weboxlauncher.util.LogUtil;
 import com.togic.weboxlauncher.util.MMetroParser;
-import com.togic.weboxlauncher.util.MetroParser;
 import com.togic.weboxlauncher.util.NetworkStateManager;
 import com.togic.weboxlauncher.util.NetworkStateManager.NetworkState;
 import com.togic.weboxlauncher.util.NetworkStateManager.NetworkStateMonitor;
@@ -128,6 +127,12 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 			mHasStartSettings = false;
 		}
 	};
+	
+	@Override
+	protected void onLoadNativeLibraries()
+	{
+		return;
+	}
 
 	private IBackendService mService;
 	private ServiceConnection mConnection = new ServiceConnection() {
@@ -197,13 +202,13 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 		@Override
 		public void onRefreshMetroDate(String date) throws RemoteException {
 			// TODO Auto-generated method stub
+			Log.v("@IMetroCallback", "=========" + date);
 			nativeJsonString(date,"MainApp");
 		}
 
 		@Override
 		public void onRefreshWeaDate(String date) throws RemoteException {
 			// TODO Auto-generated method stub
-			Log.v("@xaxa", "==========================1" + date);
 			nativeJsonString(date,"WeatherState");
 		}
 

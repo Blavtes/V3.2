@@ -163,7 +163,7 @@ void FocusHelper::adjustIndicatorAndPanelPosition(Vec2 pos, Size indicatorSize)
         MoveTo* indicatorMove = MoveTo::create(ACTION_DURATION_TIME,pos);
         m_focusIndicator->runAction(Spawn::createWithTwoActions(sizeAdjust,indicatorMove));
 
-		MoveTo* panelMove = MoveTo::create(3,Vec2(visibleSize.width - 170-pos.x,0));
+		MoveTo* panelMove = MoveTo::create(1,Vec2(visibleSize.width - 170-pos.x,0));
 		EaseExponentialOut* sineActionPanel= EaseExponentialOut::create(panelMove);
 		m_itemView->getInnerContainer()->runAction(sineActionPanel);
     }
@@ -273,7 +273,7 @@ void FocusHelper::moveFocusIndicatorToDown()
 		{
 			m_focusIndicator->stopAllActions();
 			m_focusIndicator->setContentSize(Size(nextItemSize.width + m_focusPaddingX*2,nextItemSize.height+m_focusPaddingY*2));
-	     	MoveTo* focusindicatorMove = MoveTo::create(ACTION_DURATION_TIME,nextItemPos);
+	     	MoveTo* focusindicatorMove = MoveTo::create(0.06,nextItemPos);
 	     	m_focusIndicator->runAction(focusindicatorMove);
 			m_selectedItemIndex = tempFocusIndex;
 			this->onFocusChanged(curItem,nextItem);
@@ -313,7 +313,7 @@ void FocusHelper::moveFocusIndicatorToUp()
 			m_focusIndicator->stopAllActions();
 			m_focusIndicator->setContentSize(Size(nextItemSize.width + m_focusPaddingX*2,nextItemSize.height+m_focusPaddingY*2));
 //			m_focusIndicator->setPosition(nextItemPos);
-	     	MoveTo* focusindicatorMove = MoveTo::create(ACTION_DURATION_TIME,nextItemPos);
+	     	MoveTo* focusindicatorMove = MoveTo::create(0.06,nextItemPos);
 	     	m_focusIndicator->runAction(focusindicatorMove);
 			m_selectedItemIndex = tempFocusIndex;
 			this->onFocusChanged(curItem,nextItem);

@@ -16,7 +16,7 @@ TopBarPanel::TopBarPanel() {
     m_dateText = nullptr;
     m_weekdayText = nullptr;
     m_networkImageView = nullptr;
-//    m_cibnImageView = nullptr;
+    m_cibnImageView = nullptr;
     m_notificationHintImage = nullptr;
     m_notificationCountImage = nullptr;
     m_weatherImg = nullptr;
@@ -56,7 +56,7 @@ bool TopBarPanel::init()
 //	m_weatherStr->setFontName( "fonts/FZLTZHK--GBK1-0.ttf");
 	m_weatherStr->setFontSize(24);
 	m_weatherStr->setColor(Color3B(174, 174, 174));
-	m_weatherStr->setString("28 ~ 38");
+	m_weatherStr->setString("28˚ ~ 38˚");
 	m_weatherStr->setTextHorizontalAlignment(TextHAlignment::CENTER);
 	m_weatherStr->setTextVerticalAlignment(TextVAlignment::CENTER);
 	this->addChild(m_weatherStr);
@@ -112,10 +112,10 @@ bool TopBarPanel::init()
 	m_weekdayText -> setVisible(false);
 	this->addChild(m_weekdayText);
 
-//    m_cibnImageView = ui::ImageView::create();
-//    m_cibnImageView->loadTexture("image/other/ic_mainmenu_CIBN.png");
-//    m_cibnImageView->setPosition(Vec2(150,this->getContentSize().height/2-20));
-//    this->addChild(m_cibnImageView);
+	m_cibnImageView = ui::ImageView::create();
+	m_cibnImageView->loadTexture("image/other/ic_mainmenu_CIBN.png");
+	m_cibnImageView->setPosition(Vec2(150,this->getContentSize().height/2-20));
+	this->addChild(m_cibnImageView);
 
 	m_notificationHintImage = ui::ImageView::create();
 	m_notificationHintImage->loadTexture(NORTIFICATION_HINT_IMG);
@@ -139,13 +139,13 @@ bool TopBarPanel::init()
 void TopBarPanel::updateWifiState(std::string jsonString)
 {
 	ValueMap wifiStateMap = ParseJson::getInfoDataFromJSON(jsonString);
-	int state=  wifiStateMap.at("arg0").asInt();
-	if(state == 0xffffffff)
+	if( wifiStateMap.size() < 2)
 	{
-		return;
+		log("jsonString parse Failed!");
+		return ;
 	}
+	int state=  wifiStateMap.at("arg0").asInt();
 	int level =wifiStateMap.at("arg1").asInt();
-	log("The network state is--- %d, level is-- %d,-------------------@xjx+++networkState",state,level);
 	char  wifiImageFilePath[100];
 	sprintf(wifiImageFilePath,NETWORK_WIFI_IMG,level);
 	switch(state)
@@ -248,13 +248,14 @@ void TopBarPanel::updateNotificationMessageCountState(int messageCount)
 
 void TopBarPanel::updateWeatherState(std::string jsonString)
 {
-	log("TopBarPanel::The received message is:%sxaxa---------------------weather",jsonString.c_str());
 	ValueMap temperatureMap = ParseJson::getInfoDataFromJSON(jsonString);
-	std::string lowTemperature = temperatureMap.at("arg0").asString();
-	if(lowTemperature == "")
+	log("There are %zd datas parsed from the jsoString!------------@json",temperatureMap.size());
+	if( temperatureMap.size() < 3)
 	{
-		return;
+		log("jsonString parse Failed!");
+		return ;
 	}
+	std::string lowTemperature = temperatureMap.at("arg0").asString();
 	std::string highTemperature = temperatureMap.at("arg1").asString();
 	std::string weatherImgFilePath = "image/weather/" +temperatureMap.at("arg2").asString();
 	std::string temperature = lowTemperature + "˚~" + highTemperature + "˚";

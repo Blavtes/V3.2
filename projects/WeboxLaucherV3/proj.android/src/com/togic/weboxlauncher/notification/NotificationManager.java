@@ -105,7 +105,7 @@ public class NotificationManager {
         mContext = context;
         mHandler = new Handler();
 
-        checkMountedUsb();
+//        checkMountedUsb();
 
         for (String action : sMap_Action_Code.keySet()) {
             mTempInfos.put(action, sEmptyNotification);

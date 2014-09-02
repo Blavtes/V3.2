@@ -68,6 +68,7 @@ bool ClearnAppItem::init()
 	ClippingNode* cliper = ClippingNode::create();
 	cliper->setStencil(shap);
 	cliper->setAlphaThreshold(1);
+//	cliper->setContentSize(Size(260,130));
 	cliper->setInverted(true);
 	cliper->setAnchorPoint(Vec2::ZERO);
 	cliper->setPosition(Vec2::ZERO);

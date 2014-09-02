@@ -97,7 +97,7 @@ bool MainLayer::init()
 	CCDirector::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listenerTouch,this);
 
 	HandleMessageQueue* handleMessage = HandleMessageQueue::getInstace();
-//	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(MainLayer::updateCIBNAuthorization,this),"Cibn");
+	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(MainLayer::updateCIBNAuthorization,this),"Cibn");
 	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(MainLayer::updateBackgroundImage,this),"BackgrounImage");
 
 	this->scheduleUpdate();
@@ -254,14 +254,15 @@ void MainLayer::update(float dt)
 void MainLayer::updateCIBNAuthorization(std::string jsonString)
 {
 	Size visibleSize=Director::getInstance()->getVisibleSize();
-	ValueMap resultData = ParseJson::getInfoDataFromJSON(jsonString);
-	int code = resultData["arg0"].asInt();
-	int result = resultData["arg1"].asInt();
-	if(code == 0xffffffff)
+	ValueMap cibnMap = ParseJson::getInfoDataFromJSON(jsonString);
+	if( cibnMap.size() < 2)
 	{
-		return;
+		log("jsonString parse Failed!");
+		return ;
 	}
-	else if(code == 0)
+	int code = cibnMap["arg0"].asInt();
+	int result = cibnMap["arg1"].asInt();
+	if(code == 0)
 	{
 		ToastTextView::getInstance(this)->showMsg(CIBN_AUTH_BEGIN_TXT,3,this,Vec2(visibleSize.width/2,50));
 	}
@@ -278,8 +279,13 @@ void MainLayer::updateCIBNAuthorization(std::string jsonString)
 
 void MainLayer::updateBackgroundImage(std::string jsonString)
 {
-	ValueMap resultData = ParseJson::getInfoDataFromJSON(jsonString);
-	std::string backgrounImageFilePath = resultData["arg0"].asString();
+	ValueMap backgroundMap = ParseJson::getInfoDataFromJSON(jsonString);
+	if( backgroundMap.size() < 1)
+	{
+		log("jsonString parse Failed!");
+		return ;
+	}
+	std::string backgrounImageFilePath = backgroundMap["arg0"].asString();
 	log("xaxa,the update background image file path is:  %s  ",backgrounImageFilePath.c_str());
 	if(FileUtils::getInstance()->isFileExist(backgrounImageFilePath))
 	{

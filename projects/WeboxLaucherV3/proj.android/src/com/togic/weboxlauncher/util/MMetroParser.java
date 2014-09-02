@@ -366,11 +366,7 @@ public class MMetroParser {
     }
 
     private static final String getMetroFileName() {
-        if (App.sBetaVersion) {
-            return "webox_launcher_metro_beta.json";
-        } else {
-            return "webox_launcher_metro.json";
-        }
+            return "cibn_webox_launcher_metro.json";
     }
     
     class Vinfo{

@@ -80,14 +80,12 @@ ParseJson::~ParseJson()
 ValueMap ParseJson::getInfoDataFromJSON(std::string jsonString)
  {
 	     ValueMap dataMap;
-	     int flag = 0xffffffff;
 	     std::string jsonContent =jsonString;
 	     rapidjson::Document doc;
 	     doc.Parse<0>(jsonContent.c_str());
 	     if (doc.HasParseError())
 	     {
 		     log("getParseError %s \n",doc.GetParseError());
-		     dataMap.insert(valType("arg0",Value(flag)));
 		     return  dataMap;
 	     }
 	     if(doc.HasMember("items"))
@@ -141,12 +139,6 @@ ValueMap ParseJson::getInfoDataFromJSON(std::string jsonString)
 				 }
 			 }
 		 }
-	     else
-	     {
-		     //
-		     std::string nullStr = "";
-		     dataMap.insert(valType("arg0",Value(nullStr)));
-	     }
 		return dataMap;
 
  }

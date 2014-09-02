@@ -33,6 +33,7 @@ private:
     ui::ImageView* m_notificationCountImage;
     ui::ImageView* m_weatherImg;
     ui::Text* m_weatherStr;
+    ui::ImageView* m_cibnImageView;
 };
 
 #endif /* TOPBARPANEL_H_ */

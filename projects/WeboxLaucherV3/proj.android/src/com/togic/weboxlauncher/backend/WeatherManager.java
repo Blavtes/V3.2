@@ -79,12 +79,22 @@ public class WeatherManager extends BaseManager implements LocalMonitor{
 	}
 
 	public void registerMetroCallback(IMetroCallback cbk) {
+		if(cbk == null)
+		{
+			Log.v("@WeatherDate", "=============registerMetroCallback  null!");
+			return;
+		}
+		
 		final ICallbackList cbks = mMetroCallbacks;
 		if (!cbks.addCallback(cbk)) {
 			return;
 		}
-
-		notifyWeather(cbk);
+		if(mWeather == null)
+		{
+			scheduleTask(MSG_READ_INFO, 0);
+		}else {
+			notifyWeather(cbk);
+		}
 		checkNetworkSync();
 	}
 
@@ -162,27 +172,34 @@ public class WeatherManager extends BaseManager implements LocalMonitor{
 	
 	private void readWeatherDate()
 	{
-		mWeatherFether.fenchWeather();
-
-		Log.v("@1112", "==========================readWeatherDate");
+		if(mWeatherFether!= null)
+		{
+			Log.v("@WeatherDate", "==============readWeatherDate!");	
+			mWeatherFether.fenchWeather();
+		}else {
+			Log.v("@WeatherDate", "==============mWeatherDate null!");	
+		}
 	}
 	
 	private void notifyWeather()
 	{
-		Log.v("@1112", "==========================notifyWeather1");
 		if(mWeather == null)
 			return ;
-
-		Log.v("@1112", "==========================notifyWeather2");
 		for (IInterface cbk : mMetroCallbacks.getCallbacks()) {
-			Log.v("@1112", "==========================notifyWeather cbk");
 			notifyWeather((IMetroCallback) cbk);
 		}
 		
 	}
 	private void notifyWeather(IMetroCallback cbk)
 	{
+		if(mWeather == null)
+		{
+			 Log.v("@WeatherDate", "=============notifyWeather  null!");
+			return;
+		}
+
 		try {
+			  Log.v("@WeatherDate", "=============notifyWeather " + mWeather.toString());
 			cbk.onRefreshWeaDate((new Gson()).toJson(new MJsonInfo(mWeather)));
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
@@ -197,10 +214,9 @@ public class WeatherManager extends BaseManager implements LocalMonitor{
 			if(weather != null && weather.weather!= null && weather.weather.length()>0)
 			{
 
-				Log.v("@1112", "==========================IWeatherFether");
 			  mWeather = weather;
 			  notifyWeather();
-			  Log.v("@1112", "==========================IWeatherFether " + mWeather.toString());
+			  Log.v("@WeatherDate", "=============localWeatherCallback " + mWeather.toString());
 			  scheduleTask(MSG_READ_INFO, 2*60*60*1000);
 			}
 			else
