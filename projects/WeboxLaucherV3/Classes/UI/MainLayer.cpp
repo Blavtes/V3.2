@@ -137,7 +137,8 @@ if (strncmp(model,"live",strlen("live")) == 0) {
 
 } else if (strncmp(model,"movie",strlen("movie")) == 0) {
     CCLOG("###########autoStartActivity####### move");
-    JniUtil::startActivityJNI(JNI_HuNanTV_Action, NULL, NULL);
+    JniUtil::startActivityJNI(JNI_Video_Action, NULL, NULL);
+//    JniUtil::startActivityJNI(JNI_HuNanTV_Action, NULL, NULL);
 }
 #endif
 }
