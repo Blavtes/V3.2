@@ -50,15 +50,11 @@ bool MainLayer::init()
 	}
 
 	Size visibleSize=Director::getInstance()->getVisibleSize();
-<<<<<<< HEAD
-  	 m_backgroundImageView =ui:: ImageView::create(MAIN_LAYER_BACKGROUND_IMG);
-  	 m_backgroundImageView->setPosition(Vec2(visibleSize.width/2,visibleSize.height/2));
-=======
+
 //  	 m_backgroundImageView =ui:: ImageView::create(MAIN_LAYER_BACKGROUND_IMG);
 	m_backgroundImageView = ui::ImageView::create();
 	m_backgroundImageView->setAnchorPoint(Vec2(0,0));
   	 m_backgroundImageView->setPosition(Vec2::ZERO);
->>>>>>> 33fb5b7... add class.
   	 this->addChild(m_backgroundImageView,0);
 
   	 m_itemPanel=ItemPanel::create();
@@ -102,10 +98,9 @@ bool MainLayer::init()
 
 	this->scheduleUpdate();
 	this->scheduleOnce(schedule_selector(MainLayer::addTestItems),3);
-<<<<<<< HEAD
-=======
+
 	this->scheduleOnce(schedule_selector(MainLayer::autoStartActivity), 1.02f);
->>>>>>> 33fb5b7... add class.
+
 	return true;
 }
 

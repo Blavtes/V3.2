@@ -64,10 +64,8 @@ bool ItemPanel::init()
 	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(ItemPanel::updateMainApps,this),"MainApp");
 	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(ItemPanel::updateUserApps,this),"UserApp");
 	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(ItemPanel::updateMainAppsInfo,this),"MainAppInfo");
-<<<<<<< HEAD
-=======
+
 	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(ItemPanel::showTVItem,this),"keybox");
->>>>>>> 33fb5b7... add class.
 
 	return true;
 }
