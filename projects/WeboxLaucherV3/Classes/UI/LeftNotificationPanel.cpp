@@ -197,13 +197,13 @@ void LeftNotificationPanel::updateLeftNotification(std::string jsonString)
 		notificationItemData->setForegroundImageFilePath(Left_UpdateIcon_Image);
 		notificationItemData->setHintText(Left_Item_Update_Title);
 	}
-	else if(code == CODE_CHASE_DRAMA)
-	{
-		notificationItemData->setCode(code);
-		notificationItemData->setAction( "togic.intent.action.LIVE_VIDEO_PROGRAM_MY_FAVOR");
-		notificationItemData->setForegroundImageFilePath(Left_LikeIcon_Image);
-		notificationItemData->setHintText(Left_Item_Like_Title);
-	}
+//	else if(code == CODE_CHASE_DRAMA)
+//	{
+//		notificationItemData->setCode(code);
+//		notificationItemData->setAction( "togic.intent.action.LIVE_VIDEO_PROGRAM_MY_FAVOR");
+//		notificationItemData->setForegroundImageFilePath(Left_LikeIcon_Image);
+//		notificationItemData->setHintText(Left_Item_Like_Title);
+//	}
 	else if(code == CODE_MOUNT_UNMOUNT)
 	{
 		notificationItemData->setCode(code);

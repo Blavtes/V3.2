@@ -519,7 +519,7 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 				Gson gson = new Gson();
 				String str = gson.toJson(mif);
 				Log.v("\r\n@mainAppHintText -----@xjx++++++++++++++++receive mainAppHintText  json : ", str);
-				nativeJsonString(str,"MainAppInfo" );
+//				nativeJsonString(str,"MainAppInfo" );
 				// @xjx
 				// nativeSendNFInfo(code, array);
 			}

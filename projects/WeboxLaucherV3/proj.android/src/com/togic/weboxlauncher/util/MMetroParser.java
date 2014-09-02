@@ -366,7 +366,7 @@ public class MMetroParser {
     }
 
     private static final String getMetroFileName() {
-            return "cibn_webox_launcher_metro.json";
+            return "mgtv_webox_launcher_metro.json";
     }
     
     class Vinfo{

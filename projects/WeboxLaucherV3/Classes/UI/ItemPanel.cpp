@@ -63,7 +63,7 @@ bool ItemPanel::init()
 	HandleMessageQueue* handleMessage = HandleMessageQueue::getInstace(); //---------------------------------register msg processing func
 	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(ItemPanel::updateMainApps,this),"MainApp");
 	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(ItemPanel::updateUserApps,this),"UserApp");
-	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(ItemPanel::updateMainAppsInfo,this),"MainAppInfo");
+//	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(ItemPanel::updateMainAppsInfo,this),"MainAppInfo");
 
 	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(ItemPanel::showTVItem,this),"keybox");
 

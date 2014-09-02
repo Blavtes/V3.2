@@ -112,10 +112,10 @@ bool TopBarPanel::init()
 	m_weekdayText -> setVisible(false);
 	this->addChild(m_weekdayText);
 
-	m_cibnImageView = ui::ImageView::create();
-	m_cibnImageView->loadTexture("image/other/ic_mainmenu_CIBN.png");
-	m_cibnImageView->setPosition(Vec2(150,this->getContentSize().height/2-20));
-	this->addChild(m_cibnImageView);
+//	m_cibnImageView = ui::ImageView::create();
+//	m_cibnImageView->loadTexture("image/other/ic_mainmenu_CIBN.png");
+//	m_cibnImageView->setPosition(Vec2(150,this->getContentSize().height/2-20));
+//	this->addChild(m_cibnImageView);
 
 	m_notificationHintImage = ui::ImageView::create();
 	m_notificationHintImage->loadTexture(NORTIFICATION_HINT_IMG);
