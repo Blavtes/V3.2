@@ -38,6 +38,7 @@ public:
 
 	void updateCIBNAuthorization(std::string jsonString);
 	void updateBackgroundImage(std::string jsonString);
+	void showTVItem(std::string jsonString);
 	void addTestItems(float dt);
 	void update(float dt);
 private:

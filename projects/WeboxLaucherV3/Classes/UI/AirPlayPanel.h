@@ -55,6 +55,7 @@ public:
 //    void moveIconPosition(bool isMove);
     AirPlayInfo *getAirPlayInfo();
     ui::ImageView *getAirPlayIcon();
+    void hideAirPlayImage(float dt);
 protected:
     AirPlayInfo *m_showInfo;
     ui::ImageView *m_airPlayImage;

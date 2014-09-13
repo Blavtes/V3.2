@@ -95,6 +95,7 @@ bool MainLayer::init()
 	HandleMessageQueue* handleMessage = HandleMessageQueue::getInstace();
 //	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(MainLayer::updateCIBNAuthorization,this),"Cibn");
 	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(MainLayer::updateBackgroundImage,this),"BackgrounImage");
+	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(MainLayer::showTVItem,this),"keybox");
 
 	this->scheduleUpdate();
 	this->scheduleOnce(schedule_selector(MainLayer::addTestItems),3);
@@ -298,13 +299,28 @@ void MainLayer::addTestItems(float dt)
 	ClearnAppItem* clearnItem = ClearnAppItem::create();
 	clearnItem->setItemData(clearData);
 //	m_itemPanel->addItem(clearnItem);
-	if(m_itemPanel->getAllItems().size() > m_itemPanel->getMainItemCount()+3)
+	if(m_itemPanel->getAllItems().size() >= m_itemPanel->getMainItemCount()+3)
 	{
 		m_itemPanel->insertItemByIndex(clearnItem,m_itemPanel->getMainItemCount()+3);
 	}
 }
 
-
+void MainLayer::showTVItem(std::string jsonString)
+{
+	//....
+	if(UserDefault::getInstance()->getBoolForKey(USER_SHOW_TV_KEY))
+	{
+//		UserDefault::getInstance()->setBoolForKey(USER_SHOW_TV_KEY,false);
+//		m_itemPanel->removeItemByIndex(0);
+//		//.........................moveFocusIdicator
+		return ;
+	}
+	else
+	{
+		m_itemPanel->showTVItem(jsonString);
+		m_focusHelper->setSelectedItemIndex(1);
+	}
+}
 
 
 

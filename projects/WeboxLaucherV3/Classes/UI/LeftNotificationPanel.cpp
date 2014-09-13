@@ -162,6 +162,7 @@ void LeftNotificationPanel::updateLeftNotification(std::string jsonString)
 	bool state = notificationMap["arg1"].asBool();
 	std::string message = notificationMap["arg2"].asString();
 	log("The received message is code : %d, message : %s=================@NotificationApp",code,message.c_str());
+
 	for(int i = 0; i < m_itemPanel->getAllItems().size(); i++)
 	{
 		BaseItem* tempItem = m_itemPanel->getAllItems().at(i);
@@ -182,6 +183,7 @@ void LeftNotificationPanel::updateLeftNotification(std::string jsonString)
 
 	if(!state)
 	{
+		log("The received message is code--------------@NotificationApp");
 		m_focusHelper->showFocusIndicator();
 		return;
 	}

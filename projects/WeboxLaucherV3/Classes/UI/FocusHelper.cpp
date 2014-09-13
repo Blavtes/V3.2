@@ -90,7 +90,9 @@ int FocusHelper::getSelectedItemIndex()
 
 void  FocusHelper::setSelectedItemIndex(int selectedIndex)
 {
+	this->clearFocusIndicator();
 	m_selectedItemIndex = selectedIndex;
+	this->showFocusIndicator();
 }
 
 
@@ -254,7 +256,6 @@ void FocusHelper::moveFocusIndicatorToDown()
 	BaseItem* curItem	= m_itemView->getAllItems().at(tempFocusIndex-1);
 	Size curItemSize = curItem->getSize();
 	Vec2  curItemPos =curItem->getPosition();
-    bool isFind = false;
 	log("Down:The current item position is  (x:%f,y:%f) ----xjx ",curItemPos.x, curItemPos.y);
 	while(tempFocusIndex < m_itemView->getAllItems().size() )
 	{
@@ -274,31 +275,33 @@ void FocusHelper::moveFocusIndicatorToDown()
 		{
 			m_focusIndicator->stopAllActions();
 			m_focusIndicator->setContentSize(Size(nextItemSize.width + m_focusPaddingX*2,nextItemSize.height+m_focusPaddingY*2));
-	     	MoveTo* focusindicatorMove = MoveTo::create(0.06,nextItemPos);
-	     	m_focusIndicator->runAction(focusindicatorMove);
+			MoveTo* focusindicatorMove = MoveTo::create(0.06,nextItemPos);
+			m_focusIndicator->runAction(focusindicatorMove);
 			m_selectedItemIndex = tempFocusIndex;
 			this->onFocusChanged(curItem,nextItem);
-      isFind = true;
 			break;
 		}
 	}
-    BaseItem* preItem = m_itemView->getAllItems().at(tempFocusIndex-2);
-    Size preItemSize = preItem->getSize();
-    Vec2 preItemPos = preItem->getPosition();
-    float heightThreshold =  curItemSize.height/2 + preItemSize.height/2;
+	if(m_selectedItemIndex == m_itemView->getAllItems().size())
+	{
+		tempFocusIndex -=1;
+		BaseItem* nextItem = m_itemView->getAllItems().at(tempFocusIndex-1);
+		Size nextItemSize = nextItem->getSize();
+		Vec2 nextItemPos = nextItem->getPosition();
+		log("Down:The next  item position is  (x:%f,y:%f) ----xjx ",nextItemPos.x, nextItemPos.y);
+		float heightThreshold =  curItemSize.height/2 + nextItemSize.height/2;
+		float widthThrehold =  curItemSize.width/2 + nextItemSize.width/2;
+		 if( abs(nextItemPos.y - curItemPos.y) > heightThreshold && abs(nextItemPos.x - curItemPos.x) > MARGIN_MIDDLE)
+		{
+			m_focusIndicator->stopAllActions();
+			m_focusIndicator->setContentSize(Size(nextItemSize.width + m_focusPaddingX*2,nextItemSize.height+m_focusPaddingY*2));
+			MoveTo* focusindicatorMove = MoveTo::create(0.06,nextItemPos);
+			m_focusIndicator->runAction(focusindicatorMove);
+			m_selectedItemIndex = tempFocusIndex;
+			this->onFocusChanged(curItem,nextItem);
+		}
+	}
 
-    if (isFind) {
-        return;
-    }
-    if (tempFocusIndex == m_itemView->getAllItems().size() && curItemPos.y > heightThreshold) {
-        BaseItem* chItem = m_itemView->getAllItems().at(tempFocusIndex-2);
-        Size chItemSize = chItem->getSize();
-        Vec2 chItemPos = chItem->getPosition();
-        MoveTo* focusindicatorMove = MoveTo::create(ACTION_DURATION_TIME,chItemPos);
-        m_focusIndicator->runAction(focusindicatorMove);
-        m_selectedItemIndex = tempFocusIndex - 1;
-        this->onFocusChanged(curItem,chItem);
-    }
 	return ;
 }
 
@@ -332,8 +335,8 @@ void FocusHelper::moveFocusIndicatorToUp()
 			m_focusIndicator->stopAllActions();
 			m_focusIndicator->setContentSize(Size(nextItemSize.width + m_focusPaddingX*2,nextItemSize.height+m_focusPaddingY*2));
 //			m_focusIndicator->setPosition(nextItemPos);
-	     	MoveTo* focusindicatorMove = MoveTo::create(0.06,nextItemPos);
-	     	m_focusIndicator->runAction(focusindicatorMove);
+			MoveTo* focusindicatorMove = MoveTo::create(0.06,nextItemPos);
+	     		m_focusIndicator->runAction(focusindicatorMove);
 			m_selectedItemIndex = tempFocusIndex;
 			this->onFocusChanged(curItem,nextItem);
 			break;
@@ -347,9 +350,11 @@ void FocusHelper::showFocusIndicator()
 	int itemCount = m_itemView->getAllItems().size();
 	if(itemCount == 0)
 	{
-		log("FocusHelper::the items is o-----------------------------------@clear!!!");
 		m_selectedItemIndex = 0;
-		m_focusIndicator->setVisible(false);
+		if(m_focusIndicator != nullptr)
+		{
+			m_focusIndicator->setVisible(false);
+		}
 		return;
 	}
 	if(m_selectedItemIndex > itemCount ||   !m_focusIndicator->isVisible())

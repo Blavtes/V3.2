@@ -66,8 +66,6 @@ bool ItemPanel::init()
 	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(ItemPanel::updateUserApps,this),"UserApp");
 //	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(ItemPanel::updateMainAppsInfo,this),"MainAppInfo");
 
-	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(ItemPanel::showTVItem,this),"keybox");
-
 	return true;
 }
 
@@ -323,12 +321,12 @@ void ItemPanel::updateMainApps(std::string jsonString)
         }
         m_mainItemCount =  itemVector.size();
     }
-    
 }
 
 void ItemPanel::updateMainAppsInfo(std::string jsonString)
 {
 	//
+	log("ItemPanel:the received updateMainAppsInfo  is %s-----------------------@mainApp",jsonString.c_str());
 	ValueMap mainAppInfoMap = ParseJson::getInfoDataFromJSON(jsonString);
 	if( mainAppInfoMap.size() < 3)
 	{
@@ -336,23 +334,64 @@ void ItemPanel::updateMainAppsInfo(std::string jsonString)
 		return ;
 	}
 	int index=  mainAppInfoMap.at("arg0").asInt();
+	if(!UserDefault::getInstance()->getBoolForKey(USER_SHOW_TV_KEY) && index == 0)
+	{
+		return;
+	}
+	else if(!UserDefault::getInstance()->getBoolForKey(USER_SHOW_TV_KEY))
+	{
+		index = index -1;
+	}
 	std::string description =mainAppInfoMap.at("arg1").asString();
 	std::string title = mainAppInfoMap.at("arg2").asString();
-	if(index >=0 && index < m_mainItemCount)
+	for(int i = 0; i<m_mainItemCount; i++)
 	{
-		MainItem* mainItem =dynamic_cast<MainItem*>( m_itemVector->at(index));
-		if(nullptr != mainItem)
+		MainItem* mainItem =dynamic_cast<MainItem*>( m_itemVector->at(i));
+		if(title == "影视")
 		{
-			ItemData* mainItemData = mainItem->getItemData();
-			mainItemData->setDescription(description);
-			mainItemData->setTitle(title);
-			mainItem->setHintText(description);
+			if(mainItem != nullptr && mainItem->getItemData()->getAction() == "togic.intent.action.ONLINE_VIDEO")
+			{
+				mainItem->setHintText(description);
+			}
+		}
+		else if(title == "电视台")
+		{
+			if(mainItem != nullptr && mainItem->getItemData()->getAction() == "togic.intent.action.LIVE_TV")
+			{
+				mainItem->setHintText(description);
+			}
+		}
+		else if(title == "观看动态")
+		{
+			if(mainItem != nullptr && mainItem->getItemData()->getAction() == "togic.intent.action.LIVE_VIDEO_PROGRAM_MY_FAVOR")
+			{
+				mainItem->setHintText(description);
+			}
+		}
+		else if(title == "")
+		{
+			if(mainItem != nullptr && mainItem->getItemData()->getAction() == "togic.intent.action.ALBUM")
+			{
+				mainItem->setHintText(description);
+			}
 		}
 	}
+//	if(index >=0 && index < m_mainItemCount)
+//	{
+//		MainItem* mainItem =dynamic_cast<MainItem*>( m_itemVector->at(index));
+//		if(nullptr != mainItem)
+//		{
+//			ItemData* mainItemData = mainItem->getItemData();
+//			mainItemData->setDescription(description);
+//			mainItemData->setTitle(title);
+//			mainItem->setHintText(description);
+//		}
+//	}
 }
 
 void ItemPanel::updateUserApps(string jsonString)
 {
+//<<<<<<< HEAD
     //
     Vector<ItemData*> itemVector;
     if(!ParseJson::getItemVectorFromJSON(jsonString, itemVector))
@@ -391,9 +430,9 @@ void ItemPanel::updateUserApps(string jsonString)
                     data->setHeight(432);
                     auto item = MainItem::create();
                     item->setItemData(data);
-                    if (m_mainItemCount == 3) {
+                    if (UserDefault::getInstance()->getBoolForKey(USER_SHOW_TV_KEY,false)  ==  false ) {
                         this->insertItemByIndex(item,0);
-                    } else if (m_mainItemCount == 4) {
+                    } else if (UserDefault::getInstance()->getBoolForKey(USER_SHOW_TV_KEY,false)  ==  true) {
                         this->insertItemByIndex(item,1);
                     } else {
                                             this->insertItemByIndex(item,0);
@@ -421,6 +460,54 @@ void ItemPanel::updateUserApps(string jsonString)
             this->addItem(item);
         }
     }
+//=======
+//	//
+//	Vector<ItemData*> itemVector;
+//	if(!ParseJson::getItemVectorFromJSON(jsonString, itemVector))
+//	{
+//		log("ItemPanel:Parse Json String Failed!~~~~~~~~~~~~~~~~~~~~~~~~~~@xjx\n");
+//		return;
+//	}
+//
+//	for(int i=0; i<itemVector.size();i++)
+//	{
+//		ItemData* itemData = itemVector.at(i);
+//		if(itemData->getProFlag() == -1)
+//		{
+//			log("ItemPanel:Delete UserApp,The UserApp number is:%d===========================@xjx",i);
+//			int index = this->findItemIndexByItemData(itemData);
+//			if(index == -1)
+//			{
+//				return;
+//			}
+//			this->removeItemByIndex(index);
+//		}
+//		else if(itemData->getProFlag() == 1)
+//		{
+//			log("ItemPanel:Add UserApp , The UserApp number is:%d===========================@xjx\n",i);
+//			int index = this->findItemIndexByItemData(itemData);
+//			if(index != -1)
+//			{
+//				return;
+//			}
+//			auto item = AppItem::create();
+//			item->setItemData(itemData);
+//			char a[100];
+//			sprintf(a,"image/appitem/app_bg_%d.png",i%5);
+//			item->setBackgroundImage(a);
+//			if(!itemData->getPackage().empty())
+//			{
+//				void* data  = JniUtil::getIconDataWithPackage(itemData->getPackage().c_str()); //------Get Image Data from Network
+//				if(data == NULL)
+//				{
+//					return;
+//				}
+//				item->setForegroundSpriteByData((void*)data,itemData->getWidth(),itemData->getHeight());
+//			}
+//			this->addItem(item);
+//		}
+//	}
+//>>>>>>> rebase cibn 0913.
 }
 
 Vector<BaseItem*>  ItemPanel::getAllItems()
@@ -562,23 +649,16 @@ int ItemPanel::getMainItemCount()
 void ItemPanel::showTVItem(std::string jsonString)
 {
 	//
-	if(UserDefault::getInstance()->getBoolForKey(USER_SHOW_TV_KEY))
+	UserDefault::getInstance()->setBoolForKey(USER_SHOW_TV_KEY,true);
+	Vector<ItemData*> itemVector;
+	if(!ParseJson::getItemVectorFromJSON(m_jsonString, itemVector))
 	{
+		log("ItemPanel:Parse Json String Failed!~~~~~~~~~~~~~~~~~~~~~~~~~~@xjx\n");
 		return;
 	}
-	else
-	{
-		UserDefault::getInstance()->setBoolForKey(USER_SHOW_TV_KEY,true);
-		Vector<ItemData*> itemVector;
-		if(!ParseJson::getItemVectorFromJSON(m_jsonString, itemVector))
-		{
-			log("ItemPanel:Parse Json String Failed!~~~~~~~~~~~~~~~~~~~~~~~~~~@xjx\n");
-			return;
-		}
-		MainItem* mainItem = MainItem::create();
-		mainItem->setItemData(itemVector.at(0));
-		this->insertItemByIndex(mainItem,0);
-	}
+	MainItem* mainItem = MainItem::create();
+	mainItem->setItemData(itemVector.at(0));
+	this->insertItemByIndex(mainItem,0);
 
 }
 

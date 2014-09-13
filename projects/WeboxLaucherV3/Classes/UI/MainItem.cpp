@@ -47,7 +47,7 @@ void MainItem::setItemData(ItemData* itemData)
 	//Update the Item View
 	this->setForegroundImage(itemData->getForegroundImageFilePath());
 	this->setBackgroundImage(itemData->getBackgroundImageFilePath());
-	this->setHintText(itemData->getHintText());
+//	this->setHintText(itemData->getHintText());
 	this->setBottomBackgroundImage(itemData->getBottomBackGroundImageFilePath());
 }
 

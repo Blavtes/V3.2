@@ -837,6 +837,43 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 	//-++++++++++++++================================================send message to update User Apps
 	public void onUpdateAppsFromLocal(ArrayList<AppInfo> updated) {
 		// TODO Auto-generated method stub
+		AppInfo taginfo0 = null,  taginfo1 = null,  taginfo2 = null;
+		for(int i = 0 ; i < updated.size(); i++)
+		{
+			AppInfo iaif = updated.get(i);
+			if(iaif.getPackageName().equals("com.togic.settings"))
+			{
+				taginfo0 = iaif;
+			}
+			else if (iaif.getPackageName().equals("com.togic.filebrowser")){
+
+				taginfo1 = iaif;
+			}
+			else if(iaif.getPackageName().equals("com.togic.appstore")){
+
+				taginfo2 = iaif;
+			}
+			
+		}
+		if(null != taginfo0)
+		{
+			updated.set(0, taginfo0);
+			Log.v("mainApp", "taginfo0" + taginfo0.getPackageName());
+			Log.v("mainApp", "taginfo0 set " + updated.get(2).getPackageName());
+		}
+		if(null != taginfo1)
+		{
+			updated.set(1, taginfo1);
+			Log.v("mainApp", "taginfo1" + taginfo1.getPackageName());
+			Log.v("mainApp", "taginfo1 set " + updated.get(1).getPackageName());
+		}
+		if(null != taginfo2)
+		{
+			updated.set(2, taginfo2);
+			Log.v("mainApp", "taginf2" + taginfo2.getPackageName());
+			Log.v("mainApp", "taginfo2 set " + updated.get(0).getPackageName());
+		}
+		
 		final AppInfo[] updatedApps = new AppInfo[updated.size()];
 		updated.toArray(updatedApps);
 		

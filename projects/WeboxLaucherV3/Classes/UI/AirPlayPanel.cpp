@@ -163,6 +163,7 @@ bool AirPlayPanel::init()
 
     HandleMessageQueue* handleMessage = HandleMessageQueue::getInstace();
     handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(AirPlayPanel::showAirPlayInfo,this),"AirPlay");
+    this->schedule(schedule_selector(AirPlayPanel::hideAirPlayImage),15);
 
     return true;
 }
@@ -196,8 +197,11 @@ void AirPlayPanel::showAirPlayInfo(std::string jsonString)
 	 if(!flag)
 	 {
 		    m_airPlayImage->setVisible(false);
+		    this->unscheduleAllSelectors();
 		    return;
 	 }
+	 this->unschedule(schedule_selector(AirPlayPanel::hideAirPlayImage));
+	 this->schedule(schedule_selector(AirPlayPanel::hideAirPlayImage),15);
 	 if(airplayMusicData.size() == 0)
 	 {
 		 log("No airplayMusicData parsed from JSON-----------------------------@airplay");
@@ -206,31 +210,38 @@ void AirPlayPanel::showAirPlayInfo(std::string jsonString)
 	 AirplayMusicData* musicData = airplayMusicData.at(0);
 	 m_showInfo->updataShowInfo(musicData);
 
-    if ( m_showInfo->getAuthorLabel()->getString().empty()  && m_showInfo->getSongNameLabel()->getString().empty())
-    {
-        return;
-    }
+	 if ( m_showInfo->getAuthorLabel()->getString().empty()  && m_showInfo->getSongNameLabel()->getString().empty())
+	 {
+		 return;
+	 }
 	 log("data received successful!-----------------------------@airplay");
 	m_airPlayImage->setVisible(true);
-    float authorWidth = m_showInfo->getAuthorLabel()->getContentSize().width;
-    float songWidth = m_showInfo->getSongNameLabel()->getContentSize().width;
-    float offset = 0.0f;
-    float scaleEnd = 0.0f;
-    if (authorWidth > songWidth)
-    {
-        scaleEnd = authorWidth;
-    }
-    else
-    {
-        scaleEnd = songWidth;
-    }
-    offset = 112.0f+ scaleEnd + 28.0f;
-    m_showInfo->getBackground()->setScaleX(offset / 330.0f);
-    m_showInfo->stopAllActions();
-    log("Begin to run Action, the position X is : %f------------------------------------@airplay",  offset);
-    MoveTo *movebegin = MoveTo::create(0.5f, Vec2(40, 20));
-    MoveTo *moveStop = MoveTo::create(3.0f, Vec2(40, 20));
-    MoveTo *moveEnd = MoveTo::create(0.5f, Vec2(-offset, 20));
-    Sequence *seq = Sequence::create(movebegin,moveStop,moveEnd,nullptr);
-    m_showInfo->runAction(seq);
+	float authorWidth = m_showInfo->getAuthorLabel()->getContentSize().width;
+	float songWidth = m_showInfo->getSongNameLabel()->getContentSize().width;
+	float offset = 0.0f;
+	float scaleEnd = 0.0f;
+	if (authorWidth > songWidth)
+	{
+		scaleEnd = authorWidth;
+	}
+	else
+	{
+		scaleEnd = songWidth;
+	}
+	offset = 112.0f+ scaleEnd + 28.0f;
+	m_showInfo->getBackground()->setScaleX(offset / 330.0f);
+	m_showInfo->stopAllActions();
+	 log("Begin to run Action, the position X is : %f------------------------------------@airplay",  offset);
+	 MoveTo *movebegin = MoveTo::create(0.5f, Vec2(40, 20));
+	 MoveTo *moveStop = MoveTo::create(3.0f, Vec2(40, 20));
+	 MoveTo *moveEnd = MoveTo::create(0.5f, Vec2(-offset, 20));
+	 Sequence *seq = Sequence::create(movebegin,moveStop,moveEnd,nullptr);
+	 m_showInfo->runAction(seq);
+}
+
+void AirPlayPanel::hideAirPlayImage(float dt)
+{
+	//
+	m_airPlayImage->setVisible(false);
+	this->unschedule(schedule_selector(AirPlayPanel::hideAirPlayImage));
 }

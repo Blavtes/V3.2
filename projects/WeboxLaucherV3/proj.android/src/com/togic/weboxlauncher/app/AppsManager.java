@@ -250,6 +250,7 @@ public class AppsManager {
         exclude.add("com.starcor.hunan");
         exclude.add("com.qzone.familyalbum");
         exclude.add("com.togic.mgtv.dynamic");
+        exclude.add("com.togic.taskclean");
         return new AppFilter(ALL_APPS, Filter.FLAG_EXCLUDE, null, exclude);
     }
 
