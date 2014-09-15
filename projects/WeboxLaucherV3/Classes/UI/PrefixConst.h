@@ -187,6 +187,7 @@ typedef enum{
 
 
 #define USER_SHOW_TV_KEY  "use_tv_key"
+#define TOGICVIDEO_SHOW_DEFALUT                   "mediavideo_show_defalut"
 
 
 

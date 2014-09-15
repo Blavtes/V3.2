@@ -137,7 +137,7 @@ void LeftNotificationPanel::onKeyReleased(EventKeyboard::KeyCode keyCode, Event*
 		m_focusHelper->onKeyReleased(keyCode,event);
 	}
 
-	if(keyCode == EventKeyboard::KeyCode::KEY_BACK)
+    if(keyCode == EventKeyboard::KeyCode::KEY_BACK || keyCode == EventKeyboard::KeyCode::KEY_DPAD_LEFT || keyCode == EventKeyboard::KeyCode::KEY_DPAD_RIGHT)
 	{
 		m_statusFlag = true;
 		this->show();

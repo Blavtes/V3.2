@@ -243,7 +243,7 @@ public class AppsManager {
         exclude.add("com.gsoft.appinstall");
         exclude.add("com.magicandroidapps.iperf");
         exclude.add("com.qzone.tvalbum");
-        exclude.add("com.togic.livevideo");
+//        exclude.add("com.togic.livevideo");
         exclude.add("tv.doule.upgrade");
 //        exclude.add("com.togic.settings");
 //        exclude.add("com.togic.filebrowser");

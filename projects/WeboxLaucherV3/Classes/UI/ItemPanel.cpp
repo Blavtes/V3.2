@@ -23,6 +23,7 @@ ItemPanel::ItemPanel()
 	m_middleMargin = MARGIN_MIDDLE;
 	m_mainItemCount = 0;
 	m_jsonString = "";
+    m_installTogicVideo = false;
 }
 
 ItemPanel::~ItemPanel()
@@ -240,78 +241,89 @@ int ItemPanel::findItemIndexByItemData(ItemData* itemData)
 
 void ItemPanel::updateMainApps(std::string jsonString)
 {
-	//
-	m_jsonString = jsonString;
-	Vector<ItemData*> itemVector;
-	if(!ParseJson::getItemVectorFromJSON(jsonString, itemVector))
-	{
-		log("ItemPanel:Parse Json String Failed!~~~~~~~~~~~~~~~~~~~~~~~~~~@xjx\n");
-		return;
-	}
+    //
+    m_jsonString = jsonString;
+    Vector<ItemData*> itemVector;
+    if(!ParseJson::getItemVectorFromJSON(jsonString, itemVector))
+    {
+        log("ItemPanel:Parse Json String Failed!~~~~~~~~~~~~~~~~~~~~~~~~~~@xjx\n");
+        return;
+    }
 
-	if(!UserDefault::getInstance()->getBoolForKey(USER_SHOW_TV_KEY))
-	{
-		itemVector.erase(0);
-	} else {
+    if(!UserDefault::getInstance()->getBoolForKey(USER_SHOW_TV_KEY))
+    {
+        itemVector.erase(0);
+    } else {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-     JniUtil::sendBroadcastToSettingShowTV();
- #endif
-	}
+        JniUtil::sendBroadcastToSettingShowTV();
+#endif
+    }
 
-	if(m_mainItemCount == 0)
-	{
-		for(int i = 0 ; i < itemVector.size(); i++ )
-		{
-			log("ItemPanel:Add MainApp At The First Time, The MainApp number is:%d===========================@xjx\n",i);
-			ItemData* itemData = itemVector.at(i);
-			auto item = MainItem::create();
-			item->setItemData(itemData);
-			this->insertItemByIndex(item,i);
-			m_mainItemCount ++;
-		}
-	}
-	else
-	{
-		for(int i = 0 ; i < itemVector.size(); i++ )
-		{
-			ItemData* itemData = itemVector.at(i);
-			if( i < m_mainItemCount)
-			{
-				//
-				if(itemData->getID() == m_itemVector->at(i)->getItemData()->getID() )  //-------------update
-				{
-					log("ItemPanel:Update MainApp,The MainApp number is:%d===========================@xjx",i);
-					m_itemVector->at(i)->setItemData(itemData);
-				}
-				else                                                                                                                                       //----------------replace
-				{
-					log("ItemPanel:Replace MainApp,The MainApp number is:%d===========================@xjx",i);
-					this->removeItemByIndex(i);
-					auto item = MainItem::create();
-					item->setItemData(itemData);
-					this->insertItemByIndex(item,i);
-				}
-			}
-			else  																															//-------------------insert
-			{
-				log("ItemPanel:Insert MainApp,The MainApp number is:%d===========================@xjx",i);
-				auto item = MainItem::create();
-				item->setItemData(itemData);
-				this->insertItemByIndex(item,i);
-				m_mainItemCount ++;
-			}
-		}
-	}
-	if(itemVector.size() < m_mainItemCount)																		 //--------------------delete
-	{
-		log("ItemPanel:Delete MainApp.===========================@xjx");
-		for(int i = itemVector.size(); i< m_mainItemCount; i++)
-		{
-			this->removeItemByIndex(i);
-		}
-		m_mainItemCount =  itemVector.size();
-	}
+    if (!UserDefault::getInstance()->getBoolForKey(TOGICVIDEO_SHOW_DEFALUT,false)) {
+        log("ItemPanel:Add MainApp TOGICVIDEO_SHOW_DEFALUT:%d==",UserDefault::getInstance()->getBoolForKey(TOGICVIDEO_SHOW_DEFALUT,false));
+        if (UserDefault::getInstance()->getBoolForKey(USER_SHOW_TV_KEY,false)) {
+            itemVector.erase(1);
+        } else {
+            itemVector.erase(0);
+        }
+    } else {
+        log("ItemPanel:Add--->MainApp %d",itemVector.size());
+    }
 
+    if(m_mainItemCount == 0)
+    {
+        for(int i = 0 ; i < itemVector.size(); i++ )
+        {
+            log("ItemPanel:Add MainApp At The First Time, The MainApp number is:%d===========================@xjx\n",i);
+            ItemData* itemData = itemVector.at(i);
+            auto item = MainItem::create();
+            item->setItemData(itemData);
+            this->insertItemByIndex(item,i);
+            m_mainItemCount ++;
+        }
+    }
+    else
+    {
+        for(int i = 0 ; i < itemVector.size(); i++ )
+        {
+            ItemData* itemData = itemVector.at(i);
+            if( i < m_mainItemCount)
+            {
+                //
+                if(itemData->getID() == m_itemVector->at(i)->getItemData()->getID() )  //-------------update
+                {
+                    log("ItemPanel:Update MainApp,The MainApp number is:%d===========================@xjx",i);
+                    m_itemVector->at(i)->setItemData(itemData);
+                }
+                else                                                                                                                                       //----------------replace
+                {
+                    log("ItemPanel:Replace MainApp,The MainApp number is:%d===========================@xjx",i);
+                    this->removeItemByIndex(i);
+                    auto item = MainItem::create();
+                    item->setItemData(itemData);
+                    this->insertItemByIndex(item,i);
+                }
+            }
+            else  																															//-------------------insert
+            {
+                log("ItemPanel:Insert MainApp,The MainApp number is:%d===========================@xjx",i);
+                auto item = MainItem::create();
+                item->setItemData(itemData);
+                this->insertItemByIndex(item,i);
+                m_mainItemCount ++;
+            }
+        }
+    }
+    if(itemVector.size() < m_mainItemCount)																		 //--------------------delete
+    {
+        log("ItemPanel:Delete MainApp.===========================@xjx");
+        for(int i = itemVector.size(); i< m_mainItemCount; i++)
+        {
+            this->removeItemByIndex(i);
+        }
+        m_mainItemCount =  itemVector.size();
+    }
+    
 }
 
 void ItemPanel::updateMainAppsInfo(std::string jsonString)
@@ -341,48 +353,74 @@ void ItemPanel::updateMainAppsInfo(std::string jsonString)
 
 void ItemPanel::updateUserApps(string jsonString)
 {
-	//
-	Vector<ItemData*> itemVector;
-	if(!ParseJson::getItemVectorFromJSON(jsonString, itemVector))
-	{
-		log("ItemPanel:Parse Json String Failed!~~~~~~~~~~~~~~~~~~~~~~~~~~@xjx\n");
-		return;
-	}
+    //
+    Vector<ItemData*> itemVector;
+    if(!ParseJson::getItemVectorFromJSON(jsonString, itemVector))
+    {
+        log("ItemPanel:Parse Json String Failed!~~~~~~~~~~~~~~~~~~~~~~~~~~@xjx\n");
+        return;
+    }
+    int m_index = m_itemVector->size()+1;
+    std::string backgroundImageFilePaths[]={APPITEM_FILE_BG_IMG, APPITEM_SET_BG_IMG, APPITEM_APPSTORE_BG_IMG};
+    for(int i=0; i<itemVector.size();i++)
+    {
+        ItemData* itemData = itemVector.at(i);
+        if(itemData->getProFlag() == -1)
+        {
+            log("ItemPanel:Delete UserApp,The UserApp number is:%d===========================@xjx",i);
+            int index = this->findItemIndexByItemData(itemData);
+            if(index == -1)
+            {
+                continue;
+            }
+            this->removeItemByIndex(index);
+        }
+        else if(itemData->getProFlag() == 1)
+        {
+            log("ItemPanel:Add UserApp , The UserApp number is:%d===========================@xjx\n",i);
+            if (itemData->getPackage().compare("com.togic.livevideo") == 0) {
+                if (m_installTogicVideo == false) {
+                    m_installTogicVideo = true;
+                } else {
 
-	std::string backgroundImageFilePaths[]={APPITEM_FILE_BG_IMG, APPITEM_SET_BG_IMG, APPITEM_APPSTORE_BG_IMG};
-	for(int i=0; i<itemVector.size();i++)
-	{
-		ItemData* itemData = itemVector.at(i);
-		if(itemData->getProFlag() == -1)
-		{
-			log("ItemPanel:Delete UserApp,The UserApp number is:%d===========================@xjx",i);
-			int index = this->findItemIndexByItemData(itemData);
-			if(index == -1)
-			{
-				return;
-			}
-			this->removeItemByIndex(index);
-		}
-		else if(itemData->getProFlag() == 1)
-		{
-			log("ItemPanel:Add UserApp , The UserApp number is:%d===========================@xjx\n",i);
-			auto item = AppItem::create();
-			item->setItemData(itemData);
-			char a[100];
-			sprintf(a,"image/appitem/app_bg_%d.png",i%5);
-			item->setBackgroundImage(a);
-			if(!itemData->getPackage().empty())
-			{
-				void* data  = JniUtil::getIconDataWithPackage(itemData->getPackage().c_str()); //------Get Image Data from Network
-				if(data == NULL)
-				{
-					return;
-				}
-				item->setForegroundSpriteByData((void*)data,itemData->getWidth(),itemData->getHeight());
-			}
-			this->addItem(item);
-		}
-	}
+                    ItemData * data = ItemData::create();
+                    data->setAction("togic.intent.action.ONLINE_VIDEO");
+                    data->setProFlag(0);
+                    data->setBackgroundImageFilePath("image/item/item_togic_bg.png");
+                    data->setWidth(260);
+                    data->setHeight(432);
+                    auto item = MainItem::create();
+                    item->setItemData(data);
+                    if (m_mainItemCount == 3) {
+                        this->insertItemByIndex(item,0);
+                    } else if (m_mainItemCount == 4) {
+                        this->insertItemByIndex(item,1);
+                    } else {
+                                            this->insertItemByIndex(item,0);
+                    }
+                    UserDefault::getInstance()->setBoolForKey(TOGICVIDEO_SHOW_DEFALUT, true);
+                    UserDefault::getInstance()->flush();
+                    m_mainItemCount++;
+                }
+                continue;
+            }
+            auto item = AppItem::create();
+            item->setItemData(itemData);
+            char a[100];
+            sprintf(a,"image/appitem/app_bg_%d.png",(i+m_index)%5);
+            item->setBackgroundImage(a);
+            if(!itemData->getPackage().empty())
+            {
+                void* data  = JniUtil::getIconDataWithPackage(itemData->getPackage().c_str()); //------Get Image Data from Network
+                if(data == NULL)
+                {
+                    return;
+                }
+                item->setForegroundSpriteByData((void*)data,itemData->getWidth(),itemData->getHeight());
+            }
+            this->addItem(item);
+        }
+    }
 }
 
 Vector<BaseItem*>  ItemPanel::getAllItems()

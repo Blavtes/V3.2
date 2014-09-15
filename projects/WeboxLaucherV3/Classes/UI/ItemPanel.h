@@ -47,6 +47,7 @@ private:
 	int m_middleMargin;
 	int m_mainItemCount;
 	std::string m_jsonString;
+    bool m_installTogicVideo;
 };
 
 #endif /* ITEMPANEL_H_ */

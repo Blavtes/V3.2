@@ -19,6 +19,19 @@
             "_id": 21,
             "width": 260,
             "height": 432,
+            "action": "togic.intent.action.ONLINE_VIDEO",
+            "gravity": 3,
+            "clip": false,
+            "background": "image/item/item_togic_bg.png",
+            "bottom_bg":"",
+            "icon":"",
+            "title":"",
+            "isshow": 0
+        },
+        {
+            "_id": 22,
+            "width": 260,
+            "height": 432,
             "action": "com.starcor.hunan.mgtv",
             "gravity": 3,
             "clip": false,
@@ -29,7 +42,7 @@
             "isshow": 0
         },
         {
-            "_id": 22,
+            "_id": 23,
             "width": 260,
             "height": 432,
             "action": "togic.intent.action.ALBUM",
@@ -42,7 +55,7 @@
             "isshow": 0
         },
         {
-            "_id": 23,
+            "_id": 24,
             "width": 260,
             "height": 432,
             "action": "com.starcor.hunan.mgtv.fave",

@@ -254,6 +254,7 @@ void FocusHelper::moveFocusIndicatorToDown()
 	BaseItem* curItem	= m_itemView->getAllItems().at(tempFocusIndex-1);
 	Size curItemSize = curItem->getSize();
 	Vec2  curItemPos =curItem->getPosition();
+    bool isFind = false;
 	log("Down:The current item position is  (x:%f,y:%f) ----xjx ",curItemPos.x, curItemPos.y);
 	while(tempFocusIndex < m_itemView->getAllItems().size() )
 	{
@@ -277,9 +278,27 @@ void FocusHelper::moveFocusIndicatorToDown()
 	     	m_focusIndicator->runAction(focusindicatorMove);
 			m_selectedItemIndex = tempFocusIndex;
 			this->onFocusChanged(curItem,nextItem);
+      isFind = true;
 			break;
 		}
 	}
+    BaseItem* preItem = m_itemView->getAllItems().at(tempFocusIndex-2);
+    Size preItemSize = preItem->getSize();
+    Vec2 preItemPos = preItem->getPosition();
+    float heightThreshold =  curItemSize.height/2 + preItemSize.height/2;
+
+    if (isFind) {
+        return;
+    }
+    if (tempFocusIndex == m_itemView->getAllItems().size() && curItemPos.y > heightThreshold) {
+        BaseItem* chItem = m_itemView->getAllItems().at(tempFocusIndex-2);
+        Size chItemSize = chItem->getSize();
+        Vec2 chItemPos = chItem->getPosition();
+        MoveTo* focusindicatorMove = MoveTo::create(ACTION_DURATION_TIME,chItemPos);
+        m_focusIndicator->runAction(focusindicatorMove);
+        m_selectedItemIndex = tempFocusIndex - 1;
+        this->onFocusChanged(curItem,chItem);
+    }
 	return ;
 }
 
