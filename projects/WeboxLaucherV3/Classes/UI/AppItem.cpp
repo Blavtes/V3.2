@@ -10,6 +10,7 @@ AppItem::AppItem() {
 	m_forgroundSprite = nullptr;
 	m_titlePanel = nullptr;
 	m_titleString = nullptr;
+	m_showString = nullptr;
 }
 
 AppItem::~AppItem() {
@@ -106,7 +107,10 @@ void AppItem::onFocusChange(ui::Widget* widgetLoseFocus, ui::Widget* widgetGetFo
 			if(m_titlePanel != nullptr && m_titleString != nullptr)
 			{
 				m_titleString->stopAllActions();
-				m_titleString->setPosition(Vec2(m_titlePanel->getContentSize().width/2,m_titlePanel->getContentSize().height/2));
+				m_titleString->setVisible(false);
+				m_titleString->setPosition(Vec2(m_titlePanel->getContentSize().width/2+40,m_titlePanel->getContentSize().height/2));
+				m_showString->setVisible(true);
+//				m_titleString->setPosition(Vec2(m_titlePanel->getContentSize().width/2,m_titlePanel->getContentSize().height/2));
 			}
 			if(m_isUninstalledFlag)
 			{
@@ -124,6 +128,8 @@ void AppItem::onFocusChange(ui::Widget* widgetLoseFocus, ui::Widget* widgetGetFo
 		AppItem* appItemgetFocus = dynamic_cast<AppItem*>(widgetGetFocus);
 		if(appItemgetFocus != NULL && m_titlePanel != nullptr && m_titleString != nullptr)
 		{
+			m_showString->setVisible(false);
+			m_titleString->setVisible(true);
 			if(m_titleString->getContentSize().width > m_itemSize.width)
 			{
 				MoveTo*  textMove1 = MoveTo::create(3,Vec2(-m_titleString->getContentSize().width/2,m_titleString->getPosition().y));
@@ -171,10 +177,20 @@ bool AppItem::getIsUninstalledFlag()
 	if(m_titleString == nullptr)
 	{
 		m_titleString = ui::Text::create("","Arial",28);
-		m_titleString->setPosition(Vec2(m_titlePanel->getContentSize().width/2,m_titlePanel->getContentSize().height/2));
-		m_titlePanel->addChild(m_titleString);
+		m_titleString->setPosition(Vec2(m_titlePanel->getContentSize().width/2+40,m_titlePanel->getContentSize().height/2));
 	}
 	m_titleString->setString(hintText);
+	m_titleString->setVisible(false);
+	m_titlePanel->addChild(m_titleString);
+
+	if(m_showString == nullptr)
+	{
+		m_showString = ui::Text::create("","Arial",28);
+		m_showString->setPosition(Vec2(m_titlePanel->getContentSize().width/2,m_titlePanel->getContentSize().height/2));
+	}
+	std::string  str = hintText.substr(0,18)+"...";
+	m_showString->setString(str);
+	m_titlePanel->addChild(m_showString);
 }
 
 

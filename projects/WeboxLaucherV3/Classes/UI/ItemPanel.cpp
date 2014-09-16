@@ -12,6 +12,7 @@
 #include "Utils/ParseJson.h"
 #include "Utils/HandleMessageQueue.h"
 USING_NS_CC;
+int ItemPanel:: m_index = 0;
 
 ItemPanel::ItemPanel()
 {
@@ -224,12 +225,12 @@ void ItemPanel::insertItemByIndex(BaseItem* newItem, int insertIndex)
 int ItemPanel::findItemIndexByItemData(ItemData* itemData)
 {
 	//
-	int destIndex = 0;
 	for(int i = 0; i < m_itemVector->size(); i++)
 	{
 		BaseItem* baseItem = m_itemVector->at(i);
 		if(baseItem->getItemData()->getPackage().compare(itemData->getPackage()) == 0)
 		{
+			log("The package is areadly exit!, the package name is :%s, the item index is :%d========@userApp",baseItem->getItemData()->getPackage().c_str(),i);
 			return i;
 		}
 	}

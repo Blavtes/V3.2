@@ -853,6 +853,7 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 		for(int i = 0 ; i < updated.size(); i++)
 		{
 			AppInfo iaif = updated.get(i);
+//			 Log.v("@allapp1 ------------------", "name :" +iaif.getClassName() + "  --pck name : " +  iaif.getPackageName()  + "    --   size" + updated.size());
 			if(iaif.getPackageName().equals("com.togic.settings"))
 			{
 				taginfo0 = iaif;
@@ -869,32 +870,35 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 		}
 		if(null != taginfo0)
 		{
-			updated.set(0, taginfo0);
-			Log.v("mainApp", "taginfo0" + taginfo0.getPackageName());
-			Log.v("mainApp", "taginfo0 set " + updated.get(2).getPackageName());
+			Log.v("@allapp1", "---------------------the 0 index --" + updated.get(0).getPackageName());
+			updated.remove(taginfo0);
+			updated.add(0,taginfo0);
 		}
 		if(null != taginfo1)
 		{
 			if(updated.size() >1)
 			{
-        			updated.set(1, taginfo1);
-        			Log.v("mainApp", "taginfo1" + taginfo1.getPackageName());
-        			Log.v("mainApp", "taginfo1 set " + updated.get(1).getPackageName());
+				Log.v("@allapp1", "---------------------the 1 index --" + updated.get(1).getPackageName());
+				updated.remove(taginfo1);
+				updated.add(1,taginfo1);
 			}
 		}
 		if(null != taginfo2)
 		{
 			if(updated.size() >2)
 			{
-        			updated.set(2, taginfo2);
-        			Log.v("mainApp", "taginf2" + taginfo2.getPackageName());
-        			Log.v("mainApp", "taginfo2 set " + updated.get(0).getPackageName());
+				Log.v("@allapp1", "---------------------the 2 index --" + updated.get(2).getPackageName());
+				updated.remove(taginfo2);
+				updated.add(2,taginfo2);
 			}
 		}
 		
 		final AppInfo[] updatedApps = new AppInfo[updated.size()];
 		updated.toArray(updatedApps);
-		
+		 for(AppInfo aif : updatedApps)
+		 {
+			 Log.v("@allapp1 ------------------", "name :" +aif.getClassName() + "  --pck name : " +  aif.getPackageName()  + "    --   size" + updatedApps.length);
+		 }
 		BaseInfo[] infos = new BaseInfo[updated.size()];
 		
 		for (int i = 0; i < updated.size(); i++) {

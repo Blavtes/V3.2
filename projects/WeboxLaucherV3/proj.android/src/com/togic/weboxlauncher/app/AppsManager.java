@@ -291,9 +291,9 @@ public class AppsManager {
                 if(cpnInfo == null)
                 	return;
                 
-                List<ResolveInfo> minfo = pm.queryIntentActivities(
-                        getMainIntent(cpnInfo.packageName), 0);
-                Log.v("@allapp ------------------", "name :" +cpnInfo.name + "  --pck name : " +  cpnInfo.packageName + "    --   size" + minfo.size());
+//                List<ResolveInfo> minfo = pm.queryIntentActivities(
+//                        getMainIntent(cpnInfo.packageName), 0);
+//                Log.v("@allapp1 ------------------", "name :" +cpnInfo.name + "  --pck name : " +  cpnInfo.packageName + "    --   size" + minfo.size());
             }
 
             mVersion++;
@@ -392,6 +392,11 @@ public class AppsManager {
     }
 
     private void notifyUpdateAllApps(ArrayList<AppInfo> allApps) {
+	    
+//	 for(AppInfo aif : allApps)
+//	 {
+//		 Log.v("@allapp1 ------------------", "name :" +aif.getClassName() + "  --pck name : " +  aif.getPackageName()  + "    --   size" + allApps.size());
+//	 }
         final HashMap<String, Filter<AppInfo>> filters = mAppFilters;
         final HashMap<String, ArrayList<AppWatcher>> watchers = mAppWatchers;
         ArrayList<AppInfo> temp = null;

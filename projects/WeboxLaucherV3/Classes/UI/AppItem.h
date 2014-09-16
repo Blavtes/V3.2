@@ -29,6 +29,7 @@ protected:
 	Sprite* m_forgroundSprite;
 	ui::Layout* m_titlePanel;
 	ui::Text* m_titleString;
+	ui::Text* m_showString;
 };
 
 #endif /* APPITEM_H_ */
