@@ -65,7 +65,7 @@ void BaseItem::setItemData(ItemData* itemData)
 	//Update the Item View
 	this->setForegroundImage(itemData->getForegroundImageFilePath());
 	this->setBackgroundImage(itemData->getBackgroundImageFilePath());
-//	this->setHintText(itemData->getHintText());
+	this->setHintText(itemData->getHintText());
 }
 
 ItemData* BaseItem::getItemData()
@@ -99,6 +99,18 @@ void BaseItem::setHintText(std::string text)
 	{
 		m_hintText->setString(text);
 		m_hintText->setPosition(Vec2(m_itemSize.width/2,35));
+		float textWidth = m_hintText->getContentSize().width;
+		log("The width of the text is %f=====================@title",textWidth);
+		if(textWidth <= m_itemSize.width)
+		{
+			return;
+		}
+		else
+		{
+			log("BaseItem: the text is wider than the Item width!==========@title");
+			m_hintText->setString("");
+			this->setPartDisplayText(text);
+		}
 	}
 
 }
@@ -117,6 +129,11 @@ Size BaseItem::getSize()
 void BaseItem::setSize(Size itemSize)
 {
 	m_itemSize = itemSize;
+}
+
+ void BaseItem::setPartDisplayText(std::string hintText)
+{
+	//
 }
 
 

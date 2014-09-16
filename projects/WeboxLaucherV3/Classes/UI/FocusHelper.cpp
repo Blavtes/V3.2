@@ -457,6 +457,9 @@ void FocusHelper::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 	case EventKeyboard::KeyCode::KEY_DPAD_UP:
 		 this->moveFocusIndicatorToUp();
 		 break;
+	case EventKeyboard::KeyCode::KEY_BACK:
+		m_itemView->onKeyBackClicked(m_selectedItemIndex);
+		break;
 	 default:
 			 break;
 		 }

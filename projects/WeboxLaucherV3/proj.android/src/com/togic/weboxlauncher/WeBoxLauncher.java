@@ -703,7 +703,8 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 		Intent intent = new Intent();
 		intent.setAction("Intent.action.launchershowTV");
 		intent.putExtra("Intent.action.launchershowTV", true);
-		sInstance.sendBroadcast(intent);
+//		sInstance.sendBroadcast(intent);
+		sInstance.sendStickyBroadcast(intent);
 	}
 	
 	
@@ -816,6 +817,17 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 		
 		if(null != action)
 		{
+			if(action.equals("togic.intent.action.ONLINE_VIDEO"))
+			{
+				intent.putExtra("intent.extra.is_entrance_actvitiy", false);
+				intent.putExtra("intent.extra.exit_directly", true);
+				intent.putExtra("intent.extra.show_splash", false);
+			}
+			else if (action.equals("togic.intent.action.LIVE_TV"))
+			 {
+				intent.putExtra("intent.extra.is_entrance_actvitiy", false);
+				 intent.putExtra("intent.extra.exit_directly", true);
+			 }
 			intent.setAction(action);
 		}
 		if(null != pckname)
@@ -863,15 +875,21 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 		}
 		if(null != taginfo1)
 		{
-			updated.set(1, taginfo1);
-			Log.v("mainApp", "taginfo1" + taginfo1.getPackageName());
-			Log.v("mainApp", "taginfo1 set " + updated.get(1).getPackageName());
+			if(updated.size() >1)
+			{
+        			updated.set(1, taginfo1);
+        			Log.v("mainApp", "taginfo1" + taginfo1.getPackageName());
+        			Log.v("mainApp", "taginfo1 set " + updated.get(1).getPackageName());
+			}
 		}
 		if(null != taginfo2)
 		{
-			updated.set(2, taginfo2);
-			Log.v("mainApp", "taginf2" + taginfo2.getPackageName());
-			Log.v("mainApp", "taginfo2 set " + updated.get(0).getPackageName());
+			if(updated.size() >2)
+			{
+        			updated.set(2, taginfo2);
+        			Log.v("mainApp", "taginf2" + taginfo2.getPackageName());
+        			Log.v("mainApp", "taginfo2 set " + updated.get(0).getPackageName());
+			}
 		}
 		
 		final AppInfo[] updatedApps = new AppInfo[updated.size()];

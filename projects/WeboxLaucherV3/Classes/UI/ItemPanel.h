@@ -34,6 +34,7 @@ public:
 	void updateUserApps(std::string jsonString);
 	void showTVItem(std::string jsonString);
 	void onEnterClicked(int clickedItemIndex, bool isLongPressed);
+	void onKeyBackClicked(int clickedItemIndex);
 
 	void addDefaultMainItemByPlistFile(std::string filePath);
 	void addDefaultAppItem();

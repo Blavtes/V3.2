@@ -51,8 +51,7 @@ bool MainLayer::init()
 
 	Size visibleSize=Director::getInstance()->getVisibleSize();
 
-//  	 m_backgroundImageView =ui:: ImageView::create(MAIN_LAYER_BACKGROUND_IMG);
-	m_backgroundImageView = ui::ImageView::create();
+  	 m_backgroundImageView =ui:: ImageView::create(MAIN_LAYER_BACKGROUND_IMG);
 	m_backgroundImageView->setAnchorPoint(Vec2(0,0));
   	 m_backgroundImageView->setPosition(Vec2::ZERO);
   	 this->addChild(m_backgroundImageView,0);

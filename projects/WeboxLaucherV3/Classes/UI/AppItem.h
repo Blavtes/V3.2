@@ -18,6 +18,7 @@ public:
 	bool getIsUninstalledFlag();
 	void setForegroundImage(std::string forgroundImageFilePath);
 	void setForegroundSpriteByData(void *data, int w, int h);
+	virtual void setPartDisplayText(std::string hintText);
 
 	void longPressedCallback();
 	void onEnterClicked(bool isLongPressed);
@@ -26,6 +27,8 @@ protected:
 	ui::ImageView* m_unInstallImage; //showed when the AppItem is ready to  uninstalled
 	bool m_isUninstalledFlag; //identify whether the item can be uninstalled
 	Sprite* m_forgroundSprite;
+	ui::Layout* m_titlePanel;
+	ui::Text* m_titleString;
 };
 
 #endif /* APPITEM_H_ */

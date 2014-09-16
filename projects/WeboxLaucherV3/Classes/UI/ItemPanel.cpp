@@ -351,48 +351,35 @@ void ItemPanel::updateMainAppsInfo(std::string jsonString)
 		{
 			if(mainItem != nullptr && mainItem->getItemData()->getAction() == "togic.intent.action.ONLINE_VIDEO")
 			{
-				mainItem->setHintText(description);
+//				mainItem->setHintText(description);
 			}
 		}
 		else if(title == "电视台")
 		{
 			if(mainItem != nullptr && mainItem->getItemData()->getAction() == "togic.intent.action.LIVE_TV")
 			{
-				mainItem->setHintText(description);
+//				mainItem->setHintText(description);
 			}
 		}
 		else if(title == "观看动态")
 		{
 			if(mainItem != nullptr && mainItem->getItemData()->getAction() == "togic.intent.action.LIVE_VIDEO_PROGRAM_MY_FAVOR")
 			{
-				mainItem->setHintText(description);
+//				mainItem->setHintText(description);
 			}
 		}
 		else if(title == "")
 		{
 			if(mainItem != nullptr && mainItem->getItemData()->getAction() == "togic.intent.action.ALBUM")
 			{
-				mainItem->setHintText(description);
+//				mainItem->setHintText(description);
 			}
 		}
 	}
-//	if(index >=0 && index < m_mainItemCount)
-//	{
-//		MainItem* mainItem =dynamic_cast<MainItem*>( m_itemVector->at(index));
-//		if(nullptr != mainItem)
-//		{
-//			ItemData* mainItemData = mainItem->getItemData();
-//			mainItemData->setDescription(description);
-//			mainItemData->setTitle(title);
-//			mainItem->setHintText(description);
-//		}
-//	}
 }
 
 void ItemPanel::updateUserApps(string jsonString)
 {
-//<<<<<<< HEAD
-    //
     Vector<ItemData*> itemVector;
     if(!ParseJson::getItemVectorFromJSON(jsonString, itemVector))
     {
@@ -460,54 +447,6 @@ void ItemPanel::updateUserApps(string jsonString)
             this->addItem(item);
         }
     }
-//=======
-//	//
-//	Vector<ItemData*> itemVector;
-//	if(!ParseJson::getItemVectorFromJSON(jsonString, itemVector))
-//	{
-//		log("ItemPanel:Parse Json String Failed!~~~~~~~~~~~~~~~~~~~~~~~~~~@xjx\n");
-//		return;
-//	}
-//
-//	for(int i=0; i<itemVector.size();i++)
-//	{
-//		ItemData* itemData = itemVector.at(i);
-//		if(itemData->getProFlag() == -1)
-//		{
-//			log("ItemPanel:Delete UserApp,The UserApp number is:%d===========================@xjx",i);
-//			int index = this->findItemIndexByItemData(itemData);
-//			if(index == -1)
-//			{
-//				return;
-//			}
-//			this->removeItemByIndex(index);
-//		}
-//		else if(itemData->getProFlag() == 1)
-//		{
-//			log("ItemPanel:Add UserApp , The UserApp number is:%d===========================@xjx\n",i);
-//			int index = this->findItemIndexByItemData(itemData);
-//			if(index != -1)
-//			{
-//				return;
-//			}
-//			auto item = AppItem::create();
-//			item->setItemData(itemData);
-//			char a[100];
-//			sprintf(a,"image/appitem/app_bg_%d.png",i%5);
-//			item->setBackgroundImage(a);
-//			if(!itemData->getPackage().empty())
-//			{
-//				void* data  = JniUtil::getIconDataWithPackage(itemData->getPackage().c_str()); //------Get Image Data from Network
-//				if(data == NULL)
-//				{
-//					return;
-//				}
-//				item->setForegroundSpriteByData((void*)data,itemData->getWidth(),itemData->getHeight());
-//			}
-//			this->addItem(item);
-//		}
-//	}
-//>>>>>>> rebase cibn 0913.
 }
 
 Vector<BaseItem*>  ItemPanel::getAllItems()
@@ -662,6 +601,21 @@ void ItemPanel::showTVItem(std::string jsonString)
 
 }
 
+
+void ItemPanel::onKeyBackClicked(int clickedItemIndex)
+{
+	if(clickedItemIndex <=0 || clickedItemIndex > m_itemVector->size())
+	{
+		log("clickedItemIndex is invalid!!!!!!!---------@show");
+		return;
+	}
+	BaseItem* clickedItem = m_itemVector->at(clickedItemIndex-1);
+	AppItem* clickedAppItem = dynamic_cast<AppItem*>(clickedItem);
+	if(clickedAppItem != NULL  && clickedAppItem->getIsUninstalledFlag())
+	{
+		clickedAppItem->setIsUninstalledFlag(false);
+	}
+}
 
 
 

@@ -8,6 +8,8 @@ AppItem::AppItem() {
 	m_unInstallImage = nullptr;
 	m_isUninstalledFlag = false;
 	m_forgroundSprite = nullptr;
+	m_titlePanel = nullptr;
+	m_titleString = nullptr;
 }
 
 AppItem::~AppItem() {
@@ -96,19 +98,44 @@ void AppItem::longPressedCallback()
 
 void AppItem::onFocusChange(ui::Widget* widgetLoseFocus, ui::Widget* widgetGetFocus)
 {
-	 if(widgetLoseFocus != NULL)
+	 if(widgetLoseFocus != NULL && this == widgetLoseFocus )
 	 {
 		AppItem* appItemLoseFocus = dynamic_cast<AppItem*>(widgetLoseFocus);
 		if(appItemLoseFocus != NULL)
 		{
-			appItemLoseFocus->m_unInstallImage->setVisible(false);
-			appItemLoseFocus->setIsUninstalledFlag(false);
+			if(m_titlePanel != nullptr && m_titleString != nullptr)
+			{
+				m_titleString->stopAllActions();
+				m_titleString->setPosition(Vec2(m_titlePanel->getContentSize().width/2,m_titlePanel->getContentSize().height/2));
+			}
+			if(m_isUninstalledFlag)
+			{
+				appItemLoseFocus->m_unInstallImage->setVisible(false);
+				appItemLoseFocus->setIsUninstalledFlag(false);
+			}
 		}
 		widgetLoseFocus->setFocused(false);
 	 }
-	 if(widgetGetFocus != NULL)
+
+
+
+	 if(widgetGetFocus != NULL &&  this == widgetGetFocus)
 	 {
+		AppItem* appItemgetFocus = dynamic_cast<AppItem*>(widgetGetFocus);
+		if(appItemgetFocus != NULL && m_titlePanel != nullptr && m_titleString != nullptr)
+		{
+			if(m_titleString->getContentSize().width > m_itemSize.width)
+			{
+				MoveTo*  textMove1 = MoveTo::create(3,Vec2(-m_titleString->getContentSize().width/2,m_titleString->getPosition().y));
+				Place* textPlace = Place::create(Vec2(m_itemSize.width + m_titleString->getContentSize().width/2,m_titleString->getPosition().y));
+				MoveTo*  textMove2 = MoveTo::create(3,Vec2(m_titlePanel->getContentSize().width/2,m_titleString->getPosition().y));
+				Sequence* testAction = Sequence::create(textMove1,textPlace,textMove2,nullptr);
+				RepeatForever* repeatAction = RepeatForever::create(testAction);
+				m_titleString->runAction(repeatAction);
+			}
+		}
 		 widgetGetFocus->setFocused(true);
+
 	 }
 }
 
@@ -116,11 +143,38 @@ void AppItem::onFocusChange(ui::Widget* widgetLoseFocus, ui::Widget* widgetGetFo
 void AppItem::setIsUninstalledFlag(bool uninstalledFlag)
 {
 	m_isUninstalledFlag = uninstalledFlag;
+	if(!uninstalledFlag)
+	{
+		m_unInstallImage->setVisible(false);
+	}
 }
 
 bool AppItem::getIsUninstalledFlag()
 {
 	return m_isUninstalledFlag;
+}
+
+
+ void AppItem::setPartDisplayText(std::string hintText)
+{
+	log("The title is wider than the Item width, Part display the title!===========@title");
+	if(m_titlePanel == nullptr)
+	{
+		m_titlePanel = ui::Layout::create();
+		m_titlePanel->setContentSize(Size(240,40));
+		m_titlePanel->setAnchorPoint(Vec2(0.5,0.5));
+		m_titlePanel->setPosition(Vec2(m_itemSize.width/2,35));
+		m_titlePanel->ignoreContentAdaptWithSize(true);
+		m_titlePanel->setClippingEnabled(true);
+		this->addChild(m_titlePanel);
+	}
+	if(m_titleString == nullptr)
+	{
+		m_titleString = ui::Text::create("","Arial",28);
+		m_titleString->setPosition(Vec2(m_titlePanel->getContentSize().width/2,m_titlePanel->getContentSize().height/2));
+		m_titlePanel->addChild(m_titleString);
+	}
+	m_titleString->setString(hintText);
 }
 
 

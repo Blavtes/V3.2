@@ -28,6 +28,7 @@ public:
 	virtual void setForegroundImage(std::string forgroundImageFilePath);
 	virtual void setBackgroundImage(std::string backgroundImageFilePath);
 	virtual void setHintText(std::string hintText);
+	virtual void setPartDisplayText(std::string hintText);
 
 	virtual void onEnterClicked(bool isLongPressed);
 protected:

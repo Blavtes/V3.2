@@ -15,7 +15,7 @@ LeftNotificationPanel::LeftNotificationPanel()
 {
 	//.......
 	m_statusFlag = false;
-    m_imageLine = nullptr;
+	m_imageLine = nullptr;
 	m_titleImage = nullptr;
 	m_titleText = nullptr;
 	m_itemPanel = nullptr;
