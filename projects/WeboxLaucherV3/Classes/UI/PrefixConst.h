@@ -2,7 +2,7 @@
 #ifndef PREFIX_CONST_H_
 #define PREFIX_CONST_H_
 
-#define MAIN_LAYER_BACKGROUND_IMG   "image/launcher/Launcher1_01.jpg"
+#define MAIN_LAYER_BACKGROUND_IMG   "image/launcher/Launcher1_01.png"
 
 #define ITEM_SIZE_MAIN Size(260,432)
 #define ITEM_SIZE_APP Size(260,196)

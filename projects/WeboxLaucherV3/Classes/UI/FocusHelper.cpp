@@ -282,7 +282,7 @@ void FocusHelper::moveFocusIndicatorToDown()
 			break;
 		}
 	}
-	if(m_selectedItemIndex == m_itemView->getAllItems().size())
+	if(m_selectedItemIndex == m_itemView->getAllItems().size() && m_itemView->getAllItems().size()>4)
 	{
 		tempFocusIndex -=1;
 		BaseItem* nextItem = m_itemView->getAllItems().at(tempFocusIndex-1);

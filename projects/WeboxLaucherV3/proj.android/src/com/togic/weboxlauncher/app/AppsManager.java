@@ -247,7 +247,7 @@ public class AppsManager {
         exclude.add("tv.doule.upgrade");
 //        exclude.add("com.togic.settings");
 //        exclude.add("com.togic.filebrowser");
-        exclude.add("com.starcor.hunan");
+//        exclude.add("com.starcor.hunan");
         exclude.add("com.qzone.familyalbum");
         exclude.add("com.togic.mgtv.dynamic");
         exclude.add("com.togic.taskclean");

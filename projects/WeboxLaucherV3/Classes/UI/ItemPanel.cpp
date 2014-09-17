@@ -600,6 +600,10 @@ void ItemPanel::showTVItem(std::string jsonString)
 	mainItem->setItemData(itemVector.at(0));
 	this->insertItemByIndex(mainItem,0);
 
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+     JniUtil::sendBroadcastToSettingShowTV();
+ #endif
+
 }
 
 
