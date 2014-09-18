@@ -132,15 +132,14 @@ void LeftNotificationPanel::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* 
 void LeftNotificationPanel::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
 {
 	log("LeftNotificationPanel-------the key:%d is released!---------------------------xjx",keyCode);
-	if(m_focusHelper != NULL)
-	{
-		m_focusHelper->onKeyReleased(keyCode,event);
-	}
-
-    if(keyCode == EventKeyboard::KeyCode::KEY_BACK || keyCode == EventKeyboard::KeyCode::KEY_DPAD_LEFT || keyCode == EventKeyboard::KeyCode::KEY_DPAD_RIGHT)
+	if(keyCode == EventKeyboard::KeyCode::KEY_BACK || keyCode == EventKeyboard::KeyCode::KEY_DPAD_RIGHT || keyCode == EventKeyboard::KeyCode::KEY_DPAD_LEFT)
 	{
 		m_statusFlag = true;
 		this->show();
+	}
+	else if(m_focusHelper != NULL)
+	{
+		m_focusHelper->onKeyReleased(keyCode,event);
 	}
 }
 
@@ -199,13 +198,13 @@ void LeftNotificationPanel::updateLeftNotification(std::string jsonString)
 		notificationItemData->setForegroundImageFilePath(Left_UpdateIcon_Image);
 		notificationItemData->setHintText(Left_Item_Update_Title);
 	}
-//	else if(code == CODE_CHASE_DRAMA)
-//	{
-//		notificationItemData->setCode(code);
-//		notificationItemData->setAction( "togic.intent.action.LIVE_VIDEO_PROGRAM_MY_FAVOR");
-//		notificationItemData->setForegroundImageFilePath(Left_LikeIcon_Image);
-//		notificationItemData->setHintText(Left_Item_Like_Title);
-//	}
+	else if(code == CODE_CHASE_DRAMA)
+	{
+		notificationItemData->setCode(code);
+		notificationItemData->setAction( "togic.intent.action.LIVE_VIDEO_PROGRAM_MY_FAVOR");
+		notificationItemData->setForegroundImageFilePath(Left_LikeIcon_Image);
+		notificationItemData->setHintText(Left_Item_Like_Title);
+	}
 	else if(code == CODE_MOUNT_UNMOUNT)
 	{
 		notificationItemData->setCode(code);

@@ -66,11 +66,14 @@ void MainItem::onEnterClicked(bool isLongPressed)
 	log("Call The MainItem!------------------------xjx");
 	if(m_itemData->getAction()== "com.starcor.hunan.mgtv.fave")
 	{
-     if (UserDefault::getInstance()->getBoolForKey(TOGICVIDEO_SHOW_DEFALUT,false)) {
-        JniUtil::startActivityJNI("togic.intent.action.LIVE_VIDEO_PROGRAM_MY_FAVOR",NULL,NULL);
-     } else {
-        JniUtil::startActivityJNI(NULL,"com.togic.mgtv.dynamic","com.togic.mgtv.dynamic.MainActivity");
-     }
+		if (UserDefault::getInstance()->getBoolForKey(TOGICVIDEO_SHOW_DEFALUT,false))
+		{
+			JniUtil::startActivityJNI("togic.intent.action.LIVE_VIDEO_PROGRAM_MY_FAVOR",NULL,NULL);
+		}
+		else
+		{
+			JniUtil::startActivityJNI(NULL,"com.togic.mgtv.dynamic","com.togic.mgtv.dynamic.MainActivity");
+		}
 		return;
 	}
 	JniUtil::startActivityJNI(m_itemData->getAction().c_str(),NULL,NULL);

@@ -42,7 +42,7 @@ public class NotificationManager {
     private static final String TAG = "NotificationManager";
 
     public static final String ACTION_SYSTEM_UPGRADE = "togic.intent.action.SYSTEM_UPGRADE_NOTIFICATION";
-//    public static final String ACTION_CHASE_DRAMA = "togic.intent.action.CHASE_DRAMA_NOTIFICATION";
+    public static final String ACTION_CHASE_DRAMA = "togic.intent.action.CHASE_DRAMA_NOTIFICATION";
     public static final String ACTION_MOUNT_UNMOUNT = "togic.intent.action.MOUNT_UNMOUNT_NOTIFICATION";
 
     // NOTE: these int codes are correspond with some codes that defined in
@@ -57,7 +57,7 @@ public class NotificationManager {
     private static final HashMap<String, Integer> sMap_Action_Code = new HashMap<String, Integer>();
     static {
         sMap_Action_Code.put(ACTION_SYSTEM_UPGRADE, CODE_SYSTEM_UPGRADE);
-//        sMap_Action_Code.put(ACTION_CHASE_DRAMA, CODE_CHASE_DRAMA);
+        sMap_Action_Code.put(ACTION_CHASE_DRAMA, CODE_CHASE_DRAMA);
         sMap_Action_Code.put(ACTION_MOUNT_UNMOUNT, CODE_MOUNT_UNMOUNT);
     }
 

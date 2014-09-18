@@ -249,24 +249,32 @@ void ItemPanel::updateMainApps(std::string jsonString)
         return;
     }
 
-    if(!UserDefault::getInstance()->getBoolForKey(USER_SHOW_TV_KEY))
+    if(!UserDefault::getInstance()->getBoolForKey(USER_SHOW_TV_KEY,false))
     {
         itemVector.erase(0);
-    } else {
+    }
+    else
+    {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
         JniUtil::sendBroadcastToSettingShowTV();
 #endif
     }
 
-    if (!UserDefault::getInstance()->getBoolForKey(TOGICVIDEO_SHOW_DEFALUT,false)) {
+    if (!UserDefault::getInstance()->getBoolForKey(TOGICVIDEO_SHOW_DEFALUT,false))
+    {
         log("ItemPanel:Add MainApp TOGICVIDEO_SHOW_DEFALUT:%d==",UserDefault::getInstance()->getBoolForKey(TOGICVIDEO_SHOW_DEFALUT,false));
-        if (UserDefault::getInstance()->getBoolForKey(USER_SHOW_TV_KEY,false)) {
+        if (UserDefault::getInstance()->getBoolForKey(USER_SHOW_TV_KEY,false))
+        {
             itemVector.erase(1);
-        } else {
+        }
+        else
+        {
             itemVector.erase(0);
         }
-    } else {
-        log("ItemPanel:Add--->MainApp %d",itemVector.size());
+    }
+    else
+    {
+        log("ItemPanel:Add--->MainApp %zd",itemVector.size());
     }
 
     if(m_mainItemCount == 0)
@@ -387,14 +395,13 @@ void ItemPanel::updateUserApps(string jsonString)
         log("ItemPanel:Parse Json String Failed!~~~~~~~~~~~~~~~~~~~~~~~~~~@xjx\n");
         return;
     }
-    int m_index = m_itemVector->size()+1;
     std::string backgroundImageFilePaths[]={APPITEM_FILE_BG_IMG, APPITEM_SET_BG_IMG, APPITEM_APPSTORE_BG_IMG};
     for(int i=0; i<itemVector.size();i++)
     {
         ItemData* itemData = itemVector.at(i);
         if(itemData->getProFlag() == -1)
         {
-            log("ItemPanel:Delete UserApp,The UserApp number is:%d===========================@xjx",i);
+            log("ItemPanel:Delete UserApp,The userApp number is:%d===========================@xjx",i);
             int index = this->findItemIndexByItemData(itemData);
             if(index == -1)
             {
@@ -404,46 +411,70 @@ void ItemPanel::updateUserApps(string jsonString)
         }
         else if(itemData->getProFlag() == 1)
         {
-            log("ItemPanel:Add UserApp , The UserApp number is:%d===========================@xjx\n",i);
-            if (itemData->getPackage().compare("com.togic.livevideo") == 0) {
-                if (m_installTogicVideo == false) {
-                    m_installTogicVideo = true;
-                } else {
+            int index = this->findItemIndexByItemData(itemData);
+            log("The AppItem prepared to installed is :%s============@userApp",itemData->getPackage().c_str());
+            if(index != -1)
+            {
+            		AppItem* appItem =dynamic_cast<AppItem*> (m_itemVector->at(index));
+            		if(appItem != nullptr)
+            		{
+            			appItem->setItemData(itemData);
+            		}
+            		log("the AppItem exist!=====================@userApp");
+            		continue;
+            	}
 
-                    ItemData * data = ItemData::create();
-                    data->setAction("togic.intent.action.ONLINE_VIDEO");
-                    data->setProFlag(0);
-                    data->setBackgroundImageFilePath("image/item/item_togic_bg.png");
-                    data->setWidth(260);
-                    data->setHeight(432);
-                    auto item = MainItem::create();
-                    item->setItemData(data);
-                    if (UserDefault::getInstance()->getBoolForKey(USER_SHOW_TV_KEY,false)  ==  false ) {
-                        this->insertItemByIndex(item,0);
-                    } else if (UserDefault::getInstance()->getBoolForKey(USER_SHOW_TV_KEY,false)  ==  true) {
-                        this->insertItemByIndex(item,1);
-                    } else {
-                                            this->insertItemByIndex(item,0);
-                    }
-                    UserDefault::getInstance()->setBoolForKey(TOGICVIDEO_SHOW_DEFALUT, true);
-                    UserDefault::getInstance()->flush();
-                    m_mainItemCount++;
-                }
-                continue;
+            if (itemData->getPackage().compare("com.togic.livevideo") == 0)
+            {
+        	    if( UserDefault::getInstance()->getBoolForKey(TOGICVIDEO_SHOW_DEFALUT,false))
+        	    {
+        		    continue;
+        	    }
+        	    if (m_installTogicVideo == false)
+        	    {
+        		    m_installTogicVideo = true;
+        	    }
+        	    else
+        	    {
+        		    ItemData * data = ItemData::create();
+        		    data->setAction("togic.intent.action.ONLINE_VIDEO");
+        		    data->setProFlag(0);
+        		    data->setBackgroundImageFilePath("image/item/item_togic_bg.png");
+        		    data->setWidth(260);
+        		    data->setHeight(432);
+        		    auto item = MainItem::create();
+        		    item->setItemData(data);
+        		    if (!UserDefault::getInstance()->getBoolForKey(USER_SHOW_TV_KEY,false))
+        		    {
+        			    this->insertItemByIndex(item,0);
+        		    }
+        		    else
+        		    {
+        			    this->insertItemByIndex(item,1);
+        		    }
+        		    UserDefault::getInstance()->setBoolForKey(TOGICVIDEO_SHOW_DEFALUT,true);
+        		    UserDefault::getInstance()->flush();
+        		    m_mainItemCount++;
+        	    }
+        	    continue;
             }
             auto item = AppItem::create();
             item->setItemData(itemData);
             char a[100];
-            sprintf(a,"image/appitem/app_bg_%d.png",(i+m_index)%5);
+            sprintf(a,"image/appitem/app_bg_%d.png",m_index++%5);
             item->setBackgroundImage(a);
+	    if(m_index > 10000)
+	    {
+		    m_index = 0;
+	    }
             if(!itemData->getPackage().empty())
             {
-                void* data  = JniUtil::getIconDataWithPackage(itemData->getPackage().c_str()); //------Get Image Data from Network
-                if(data == NULL)
-                {
-                    return;
-                }
-                item->setForegroundSpriteByData((void*)data,itemData->getWidth(),itemData->getHeight());
+        	    void* data  = JniUtil::getIconDataWithPackage(itemData->getPackage().c_str()); //------Get Image Data from Network
+        	    if(data == NULL)
+        	    {
+        		    continue;
+        	    }
+        	    item->setForegroundSpriteByData((void*)data,itemData->getWidth(),itemData->getHeight());
             }
             this->addItem(item);
         }
@@ -487,36 +518,6 @@ void ItemPanel::addDefaultMainItemByPlistFile(std::string filePath)
 	mainItem2->setItemData(mainItemData2);
 	this->addItem(mainItem2);
 	m_mainItemCount++;
-
-	   auto mainItem3 = MainItem::create();
-	   auto mainItemData3 = ItemData::create();
-	   mainItemData3->setBackgroundImageFilePath(map3.at("backgroundUrl").asString());
-	   mainItemData3->setForegroundImageFilePath(map3.at("topIconUrl").asString());
-	   mainItemData3->setBottomBackGroundImageFilePath(map3.at("bottomPanelUrl").asString());
-	   mainItemData3->setHintText(map3.at("hint").asString());
-	   mainItem3->setItemData(mainItemData3);
-	  this->addItem(mainItem3);
-	  m_mainItemCount++;
-
-	  auto mainItem4 = MainItem::create();
-	  auto mainItemData4 = ItemData::create();
-	  mainItemData4->setBackgroundImageFilePath(map4.at("backgroundUrl").asString());
-	  mainItemData4->setForegroundImageFilePath(map4.at("topIconUrl").asString());
-	  mainItemData4->setBottomBackGroundImageFilePath(map4.at("bottomPanelUrl").asString());
-	  mainItemData4->setHintText(map4.at("hint").asString());
-	  mainItem4->setItemData(mainItemData4);
-	 this->addItem(mainItem4);
-	 m_mainItemCount++;
-
-// auto mainItem5 = MainItem::create();
-// auto mainItemData5 = ItemData::create();
-// mainItemData5->setBackgroundImageFilePath(map4.at("backgroundUrl").asString());
-// mainItemData5->setForegroundImageFilePath(map4.at("topIconUrl").asString());
-// mainItemData5->setBottomBackGroundImageFilePath(map4.at("bottomPanelUrl").asString());
-// mainItemData5->setHintText(map4.at("hint").asString());
-// mainItem5->setItemData(mainItemData5);
-//this->addItem(mainItem5);
-//m_mainItemCount++;
 }
 
 void ItemPanel::addDefaultAppItem()
