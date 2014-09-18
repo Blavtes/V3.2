@@ -41,6 +41,7 @@ public:
 	void showTVItem(std::string jsonString);
 	void addTestItems(float dt);
 	void update(float dt);
+    void beginBackProted(float dt);
 private:
 	ui::ImageView* m_backgroundImageView; //background
 	ItemPanel* m_itemPanel;
@@ -48,6 +49,8 @@ private:
 	TopBarPanel* m_topBar;  //top
 	LeftNotificationPanel* m_notificationPanel; //left according to the Key-Menu
 	AirPlayPanel* m_airPlayPanel;
+//    Timer time ;
+
 };
 
 #endif /* MAINLAYER_H_ */

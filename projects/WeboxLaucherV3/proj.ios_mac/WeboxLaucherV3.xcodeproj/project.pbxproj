@@ -25,6 +25,24 @@
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765A50DF7441C002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765A40DF7441C002DB57D /* CoreGraphics.framework */; };
+		2F397D7819C6981E00B07C01 /* AirplayMusicData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F397D5119C6981E00B07C01 /* AirplayMusicData.cpp */; };
+		2F397D7919C6981E00B07C01 /* ItemData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F397D5319C6981E00B07C01 /* ItemData.cpp */; };
+		2F397D7A19C6981E00B07C01 /* AirPlayPanel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F397D5619C6981E00B07C01 /* AirPlayPanel.cpp */; };
+		2F397D7B19C6981E00B07C01 /* AppItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F397D5819C6981E00B07C01 /* AppItem.cpp */; };
+		2F397D7C19C6981E00B07C01 /* BaseItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F397D5A19C6981E00B07C01 /* BaseItem.cpp */; };
+		2F397D7D19C6981E00B07C01 /* ClearnAppItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F397D5C19C6981E00B07C01 /* ClearnAppItem.cpp */; };
+		2F397D7E19C6981E00B07C01 /* FocusHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F397D5E19C6981E00B07C01 /* FocusHelper.cpp */; };
+		2F397D7F19C6981E00B07C01 /* ItemPanel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F397D6019C6981E00B07C01 /* ItemPanel.cpp */; };
+		2F397D8019C6981E00B07C01 /* LeftNotificationPanel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F397D6219C6981E00B07C01 /* LeftNotificationPanel.cpp */; };
+		2F397D8119C6981E00B07C01 /* MainItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F397D6419C6981E00B07C01 /* MainItem.cpp */; };
+		2F397D8219C6981E00B07C01 /* MainLayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F397D6619C6981E00B07C01 /* MainLayer.cpp */; };
+		2F397D8319C6981E00B07C01 /* NotificationItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F397D6819C6981E00B07C01 /* NotificationItem.cpp */; };
+		2F397D8419C6981E00B07C01 /* ToastTextView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F397D6B19C6981E00B07C01 /* ToastTextView.cpp */; };
+		2F397D8519C6981E00B07C01 /* TopBarPanel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F397D6D19C6981E00B07C01 /* TopBarPanel.cpp */; };
+		2F397D8619C6981E00B07C01 /* HandleMessageQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F397D7019C6981E00B07C01 /* HandleMessageQueue.cpp */; };
+		2F397D8719C6981E00B07C01 /* JniUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F397D7219C6981E00B07C01 /* JniUtil.cpp */; };
+		2F397D8819C6981E00B07C01 /* ParseJson.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F397D7419C6981E00B07C01 /* ParseJson.cpp */; };
+		2F397D8919C6981E00B07C01 /* SizeTo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F397D7619C6981E00B07C01 /* SizeTo.cpp */; };
 		503AE0F817EB97AB00D1A890 /* Icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 503AE0F617EB97AB00D1A890 /* Icon.icns */; };
 		503AE10017EB989F00D1A890 /* AppController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 503AE0FB17EB989F00D1A890 /* AppController.mm */; };
 		503AE10117EB989F00D1A890 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 503AE0FC17EB989F00D1A890 /* main.m */; };
@@ -107,20 +125,6 @@
 			remoteGlobalIDString = A03F2ED617814268006731B9;
 			remoteInfo = "CocosDenshion Mac";
 		};
-		1AC6FB02180E9839004C840B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1AC6FAE5180E9839004C840B /* cocos2d_libs.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = A03F31FD1781479B006731B9;
-			remoteInfo = "jsbindings Mac";
-		};
-		1AC6FB04180E9839004C840B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1AC6FAE5180E9839004C840B /* cocos2d_libs.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 1A6FB53017854BC300CDF010;
-			remoteInfo = "luabindings Mac";
-		};
 		1AC6FB06180E9839004C840B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 1AC6FAE5180E9839004C840B /* cocos2d_libs.xcodeproj */;
@@ -155,20 +159,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = A07A4FB4178387730073F6A7;
 			remoteInfo = "CocosDenshion iOS";
-		};
-		1AC6FB10180E9839004C840B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1AC6FAE5180E9839004C840B /* cocos2d_libs.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = A07A5030178387750073F6A7;
-			remoteInfo = "jsbindings iOS";
-		};
-		1AC6FB12180E9839004C840B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1AC6FAE5180E9839004C840B /* cocos2d_libs.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 1A119791178526AA00D62A44;
-			remoteInfo = "luabindings iOS";
 		};
 		1AC6FB15180E9959004C840B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -256,6 +246,43 @@
 		1D6058910D05DD3D006BFB54 /* WeboxLaucherV3 iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "WeboxLaucherV3 iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765A40DF7441C002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		2F397D5119C6981E00B07C01 /* AirplayMusicData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AirplayMusicData.cpp; sourceTree = "<group>"; };
+		2F397D5219C6981E00B07C01 /* AirplayMusicData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AirplayMusicData.h; sourceTree = "<group>"; };
+		2F397D5319C6981E00B07C01 /* ItemData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ItemData.cpp; sourceTree = "<group>"; };
+		2F397D5419C6981E00B07C01 /* ItemData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ItemData.h; sourceTree = "<group>"; };
+		2F397D5619C6981E00B07C01 /* AirPlayPanel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AirPlayPanel.cpp; sourceTree = "<group>"; };
+		2F397D5719C6981E00B07C01 /* AirPlayPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AirPlayPanel.h; sourceTree = "<group>"; };
+		2F397D5819C6981E00B07C01 /* AppItem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AppItem.cpp; sourceTree = "<group>"; };
+		2F397D5919C6981E00B07C01 /* AppItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppItem.h; sourceTree = "<group>"; };
+		2F397D5A19C6981E00B07C01 /* BaseItem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BaseItem.cpp; sourceTree = "<group>"; };
+		2F397D5B19C6981E00B07C01 /* BaseItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseItem.h; sourceTree = "<group>"; };
+		2F397D5C19C6981E00B07C01 /* ClearnAppItem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ClearnAppItem.cpp; sourceTree = "<group>"; };
+		2F397D5D19C6981E00B07C01 /* ClearnAppItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClearnAppItem.h; sourceTree = "<group>"; };
+		2F397D5E19C6981E00B07C01 /* FocusHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FocusHelper.cpp; sourceTree = "<group>"; };
+		2F397D5F19C6981E00B07C01 /* FocusHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FocusHelper.h; sourceTree = "<group>"; };
+		2F397D6019C6981E00B07C01 /* ItemPanel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ItemPanel.cpp; sourceTree = "<group>"; };
+		2F397D6119C6981E00B07C01 /* ItemPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ItemPanel.h; sourceTree = "<group>"; };
+		2F397D6219C6981E00B07C01 /* LeftNotificationPanel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LeftNotificationPanel.cpp; sourceTree = "<group>"; };
+		2F397D6319C6981E00B07C01 /* LeftNotificationPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LeftNotificationPanel.h; sourceTree = "<group>"; };
+		2F397D6419C6981E00B07C01 /* MainItem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MainItem.cpp; sourceTree = "<group>"; };
+		2F397D6519C6981E00B07C01 /* MainItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainItem.h; sourceTree = "<group>"; };
+		2F397D6619C6981E00B07C01 /* MainLayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MainLayer.cpp; sourceTree = "<group>"; };
+		2F397D6719C6981E00B07C01 /* MainLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainLayer.h; sourceTree = "<group>"; };
+		2F397D6819C6981E00B07C01 /* NotificationItem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NotificationItem.cpp; sourceTree = "<group>"; };
+		2F397D6919C6981E00B07C01 /* NotificationItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationItem.h; sourceTree = "<group>"; };
+		2F397D6A19C6981E00B07C01 /* PrefixConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixConst.h; sourceTree = "<group>"; };
+		2F397D6B19C6981E00B07C01 /* ToastTextView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ToastTextView.cpp; sourceTree = "<group>"; };
+		2F397D6C19C6981E00B07C01 /* ToastTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToastTextView.h; sourceTree = "<group>"; };
+		2F397D6D19C6981E00B07C01 /* TopBarPanel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TopBarPanel.cpp; sourceTree = "<group>"; };
+		2F397D6E19C6981E00B07C01 /* TopBarPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopBarPanel.h; sourceTree = "<group>"; };
+		2F397D7019C6981E00B07C01 /* HandleMessageQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HandleMessageQueue.cpp; sourceTree = "<group>"; };
+		2F397D7119C6981E00B07C01 /* HandleMessageQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HandleMessageQueue.h; sourceTree = "<group>"; };
+		2F397D7219C6981E00B07C01 /* JniUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JniUtil.cpp; sourceTree = "<group>"; };
+		2F397D7319C6981E00B07C01 /* JniUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JniUtil.h; sourceTree = "<group>"; };
+		2F397D7419C6981E00B07C01 /* ParseJson.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ParseJson.cpp; sourceTree = "<group>"; };
+		2F397D7519C6981E00B07C01 /* ParseJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParseJson.h; sourceTree = "<group>"; };
+		2F397D7619C6981E00B07C01 /* SizeTo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SizeTo.cpp; sourceTree = "<group>"; };
+		2F397D7719C6981E00B07C01 /* SizeTo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SizeTo.h; sourceTree = "<group>"; };
 		503AE0F617EB97AB00D1A890 /* Icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Icon.icns; sourceTree = "<group>"; };
 		503AE0F717EB97AB00D1A890 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		503AE0FA17EB989F00D1A890 /* AppController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppController.h; path = ios/AppController.h; sourceTree = SOURCE_ROOT; };
@@ -364,6 +391,9 @@
 		15AA9C4015B7EC450033D6C2 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				2F397D5019C6981E00B07C01 /* Data */,
+				2F397D5519C6981E00B07C01 /* UI */,
+				2F397D6F19C6981E00B07C01 /* Utils */,
 				1AFAF8B316D35DE700DB1158 /* AppDelegate.cpp */,
 				1AFAF8B416D35DE700DB1158 /* AppDelegate.h */,
 				1AFAF8B516D35DE700DB1158 /* HelloWorldScene.cpp */,
@@ -390,15 +420,11 @@
 				1AC6FAFD180E9839004C840B /* libchipmunk Mac.a */,
 				1AC6FAFF180E9839004C840B /* libbox2d Mac.a */,
 				1AC6FB01180E9839004C840B /* libCocosDenshion Mac.a */,
-				1AC6FB03180E9839004C840B /* libjsbindings Mac.a */,
-				1AC6FB05180E9839004C840B /* libluabindings Mac.a */,
 				1AC6FB07180E9839004C840B /* libcocos2dx iOS.a */,
 				1AC6FB09180E9839004C840B /* libcocos2dx-extensions iOS.a */,
 				1AC6FB0B180E9839004C840B /* libchipmunk iOS.a */,
 				1AC6FB0D180E9839004C840B /* libbox2d iOS.a */,
 				1AC6FB0F180E9839004C840B /* libCocosDenshion iOS.a */,
-				1AC6FB11180E9839004C840B /* libjsbindings iOS.a */,
-				1AC6FB13180E9839004C840B /* libluabindings iOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -437,6 +463,67 @@
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		2F397D5019C6981E00B07C01 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				2F397D5119C6981E00B07C01 /* AirplayMusicData.cpp */,
+				2F397D5219C6981E00B07C01 /* AirplayMusicData.h */,
+				2F397D5319C6981E00B07C01 /* ItemData.cpp */,
+				2F397D5419C6981E00B07C01 /* ItemData.h */,
+			);
+			name = Data;
+			path = ../Classes/Data;
+			sourceTree = "<group>";
+		};
+		2F397D5519C6981E00B07C01 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				2F397D5619C6981E00B07C01 /* AirPlayPanel.cpp */,
+				2F397D5719C6981E00B07C01 /* AirPlayPanel.h */,
+				2F397D5819C6981E00B07C01 /* AppItem.cpp */,
+				2F397D5919C6981E00B07C01 /* AppItem.h */,
+				2F397D5A19C6981E00B07C01 /* BaseItem.cpp */,
+				2F397D5B19C6981E00B07C01 /* BaseItem.h */,
+				2F397D5C19C6981E00B07C01 /* ClearnAppItem.cpp */,
+				2F397D5D19C6981E00B07C01 /* ClearnAppItem.h */,
+				2F397D5E19C6981E00B07C01 /* FocusHelper.cpp */,
+				2F397D5F19C6981E00B07C01 /* FocusHelper.h */,
+				2F397D6019C6981E00B07C01 /* ItemPanel.cpp */,
+				2F397D6119C6981E00B07C01 /* ItemPanel.h */,
+				2F397D6219C6981E00B07C01 /* LeftNotificationPanel.cpp */,
+				2F397D6319C6981E00B07C01 /* LeftNotificationPanel.h */,
+				2F397D6419C6981E00B07C01 /* MainItem.cpp */,
+				2F397D6519C6981E00B07C01 /* MainItem.h */,
+				2F397D6619C6981E00B07C01 /* MainLayer.cpp */,
+				2F397D6719C6981E00B07C01 /* MainLayer.h */,
+				2F397D6819C6981E00B07C01 /* NotificationItem.cpp */,
+				2F397D6919C6981E00B07C01 /* NotificationItem.h */,
+				2F397D6A19C6981E00B07C01 /* PrefixConst.h */,
+				2F397D6B19C6981E00B07C01 /* ToastTextView.cpp */,
+				2F397D6C19C6981E00B07C01 /* ToastTextView.h */,
+				2F397D6D19C6981E00B07C01 /* TopBarPanel.cpp */,
+				2F397D6E19C6981E00B07C01 /* TopBarPanel.h */,
+			);
+			name = UI;
+			path = ../Classes/UI;
+			sourceTree = "<group>";
+		};
+		2F397D6F19C6981E00B07C01 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				2F397D7019C6981E00B07C01 /* HandleMessageQueue.cpp */,
+				2F397D7119C6981E00B07C01 /* HandleMessageQueue.h */,
+				2F397D7219C6981E00B07C01 /* JniUtil.cpp */,
+				2F397D7319C6981E00B07C01 /* JniUtil.h */,
+				2F397D7419C6981E00B07C01 /* ParseJson.cpp */,
+				2F397D7519C6981E00B07C01 /* ParseJson.h */,
+				2F397D7619C6981E00B07C01 /* SizeTo.cpp */,
+				2F397D7719C6981E00B07C01 /* SizeTo.h */,
+			);
+			name = Utils;
+			path = ../Classes/Utils;
 			sourceTree = "<group>";
 		};
 		503AE0F517EB97AB00D1A890 /* Icons */ = {
@@ -617,20 +704,6 @@
 			remoteRef = 1AC6FB00180E9839004C840B /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		1AC6FB03180E9839004C840B /* libjsbindings Mac.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = "libjsbindings Mac.a";
-			remoteRef = 1AC6FB02180E9839004C840B /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		1AC6FB05180E9839004C840B /* libluabindings Mac.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = "libluabindings Mac.a";
-			remoteRef = 1AC6FB04180E9839004C840B /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		1AC6FB07180E9839004C840B /* libcocos2dx iOS.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -664,20 +737,6 @@
 			fileType = archive.ar;
 			path = "libCocosDenshion iOS.a";
 			remoteRef = 1AC6FB0E180E9839004C840B /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		1AC6FB11180E9839004C840B /* libjsbindings iOS.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = "libjsbindings iOS.a";
-			remoteRef = 1AC6FB10180E9839004C840B /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		1AC6FB13180E9839004C840B /* libluabindings iOS.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = "libluabindings iOS.a";
-			remoteRef = 1AC6FB12180E9839004C840B /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -727,11 +786,29 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2F397D8219C6981E00B07C01 /* MainLayer.cpp in Sources */,
+				2F397D7819C6981E00B07C01 /* AirplayMusicData.cpp in Sources */,
 				503AE10017EB989F00D1A890 /* AppController.mm in Sources */,
 				503AE10217EB989F00D1A890 /* RootViewController.mm in Sources */,
+				2F397D7F19C6981E00B07C01 /* ItemPanel.cpp in Sources */,
+				2F397D7A19C6981E00B07C01 /* AirPlayPanel.cpp in Sources */,
+				2F397D8519C6981E00B07C01 /* TopBarPanel.cpp in Sources */,
+				2F397D8319C6981E00B07C01 /* NotificationItem.cpp in Sources */,
+				2F397D8419C6981E00B07C01 /* ToastTextView.cpp in Sources */,
+				2F397D8119C6981E00B07C01 /* MainItem.cpp in Sources */,
+				2F397D7E19C6981E00B07C01 /* FocusHelper.cpp in Sources */,
+				2F397D7D19C6981E00B07C01 /* ClearnAppItem.cpp in Sources */,
+				2F397D8719C6981E00B07C01 /* JniUtil.cpp in Sources */,
+				2F397D8819C6981E00B07C01 /* ParseJson.cpp in Sources */,
 				1AFAF8B716D35DE700DB1158 /* AppDelegate.cpp in Sources */,
+				2F397D8919C6981E00B07C01 /* SizeTo.cpp in Sources */,
 				503AE10117EB989F00D1A890 /* main.m in Sources */,
+				2F397D7919C6981E00B07C01 /* ItemData.cpp in Sources */,
+				2F397D7B19C6981E00B07C01 /* AppItem.cpp in Sources */,
 				1AFAF8B816D35DE700DB1158 /* HelloWorldScene.cpp in Sources */,
+				2F397D8619C6981E00B07C01 /* HandleMessageQueue.cpp in Sources */,
+				2F397D8019C6981E00B07C01 /* LeftNotificationPanel.cpp in Sources */,
+				2F397D7C19C6981E00B07C01 /* BaseItem.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

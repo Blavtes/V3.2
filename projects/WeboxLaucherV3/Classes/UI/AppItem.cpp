@@ -51,6 +51,12 @@ void AppItem::setForegroundImage(std::string foregroundImageFilePath)
 
 void AppItem::setForegroundSpriteByData(void *data, int w, int h)
 {
+    float scale = 1.0f;
+    Size frameSize = Director::getInstance()->getOpenGLView()->getFrameSize();
+    if (frameSize.height > 720) {
+        scale = frameSize.height / 720;
+    }
+
     Texture2D* textu = new Texture2D();
     textu->initWithData(data, w * h * 4, Texture2D::PixelFormat::RGBA8888, w, h, Size(w, h));
     m_forgroundSprite->setTexture(textu);
@@ -58,6 +64,9 @@ void AppItem::setForegroundSpriteByData(void *data, int w, int h)
     m_forgroundSprite->setOpacityModifyRGB(true);
     m_forgroundSprite->setBlendFunc(BlendFunc::ALPHA_PREMULTIPLIED);
     m_forgroundSprite->setPosition(Vec2(m_itemSize.width/2,m_itemSize.height/3*2));
+
+    m_forgroundSprite->setScale(1 / scale, 1 /scale);
+
     textu->release();
 }
 

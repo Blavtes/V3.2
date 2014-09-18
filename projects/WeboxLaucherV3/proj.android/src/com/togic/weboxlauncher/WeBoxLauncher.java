@@ -175,7 +175,7 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 					Gson gson = new Gson();
 					String str = gson.toJson(mif);
 					Log.v("\r\n@cibn -----@xjx++++++++++++++++receive cibn  json : ", str);
-					nativeJsonString(str,"Cibn" );
+//					nativeJsonString(str,"Cibn" );
 				}
 			});
 		}
@@ -194,7 +194,7 @@ public class WeBoxLauncher extends Cocos2dxActivity implements
 					Gson gson = new Gson();
 					String str = gson.toJson(mif);
 					Log.v("\r\n@cibn -----@xjx++++++++++++++++receive cibn  json : ", str);
-					nativeJsonString(str,"Cibn" );
+//					nativeJsonString(str,"Cibn" );
 				}
 			});
 		}

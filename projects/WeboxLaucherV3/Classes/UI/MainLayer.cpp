@@ -16,7 +16,7 @@
 #include "ToastTextView.h"
 #include "json/rapidjson.h"
 #include "json/document.h"
-
+#include "HelloWorldScene.h"
 
 
 MainLayer::MainLayer()
@@ -54,6 +54,7 @@ bool MainLayer::init()
   	 m_backgroundImageView =ui:: ImageView::create(MAIN_LAYER_BACKGROUND_IMG);
 	m_backgroundImageView->setAnchorPoint(Vec2(0,0));
   	 m_backgroundImageView->setPosition(Vec2::ZERO);
+    m_backgroundImageView->loadTexture("image/launcher/Launcher1_01.png");
   	 this->addChild(m_backgroundImageView,0);
 
   	 m_itemPanel=ItemPanel::create();
@@ -83,13 +84,13 @@ bool MainLayer::init()
 	auto listenerKeyboard = EventListenerKeyboard::create();
 	listenerKeyboard->onKeyPressed = CC_CALLBACK_2(MainLayer::onKeyPressed,this);
 	listenerKeyboard->onKeyReleased= CC_CALLBACK_2(MainLayer::onKeyReleased,this);
-	CCDirector::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listenerKeyboard,this);
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listenerKeyboard,this);
 
 	this->setTouchMode(Touch::DispatchMode::ONE_BY_ONE);
 	auto listenerTouch = EventListenerTouchOneByOne::create();
 	listenerTouch->onTouchBegan = CC_CALLBACK_2(MainLayer::onTouchBegan,this);
 	listenerTouch->onTouchEnded = CC_CALLBACK_2(MainLayer::onTouchEnded,this);
-	CCDirector::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listenerTouch,this);
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listenerTouch,this);
 
 	HandleMessageQueue* handleMessage = HandleMessageQueue::getInstace();
 //	handleMessage->registerMsgCallbackFunc(CC_CALLBACK_1(MainLayer::updateCIBNAuthorization,this),"Cibn");
@@ -101,7 +102,14 @@ bool MainLayer::init()
 
 	this->scheduleOnce(schedule_selector(MainLayer::autoStartActivity), 1.02f);
 
+
 	return true;
+}
+
+void MainLayer::beginBackProted(float dt)
+{
+    Scene *scen = HelloWorld::createScene(0);
+    Director::getInstance()->pushScene(scen);
 }
 
 void MainLayer::autoStartActivity(float dt)
@@ -142,6 +150,7 @@ if (strncmp(model,"live",strlen("live")) == 0) {
 
 void MainLayer::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 {
+
 	log("@xjx--MainLayer----he key:%d is pressed!---------------------------xjx",keyCode);
 	if(m_focusHelper != nullptr && !m_notificationPanel->getLeftNotificationPanelStatus())
 	{
@@ -151,6 +160,8 @@ void MainLayer::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 	{
 		m_notificationPanel->onKeyPressed(keyCode,event);
 	}
+this->unschedule(schedule_selector(MainLayer::beginBackProted));
+	this->scheduleOnce(schedule_selector(MainLayer::beginBackProted),20);
 }
 
 void MainLayer::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
@@ -171,6 +182,7 @@ void MainLayer::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
 		log("MainLayer----the key Menu is clicked!---------------------------xjx");
 		m_notificationPanel ->show();
 	}
+
 
 }
 
