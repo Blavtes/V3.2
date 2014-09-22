@@ -105,6 +105,9 @@ public class MMetroParser {
 		            	str = gson.toJson(md);
 		            	CommonUtil.writeCache(ctx, FILE_METRO, str, null);
 		            	Log.v("@metro", "==parse==json fromnet !!!!!!!!!!!!!! " + str);
+		            } else {
+		            	md = null;
+		            	Log.v(TAG, "######## http json write faile #####");
 		            }
 	            }
 	            else
